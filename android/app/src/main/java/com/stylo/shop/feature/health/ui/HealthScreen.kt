@@ -1,5 +1,6 @@
 package com.stylo.shop.feature.health.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -101,7 +102,10 @@ fun HealthScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        OutlinedButton(onClick = viewModel::refresh) {
+        OutlinedButton(
+            onClick = viewModel::refresh,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        ) {
             Text(stringResource(R.string.health_retry))
         }
 

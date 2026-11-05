@@ -7,8 +7,8 @@ class FormattersTest {
 
     @Test
     fun `money uses Vietnamese grouping and no decimals`() {
-        assertEquals("1.250.000 ₫", Formatters.money(1_250_000))
-        assertEquals("0 ₫", Formatters.money(0))
+        assertEquals("1.250.000\u00A0₫", Formatters.money(1_250_000))
+        assertEquals("0\u00A0₫", Formatters.money(0))
     }
 
     @Test
