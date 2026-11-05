@@ -1,0 +1,342 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum CatalogStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPING
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+  ONLINE
+}
+
+enum PaymentProvider {
+  MOCK
+  VNPAY
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum StockMovementReason {
+  RECEIPT
+  SALE
+  CANCEL_RESTOCK
+}
+
+enum StockMovementRefType {
+  RECEIPT
+  ORDER
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique @db.VarChar(255)
+  passwordHash String     @map("password_hash") @db.VarChar(255)
+  fullName     String     @map("full_name") @db.VarChar(100)
+  phone        String?    @db.VarChar(20)
+  role         Role       @default(CUSTOMER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime   @updatedAt @map("updated_at") @db.DateTime(3)
+
+  refreshTokens RefreshToken[]
+  addresses     Address[]
+  cart          Cart?
+  orders        Order[]
+  receipts      InventoryReceipt[]
+
+  @@map("user")
+}
+
+model RefreshToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  tokenHash String    @unique @map("token_hash") @db.Char(64)
+  expiresAt DateTime  @map("expires_at") @db.DateTime(3)
+  revokedAt DateTime? @map("revoked_at") @db.DateTime(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@map("refresh_token")
+}
+
+model Address {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @map("user_id")
+  recipientName String   @map("recipient_name") @db.VarChar(100)
+  phone         String   @db.VarChar(20)
+  line          String   @db.VarChar(255)
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@map("address")
+}
+
+model Category {
+  id        Int           @id @default(autoincrement())
+  name      String        @unique @db.VarChar(100)
+  status    CatalogStatus @default(ACTIVE)
+  createdAt DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  products Product[]
+
+  @@map("category")
+}
+
+model Brand {
+  id        Int           @id @default(autoincrement())
+  name      String        @unique @db.VarChar(100)
+  status    CatalogStatus @default(ACTIVE)
+  createdAt DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  products Product[]
+
+  @@map("brand")
+}
+
+model Product {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(200)
+  description String?       @db.Text
+  categoryId  Int           @map("category_id")
+  brandId     Int           @map("brand_id")
+  status      CatalogStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  category Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  brand    Brand            @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  variants ProductVariant[]
+  images   ProductImage[]
+  orderItems OrderItem[]
+
+  @@index([status, createdAt])
+  @@index([categoryId])
+  @@index([brandId])
+  @@map("product")
+}
+
+model ProductVariant {
+  id        Int      @id @default(autoincrement())
+  productId Int      @map("product_id")
+  sku       String   @unique @db.VarChar(50)
+  size      String   @db.VarChar(20)
+  color     String   @db.VarChar(40)
+  price     Int
+  stock     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems           CartItem[]
+  orderItems          OrderItem[]
+  receiptItems        InventoryReceiptItem[]
+  stockMovements      StockMovement[]
+
+  @@unique([productId, size, color])
+  @@index([productId])
+  @@index([color])
+  @@index([productId, price])
+  @@map("product_variant")
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int      @map("product_id")
+  url       String   @db.VarChar(255)
+  position  Int      @db.TinyInt
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, position])
+  @@map("product_image")
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("cart")
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int      @map("cart_id")
+  variantId Int      @map("variant_id")
+  quantity  Int
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+  @@index([variantId])
+  @@map("cart_item")
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  code            String        @unique @db.VarChar(20)
+  userId          Int           @map("user_id")
+  clientOrderId   String        @map("client_order_id") @db.Char(36)
+  status          OrderStatus   @default(PENDING)
+  paymentMethod   PaymentMethod @map("payment_method")
+  paidAt          DateTime?     @map("paid_at") @db.DateTime(3)
+  recipientName   String        @map("recipient_name") @db.VarChar(100)
+  recipientPhone  String        @map("recipient_phone") @db.VarChar(20)
+  shippingAddress String        @map("shipping_address") @db.VarChar(255)
+  subtotal        Int
+  shippingFee     Int           @default(0) @map("shipping_fee")
+  total           Int
+  note            String?       @db.VarChar(255)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items    OrderItem[]
+  payments Payment[]
+
+  @@unique([userId, clientOrderId])
+  @@index([userId, createdAt])
+  @@index([status])
+  @@index([paidAt])
+  @@index([createdAt])
+  @@map("order")
+}
+
+model OrderItem {
+  id          Int    @id @default(autoincrement())
+  orderId     Int    @map("order_id")
+  productId   Int    @map("product_id")
+  variantId   Int    @map("variant_id")
+  productName String @map("product_name") @db.VarChar(200)
+  variantSku  String @map("variant_sku") @db.VarChar(50)
+  size        String @db.VarChar(20)
+  color       String @db.VarChar(40)
+  unitPrice   Int    @map("unit_price")
+  unitCost    Int?   @map("unit_cost")
+  quantity    Int
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  product Product        @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([variantId])
+  @@index([productId])
+  @@map("order_item")
+}
+
+model Payment {
+  id             Int             @id @default(autoincrement())
+  orderId        Int             @map("order_id")
+  provider       PaymentProvider
+  status         PaymentStatus   @default(PENDING)
+  amount         Int
+  txnRef         String          @unique @map("txn_ref") @db.VarChar(50)
+  providerTxnNo  String?         @map("provider_txn_no") @db.VarChar(64)
+  bankCode       String?         @map("bank_code") @db.VarChar(20)
+  payDate        DateTime?       @map("pay_date") @db.DateTime(3)
+  rawResponse    Json?           @map("raw_response")
+  failureReason  String?         @map("failure_reason") @db.VarChar(255)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt      DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@map("payment")
+}
+
+model InventoryReceipt {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(20)
+  supplier  String   @db.VarChar(150)
+  note      String?  @db.VarChar(255)
+  totalCost Int      @map("total_cost")
+  createdBy Int      @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+
+  creator User                   @relation(fields: [createdBy], references: [id], onDelete: Restrict)
+  items   InventoryReceiptItem[]
+
+  @@index([createdAt])
+  @@index([createdBy])
+  @@map("inventory_receipt")
+}
+
+model InventoryReceiptItem {
+  id        Int    @id @default(autoincrement())
+  receiptId Int    @map("receipt_id")
+  variantId Int    @map("variant_id")
+  quantity  Int
+  unitCost  Int    @map("unit_cost")
+
+  receipt InventoryReceipt @relation(fields: [receiptId], references: [id], onDelete: Restrict)
+  variant ProductVariant   @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([receiptId])
+  @@index([variantId])
+  @@map("inventory_receipt_item")
+}
+
+model StockMovement {
+  id        Int                  @id @default(autoincrement())
+  variantId Int                  @map("variant_id")
+  delta     Int
+  reason    StockMovementReason
+  refType   StockMovementRefType @map("ref_type")
+  refId     Int                  @map("ref_id")
+  unitCost  Int?                 @map("unit_cost")
+  createdAt DateTime             @default(now()) @map("created_at") @db.DateTime(3)
+
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([variantId, createdAt])
+  @@index([refType, refId])
+  @@map("stock_movement")
+}

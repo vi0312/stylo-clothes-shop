@@ -3,3 +3,10 @@ skills-lock.json
 AGENTS.md
 docs/agents
 .scratch/stylo-app/probe/
+
+server/node_modules/
+server/dist/
+server/.env
+server/src/generated/
+server/uploads/
+server/test-uploads/
