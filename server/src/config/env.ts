@@ -4,9 +4,9 @@ import { z } from 'zod'
 const envSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-    PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    PORT: z.coerce.number().int().min(1).max(65535).default(8787),
     DATABASE_URL: z.string().min(1),
-    PUBLIC_BASE_URL: z.url().default('http://127.0.0.1:3000'),
+    PUBLIC_BASE_URL: z.url().default('http://127.0.0.1:8787'),
     JWT_ACCESS_SECRET: z.string().min(1),
     ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().positive().default(900),
     REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),

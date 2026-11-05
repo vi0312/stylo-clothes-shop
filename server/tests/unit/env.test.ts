@@ -11,7 +11,7 @@ describe('parseEnv', () => {
     const env = parseEnv(minimalEnv)
 
     expect(env.NODE_ENV).toBe('development')
-    expect(env.PORT).toBe(3000)
+    expect(env.PORT).toBe(8787)
     expect(env.PAYMENT_PROVIDER).toBe('MOCK')
     expect(env.SHIPPING_FEE).toBe(30000)
     expect(env.UPLOAD_DIR).toBe('uploads')

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stylo</string>
+
+    <string name="health_title">Stylo</string>
+    <string name="health_subtitle">Kiểm tra kết nối API</string>
+    <string name="health_checking">Đang kiểm tra…</string>
+    <string name="health_ok">API hoạt động</string>
+    <string name="health_status_value">Trạng thái: %1$s</string>
+    <string name="health_endpoint">Địa chỉ: %1$s</string>
+    <string name="health_retry">Thử lại</string>
+
+    <string name="error_generic">Đã xảy ra lỗi. Vui lòng thử lại.</string>
+    <string name="error_network">Không kết nối được tới máy chủ. Kiểm tra mạng rồi thử lại.</string>
+    <string name="error_timeout">Máy chủ phản hồi quá chậm. Vui lòng thử lại.</string>
+    <string name="error_parse">Dữ liệu trả về không hợp lệ.</string>
+    <string name="error_validation">Dữ liệu chưa hợp lệ. Vui lòng kiểm tra lại.</string>
+    <string name="error_unauthorized">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.</string>
+    <string name="error_invalid_credentials">Email hoặc mật khẩu không đúng.</string>
+    <string name="error_invalid_token">Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.</string>
+    <string name="error_forbidden">Bạn không có quyền thực hiện thao tác này.</string>
+    <string name="error_account_disabled">Tài khoản đã bị vô hiệu hoá.</string>
+    <string name="error_not_found">Không tìm thấy dữ liệu.</string>
+    <string name="error_email_taken">Email này đã được sử dụng.</string>
+    <string name="error_sku_taken">Mã SKU đã tồn tại.</string>
+    <string name="error_variant_exists">Size và màu này đã có trong sản phẩm.</string>
+    <string name="error_name_taken">Tên này đã được sử dụng.</string>
+    <string name="error_in_use">Không thể xoá vì dữ liệu đang được tham chiếu.</string>
+    <string name="error_out_of_stock">Không đủ hàng trong kho cho số lượng yêu cầu.</string>
+    <string name="error_item_unavailable">Sản phẩm không còn bán.</string>
+    <string name="error_cart_empty">Giỏ hàng đang trống.</string>
+    <string name="error_invalid_order_state">Trạng thái đơn hàng không cho phép thao tác này.</string>
+    <string name="error_order_already_paid">Đơn hàng đã được thanh toán.</string>
+    <string name="error_payment_not_allowed">Đơn hàng này không hỗ trợ thanh toán online.</string>
+    <string name="error_cannot_disable_self">Không thể tự vô hiệu hoá tài khoản của mình.</string>
+    <string name="error_file_too_large">Tệp vượt quá 5 MB.</string>
+    <string name="error_internal">Máy chủ gặp sự cố. Vui lòng thử lại sau.</string>
+</resources>
