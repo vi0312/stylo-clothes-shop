@@ -37,7 +37,7 @@ export const errorHandler: ErrorRequestHandler = (error, request, response, next
     code = 'VALIDATION_FAILED'
     message = 'Request validation failed'
     details = error.issues.map((issue) => ({
-      path: issue.path.join('.'),
+      field: issue.path.length > 0 ? issue.path.join('.') : issue.code === 'unrecognized_keys' ? issue.keys.join(',') : '',
       message: issue.message,
     }))
   } else if (error instanceof SyntaxError && 'type' in error && error.type === 'entity.parse.failed') {
