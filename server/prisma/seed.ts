@@ -68,7 +68,7 @@ const PRODUCTS: SeedProduct[] = [
 const SEED_RECEIPT_CODE = 'PN-250101-0001'
 const SEED_RECEIPT_SUPPLIER = 'Xưởng may mẫu'
 
-async function main(): Promise<void> {
+export async function seed(): Promise<void> {
   const env = getEnv()
   const adminEmail = env.SEED_ADMIN_EMAIL.toLowerCase()
   const passwordHash = await argon2.hash(env.SEED_ADMIN_PASSWORD)
@@ -212,11 +212,14 @@ async function main(): Promise<void> {
   )
 }
 
-main()
-  .catch((error: unknown) => {
-    console.error('Seed failed', error)
-    process.exitCode = 1
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+const isDirectRun = process.argv[1] !== undefined && /seed\.(?:ts|js)$/.test(process.argv[1])
+if (isDirectRun) {
+  seed()
+    .catch((error: unknown) => {
+      console.error('Seed failed', error)
+      process.exitCode = 1
+    })
+    .finally(async () => {
+      await prisma.$disconnect()
+    })
+}

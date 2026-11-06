@@ -8,3 +8,11 @@ import type { ZodType } from 'zod'
 export function parseBody<T>(schema: ZodType<T>, request: Request): T {
   return schema.parse(request.body)
 }
+
+export function parseQuery<T>(schema: ZodType<T>, request: Request): T {
+  return schema.parse(request.query)
+}
+
+export function parseParams<T>(schema: ZodType<T>, request: Request): T {
+  return schema.parse(request.params)
+}
