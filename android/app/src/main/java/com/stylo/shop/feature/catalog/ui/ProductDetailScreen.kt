@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,6 +61,7 @@ import com.stylo.shop.core.network.ApiClient
 import com.stylo.shop.core.ui.ErrorMessages
 import com.stylo.shop.core.ui.Formatters
 import com.stylo.shop.core.ui.UiState
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.core.ui.theme.statusColors
 import com.stylo.shop.feature.catalog.model.ProductDetail
 import com.stylo.shop.feature.catalog.ui.components.ColorSelector
@@ -87,7 +89,10 @@ fun ProductDetailScreen(
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.testTag(UiTags.ProductDetailBack),
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Quay lại",
@@ -125,6 +130,7 @@ fun ProductDetailScreen(
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier.testTag(UiTags.ProductDetailPrice),
                             )
                         }
 
@@ -146,7 +152,8 @@ fun ProductDetailScreen(
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .height(48.dp)
-                                .defaultMinSize(minWidth = 140.dp),
+                                .defaultMinSize(minWidth = 140.dp)
+                                .testTag(UiTags.ProductDetailCta),
                         ) {
                             Text(
                                 text = state.ctaButtonText,
@@ -267,6 +274,7 @@ private fun ProductDetailContent(
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.testTag(UiTags.ProductDetailName),
             )
 
             Spacer(Modifier.height(8.dp))

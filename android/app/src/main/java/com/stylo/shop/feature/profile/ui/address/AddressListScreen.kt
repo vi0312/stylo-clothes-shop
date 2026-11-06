@@ -31,7 +31,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -39,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.UiEffectHost
 import com.stylo.shop.core.ui.UiState
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.profile.model.Address
 import com.stylo.shop.feature.profile.ui.ProfileDetailScaffold
 import com.stylo.shop.feature.profile.ui.ProfileErrorContent
@@ -68,7 +71,10 @@ fun AddressListScreen(
         modifier = modifier,
         snackbarHostState = snackbarHostState,
         actions = {
-            IconButton(onClick = onAdd) {
+            IconButton(
+                onClick = onAdd,
+                modifier = Modifier.testTag(UiTags.AddressAdd),
+            ) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = stringResource(R.string.address_add),
@@ -170,13 +176,21 @@ private fun AddressCard(
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(UiTags.AddressCard),
     ) {
         Column(
             modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(UiTags.AddressHeader)
+                    .semantics(mergeDescendants = true) {},
+            ) {
                 Text(
                     text = address.recipientName,
                     style = MaterialTheme.typography.titleSmall,

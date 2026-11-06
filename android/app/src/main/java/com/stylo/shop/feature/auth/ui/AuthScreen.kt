@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
+import com.stylo.shop.core.ui.UiTags
 
 @Composable
 fun AuthScreen(
@@ -115,6 +117,9 @@ private fun AuthContent(
                     onClick = { if (item != mode) onSwitchMode(item) },
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = AuthMode.entries.size),
                     label = { Text(stringResource(item.labelRes)) },
+                    modifier = Modifier.testTag(
+                        if (item == AuthMode.REGISTER) UiTags.AuthRegisterTab else UiTags.AuthLoginTab,
+                    ),
                 )
             }
         }
@@ -126,6 +131,7 @@ private fun AuthContent(
                 onValueChange = onFullNameChange,
                 label = stringResource(R.string.auth_full_name),
                 error = state.errors.fullName,
+                testTag = UiTags.AuthFullName,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -137,6 +143,7 @@ private fun AuthContent(
                 onValueChange = onPhoneChange,
                 label = stringResource(R.string.auth_phone_optional),
                 error = state.errors.phone,
+                testTag = UiTags.AuthPhone,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone,
                     imeAction = ImeAction.Next,
@@ -153,6 +160,7 @@ private fun AuthContent(
             onValueChange = onEmailChange,
             label = stringResource(R.string.auth_email),
             error = state.errors.email,
+            testTag = UiTags.AuthEmail,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -168,6 +176,7 @@ private fun AuthContent(
             onValueChange = onPasswordChange,
             label = stringResource(R.string.auth_password),
             error = state.errors.password,
+            testTag = UiTags.AuthPassword,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = if (isRegister) ImeAction.Next else ImeAction.Done,
@@ -190,7 +199,8 @@ private fun AuthContent(
             enabled = !state.submitting,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
+                .height(52.dp)
+                .testTag(UiTags.AuthSubmit),
         ) {
             if (state.submitting) {
                 CircularProgressIndicator(
@@ -215,6 +225,7 @@ private fun AuthTextField(
     onValueChange: (String) -> Unit,
     label: String,
     error: AuthFieldError?,
+    testTag: String,
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -223,7 +234,9 @@ private fun AuthTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(testTag),
         singleLine = true,
         isError = error != null,
         supportingText = if (error != null) {

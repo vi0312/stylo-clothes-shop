@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.UiEffectHost
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.profile.model.PROFILE_NAME_MAX
 import com.stylo.shop.feature.profile.model.PROFILE_PHONE_MAX
 
@@ -82,7 +84,9 @@ fun ProfileScreen(
                 readOnly = true,
                 singleLine = true,
                 label = { Text(stringResource(R.string.profile_email)) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(UiTags.ProfileEmail),
             )
 
             OutlinedTextField(
@@ -94,7 +98,9 @@ fun ProfileScreen(
                 supportingText = state.fullNameError?.let { error ->
                     { Text(profileFieldErrorText(error, PROFILE_NAME_MAX)) }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(UiTags.ProfileFullName),
             )
 
             OutlinedTextField(
@@ -107,7 +113,9 @@ fun ProfileScreen(
                 supportingText = state.phoneError?.let { error ->
                     { Text(profileFieldErrorText(error, PROFILE_PHONE_MAX)) }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(UiTags.ProfilePhone),
             )
 
             state.formError?.let { ProfileErrorBanner(it) }
@@ -117,7 +125,8 @@ fun ProfileScreen(
                 enabled = !state.saving,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(48.dp)
+                    .testTag(UiTags.ProfileSave),
             ) {
                 if (state.saving) {
                     CircularProgressIndicator(
@@ -136,7 +145,9 @@ fun ProfileScreen(
                 onClick = onOpenAddresses,
                 shape = MaterialTheme.shapes.medium,
                 color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(UiTags.ProfileAddresses),
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -174,7 +185,8 @@ fun ProfileScreen(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(48.dp)
+                    .testTag(UiTags.ProfileLogout),
             ) {
                 Text(stringResource(R.string.action_logout))
             }
@@ -192,6 +204,7 @@ fun ProfileScreen(
                         confirmLogout = false
                         onLogout()
                     },
+                    modifier = Modifier.testTag(UiTags.ProfileLogoutConfirm),
                 ) {
                     Text(stringResource(R.string.action_logout))
                 }

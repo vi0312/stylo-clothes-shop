@@ -35,10 +35,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.stylo.shop.R
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CatalogFilters
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -113,6 +115,7 @@ fun FilterBottomSheet(
                             selected = isSelected,
                             onClick = { onCategorySelected(if (isSelected) null else category.id) },
                             label = { Text(category.name) },
+                            modifier = Modifier.testTag(UiTags.FilterCategory),
                             leadingIcon = if (isSelected) {
                                 { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
                             } else null,
@@ -279,7 +282,8 @@ fun FilterBottomSheet(
                 onClick = onApply,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(48.dp)
+                    .testTag(UiTags.FilterApply),
                 shape = RoundedCornerShape(8.dp),
             ) {
                 Text(

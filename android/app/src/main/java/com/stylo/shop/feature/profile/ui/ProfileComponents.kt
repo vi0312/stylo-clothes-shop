@@ -20,10 +20,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.ErrorMessages
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.core.network.ApiError
 import com.stylo.shop.feature.profile.model.ProfileFieldError
 
@@ -45,7 +47,10 @@ fun ProfileDetailScaffold(
             TopAppBar(
                 title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.testTag(UiTags.ProfileBack),
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),

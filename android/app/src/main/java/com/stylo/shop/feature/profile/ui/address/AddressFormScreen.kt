@@ -25,12 +25,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.profile.model.ADDRESS_LINE_MAX
 import com.stylo.shop.feature.profile.model.PROFILE_NAME_MAX
 import com.stylo.shop.feature.profile.model.PROFILE_PHONE_MAX
@@ -97,7 +99,9 @@ fun AddressFormScreen(
                     supportingText = state.recipientNameError?.let { error ->
                         { Text(profileFieldErrorText(error, PROFILE_NAME_MAX)) }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(UiTags.AddressRecipient),
                 )
 
                 OutlinedTextField(
@@ -110,7 +114,9 @@ fun AddressFormScreen(
                     supportingText = state.phoneError?.let { error ->
                         { Text(profileFieldErrorText(error, PROFILE_PHONE_MAX)) }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(UiTags.AddressPhone),
                 )
 
                 OutlinedTextField(
@@ -123,7 +129,9 @@ fun AddressFormScreen(
                     supportingText = state.lineError?.let { error ->
                         { Text(profileFieldErrorText(error, ADDRESS_LINE_MAX)) }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(UiTags.AddressLine),
                 )
 
                 Row(
@@ -161,7 +169,8 @@ fun AddressFormScreen(
                     enabled = !state.saving,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(48.dp)
+                        .testTag(UiTags.AddressSave),
                 ) {
                     if (state.saving) {
                         CircularProgressIndicator(

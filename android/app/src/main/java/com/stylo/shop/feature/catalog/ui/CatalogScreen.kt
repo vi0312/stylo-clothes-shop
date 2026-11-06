@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +69,7 @@ import com.stylo.shop.R
 import com.stylo.shop.core.model.User
 import com.stylo.shop.core.ui.ErrorMessages
 import com.stylo.shop.core.ui.UiState
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CategoryItem
 import com.stylo.shop.feature.catalog.ui.components.FilterBottomSheet
 import com.stylo.shop.feature.catalog.ui.components.ProductCardView
@@ -133,7 +135,10 @@ fun CatalogScreen(
                 }
             }
 
-            IconButton(onClick = onNavigateToProfile) {
+            IconButton(
+                onClick = onNavigateToProfile,
+                modifier = Modifier.testTag(UiTags.CatalogProfile),
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Person,
                     contentDescription = stringResource(R.string.profile_title),
@@ -191,7 +196,8 @@ fun CatalogScreen(
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .height(52.dp),
+                    .height(52.dp)
+                    .testTag(UiTags.CatalogSearch),
             )
 
             Spacer(Modifier.width(10.dp))
@@ -205,7 +211,9 @@ fun CatalogScreen(
                 } else {
                     MaterialTheme.colorScheme.surfaceVariant
                 },
-                modifier = Modifier.height(52.dp),
+                modifier = Modifier
+                    .height(52.dp)
+                    .testTag(UiTags.FilterOpen),
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 14.dp),
@@ -385,6 +393,7 @@ fun CatalogScreen(
                                 ProductCardView(
                                     product = product,
                                     onClick = { onNavigateToProduct(product.id) },
+                                    modifier = Modifier.testTag(UiTags.ProductCard),
                                 )
                             }
 

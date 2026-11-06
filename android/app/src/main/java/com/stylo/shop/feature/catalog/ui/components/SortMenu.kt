@@ -21,9 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CatalogSortOption
 
 @Composable
@@ -37,7 +39,8 @@ fun SortSelector(
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
-                .clickable { expanded = true },
+                .clickable { expanded = true }
+                .testTag(UiTags.CatalogSort),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
