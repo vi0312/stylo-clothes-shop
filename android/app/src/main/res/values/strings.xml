@@ -50,4 +50,33 @@
     <string name="error_cannot_disable_self">Không thể tự vô hiệu hoá tài khoản của mình.</string>
     <string name="error_file_too_large">Tệp vượt quá 5 MB.</string>
     <string name="error_internal">Máy chủ gặp sự cố. Vui lòng thử lại sau.</string>
+
+    <string name="catalog_search_hint">Tìm áo, quần, thương hiệu…</string>
+    <string name="catalog_filter_title">Bộ lọc</string>
+    <string name="catalog_filter_apply">Áp dụng</string>
+    <string name="catalog_filter_clear">Xoá lọc</string>
+    <string name="catalog_filter_category">Danh mục</string>
+    <string name="catalog_filter_brand">Thương hiệu</string>
+    <string name="catalog_filter_color">Màu sắc</string>
+    <string name="catalog_filter_size">Kích cỡ</string>
+    <string name="catalog_filter_price">Khoảng giá</string>
+    <string name="catalog_sort_newest">Mới nhất</string>
+    <string name="catalog_sort_price_asc">Giá tăng dần</string>
+    <string name="catalog_sort_price_desc">Giá giảm dần</string>
+    <string name="catalog_sort_name_asc">Tên A-Z</string>
+    <string name="catalog_products_count">%1$d sản phẩm</string>
+    <string name="catalog_empty_title">Không tìm thấy sản phẩm</string>
+    <string name="catalog_empty_subtitle">Thử đổi từ khóa hoặc thiết lập lại bộ lọc.</string>
+    <string name="catalog_all_categories">Tất cả</string>
+    <string name="catalog_stock_remaining">Còn %1$d sản phẩm</string>
+    <string name="catalog_stock_low">Tồn thấp</string>
+    <string name="catalog_out_of_stock">Hết hàng</string>
+    <string name="catalog_in_stock">Còn hàng</string>
+    <string name="catalog_detail_select_color">Chọn màu</string>
+    <string name="catalog_detail_select_size">Chọn size</string>
+    <string name="catalog_detail_select_options">Chọn màu &amp; kích cỡ</string>
+    <string name="catalog_detail_add_to_cart">Thêm vào giỏ</string>
+    <string name="catalog_detail_product_not_found">Sản phẩm không còn bán hoặc không tồn tại.</string>
+    <string name="catalog_detail_description">Mô tả sản phẩm</string>
+    <string name="catalog_detail_add_to_cart_preview">Đã chọn: %1$s. Tính năng giỏ hàng sẽ có ở Ticket 22.</string>
 </resources>

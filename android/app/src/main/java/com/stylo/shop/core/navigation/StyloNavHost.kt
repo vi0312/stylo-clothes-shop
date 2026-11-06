@@ -35,6 +35,7 @@ import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
 import com.stylo.shop.feature.home.ui.HomeScreen
 
+import com.stylo.shop.feature.catalog.ui.ProductDetailScreen
 @Composable
 fun StyloNavHost(
     sessionState: SessionState,
@@ -87,7 +88,20 @@ private fun SessionNavHost(
             }
             navigation<CustomerGraph>(startDestination = HomeRoute) {
                 composable<HomeRoute> {
-                    if (user != null) HomeScreen(user = user, onLogout = onLogout)
+                    if (user != null) {
+                        HomeScreen(
+                            user = user,
+                            onLogout = onLogout,
+                            onNavigateToProduct = { productId ->
+                                navController.navigate(ProductDetailRoute(productId))
+                            },
+                        )
+                    }
+                }
+                composable<ProductDetailRoute> {
+                    ProductDetailScreen(
+                        onBack = { navController.popBackStack() },
+                    )
                 }
             }
             navigation<AdminGraph>(startDestination = AdminDashboardRoute) {
