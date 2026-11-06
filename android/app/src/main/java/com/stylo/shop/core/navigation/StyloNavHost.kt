@@ -26,11 +26,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.stylo.shop.R
 import com.stylo.shop.core.model.User
 import com.stylo.shop.core.model.UserRole
 import com.stylo.shop.core.storage.SessionState
 import com.stylo.shop.feature.admin.ui.AdminDashboardScreen
+import com.stylo.shop.feature.admin.ui.AdminTab
+import com.stylo.shop.feature.admin.ui.products.AdminProductFormScreen
+import com.stylo.shop.feature.admin.ui.products.AdminProductListScreen
+import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
 import com.stylo.shop.feature.home.ui.HomeScreen
@@ -106,10 +111,59 @@ private fun SessionNavHost(
             }
             navigation<AdminGraph>(startDestination = AdminDashboardRoute) {
                 composable<AdminDashboardRoute> {
-                    if (user != null) AdminDashboardScreen(user = user, onLogout = onLogout)
+                    if (user != null) {
+                        AdminDashboardScreen(
+                            user = user,
+                            onSelectTab = { tab ->
+                                if (tab == AdminTab.PRODUCTS) {
+                                    navController.navigateAdminTab(AdminProductsRoute)
+                                }
+                            },
+                            onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                            onLogout = onLogout,
+                        )
+                    }
+                }
+                composable<AdminProductsRoute> {
+                    AdminProductListScreen(
+                        onAdd = { navController.navigate(AdminProductCreateRoute) },
+                        onEdit = { productId ->
+                            navController.navigate(AdminProductEditRoute(productId))
+                        },
+                        onSelectTab = { tab ->
+                            if (tab == AdminTab.DASHBOARD) {
+                                navController.navigateAdminTab(AdminDashboardRoute)
+                            }
+                        },
+                        onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                        onLogout = onLogout,
+                    )
+                }
+                composable<AdminProductCreateRoute> {
+                    AdminProductFormScreen(
+                        productId = null,
+                        onBack = { navController.popBackStack() },
+                    )
+                }
+                composable<AdminProductEditRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<AdminProductEditRoute>()
+                    AdminProductFormScreen(
+                        productId = route.productId,
+                        onBack = { navController.popBackStack() },
+                    )
+                }
+                composable<AdminTaxonomyRoute> {
+                    AdminTaxonomyScreen(onBack = { navController.popBackStack() })
                 }
             }
         }
+    }
+}
+
+private fun NavHostController.navigateAdminTab(destination: Any) {
+    navigate(destination) {
+        popUpTo<AdminDashboardRoute> { inclusive = false }
+        launchSingleTop = true
     }
 }
 

@@ -23,7 +23,6 @@
     <string name="action_logout">Đăng xuất</string>
     <string name="signed_in_greeting">Xin chào, %1$s</string>
     <string name="home_title">Trang chủ</string>
-    <string name="admin_dashboard_title">Tổng quan</string>
 
     <string name="error_generic">Đã xảy ra lỗi. Vui lòng thử lại.</string>
     <string name="error_network">Không kết nối được tới máy chủ. Kiểm tra mạng rồi thử lại.</string>
@@ -79,4 +78,116 @@
     <string name="catalog_detail_product_not_found">Sản phẩm không còn bán hoặc không tồn tại.</string>
     <string name="catalog_detail_description">Mô tả sản phẩm</string>
     <string name="catalog_detail_add_to_cart_preview">Đã chọn: %1$s. Tính năng giỏ hàng sẽ có ở Ticket 22.</string>
+
+    <string name="action_save">Lưu</string>
+    <string name="action_cancel">Huỷ</string>
+    <string name="action_delete">Xoá</string>
+    <string name="action_back">Quay lại</string>
+    <string name="action_more">Tuỳ chọn khác</string>
+
+    <string name="admin_tab_dashboard">Tổng quan</string>
+    <string name="admin_tab_products">Sản phẩm</string>
+    <string name="admin_menu_taxonomy">Danh mục &amp; thương hiệu</string>
+    <string name="admin_dashboard_hint">Chọn Sản phẩm hoặc Danh mục &amp; thương hiệu để quản lý cửa hàng.</string>
+
+    <string name="admin_products_count">%1$d sản phẩm</string>
+    <string name="admin_products_add">Thêm sản phẩm</string>
+    <string name="admin_products_search_hint">Tìm theo tên sản phẩm</string>
+    <string name="admin_products_empty_title">Chưa có sản phẩm</string>
+    <string name="admin_products_empty_body">Tạo sản phẩm đầu tiên để bắt đầu bán hàng.</string>
+    <string name="admin_products_variant_count">%1$d variant</string>
+    <string name="admin_products_stock">Tồn %1$d</string>
+    <string name="admin_filter_all">Tất cả</string>
+    <string name="admin_filter_active">Đang bán</string>
+    <string name="admin_filter_inactive">Đã ẩn</string>
+    <string name="admin_filter_low_stock">Tồn thấp</string>
+    <string name="admin_filter_category">Danh mục</string>
+    <string name="admin_filter_brand">Thương hiệu</string>
+    <string name="admin_status_low_stock">Tồn thấp</string>
+    <string name="admin_status_active_taxonomy">Hoạt động</string>
+    <string name="admin_status_inactive_taxonomy">Đã ẩn</string>
+
+    <string name="admin_product_new_title">Thêm sản phẩm</string>
+    <string name="admin_product_edit_title">Sửa sản phẩm</string>
+    <string name="admin_product_section_info">Thông tin sản phẩm</string>
+    <string name="admin_product_name">Tên sản phẩm</string>
+    <string name="admin_product_description">Mô tả</string>
+    <string name="admin_product_category">Danh mục</string>
+    <string name="admin_product_brand">Thương hiệu</string>
+    <string name="admin_product_status">Trạng thái</string>
+    <string name="admin_product_create">Tạo sản phẩm</string>
+    <string name="admin_product_save">Lưu sản phẩm</string>
+    <string name="admin_product_created">Đã tạo sản phẩm.</string>
+    <string name="admin_product_saved">Đã lưu sản phẩm.</string>
+    <string name="admin_product_created_hint">Sản phẩm đã được tạo. Thêm variant và ảnh bên dưới.</string>
+    <string name="admin_product_save_hint">Lưu thông tin sản phẩm trước khi thêm variant và ảnh.</string>
+    <string name="admin_product_section_images">Ảnh sản phẩm</string>
+    <string name="admin_product_section_variants">Variant</string>
+    <string name="admin_product_stock_note">Tồn kho chỉ thay đổi qua phiếu nhập kho, không sửa ở đây.</string>
+    <string name="admin_product_delete">Xoá sản phẩm</string>
+    <string name="admin_product_delete_title">Xoá sản phẩm?</string>
+    <string name="admin_product_delete_body">Chỉ xoá được khi sản phẩm chưa phát sinh đơn hàng hoặc phiếu nhập. Nếu không, hãy chuyển trạng thái sang Đã ẩn.</string>
+    <string name="admin_product_delete_in_use">Sản phẩm đã phát sinh đơn hoặc phiếu nhập nên không thể xoá. Chuyển sang Đã ẩn nếu không muốn bán nữa.</string>
+    <string name="admin_product_deleted">Đã xoá sản phẩm.</string>
+
+    <string name="admin_field_required">Không được để trống.</string>
+    <string name="admin_field_too_long">Tối đa %1$d ký tự.</string>
+    <string name="admin_field_invalid_number">Giá không hợp lệ.</string>
+    <string name="admin_field_invalid_price">Giá phải lớn hơn 0.</string>
+
+    <string name="admin_image_add">Thêm ảnh</string>
+    <string name="admin_image_cover">Ảnh bìa</string>
+    <string name="admin_image_delete_title">Xoá ảnh?</string>
+    <string name="admin_image_delete_body">Ảnh sẽ bị xoá khỏi sản phẩm.</string>
+    <string name="admin_image_limit">Tối đa %1$d ảnh. Xoá bớt ảnh để thêm ảnh mới.</string>
+    <string name="admin_image_uploading">Đang tải ảnh…</string>
+    <string name="admin_image_upload_failed">Không tải được ảnh. Vui lòng thử lại.</string>
+    <string name="admin_image_deleted">Đã xoá ảnh.</string>
+    <string name="admin_image_retry">Thử lại</string>
+    <string name="admin_image_dismiss">Bỏ qua</string>
+    <string name="admin_image_order_hint">Ảnh ở vị trí đầu tiên là ảnh bìa. Xoá rồi tải lại để đổi thứ tự ảnh.</string>
+
+    <string name="admin_variant_add">Thêm variant</string>
+    <string name="admin_variant_empty">Chưa có variant. Thêm variant để sản phẩm có thể bán.</string>
+    <string name="admin_variant_title_new">Variant mới</string>
+    <string name="admin_variant_title_edit">Sửa variant</string>
+    <string name="admin_variant_sku">SKU</string>
+    <string name="admin_variant_size">Size</string>
+    <string name="admin_variant_color">Màu</string>
+    <string name="admin_variant_price">Giá bán</string>
+    <string name="admin_variant_stock">Tồn: %1$d</string>
+    <string name="admin_variant_duplicate">Size và màu này đã có trong sản phẩm.</string>
+    <string name="admin_variant_sku_taken">Mã SKU đã tồn tại.</string>
+    <string name="admin_variant_delete_title">Xoá variant?</string>
+    <string name="admin_variant_delete_body">Chỉ xoá được khi variant chưa phát sinh đơn hoặc phiếu nhập.</string>
+    <string name="admin_variant_delete_in_use">Variant đã phát sinh đơn hoặc phiếu nhập nên không thể xoá.</string>
+    <string name="admin_variant_added">Đã thêm variant.</string>
+    <string name="admin_variant_saved">Đã lưu variant.</string>
+    <string name="admin_variant_deleted">Đã xoá variant.</string>
+
+    <string name="admin_taxonomy_title">Danh mục &amp; thương hiệu</string>
+    <string name="admin_taxonomy_tab_categories">Danh mục</string>
+    <string name="admin_taxonomy_tab_brands">Thương hiệu</string>
+    <string name="admin_taxonomy_search_hint">Tìm theo tên</string>
+    <string name="admin_taxonomy_add_category">Thêm danh mục</string>
+    <string name="admin_taxonomy_add_brand">Thêm thương hiệu</string>
+    <string name="admin_taxonomy_edit_category">Sửa danh mục</string>
+    <string name="admin_taxonomy_edit_brand">Sửa thương hiệu</string>
+    <string name="admin_taxonomy_name">Tên</string>
+    <string name="admin_taxonomy_product_count">%1$d sản phẩm</string>
+    <string name="admin_taxonomy_count_categories">%1$d danh mục</string>
+    <string name="admin_taxonomy_count_brands">%1$d thương hiệu</string>
+    <string name="admin_taxonomy_empty_categories">Chưa có danh mục</string>
+    <string name="admin_taxonomy_empty_brands">Chưa có thương hiệu</string>
+    <string name="admin_taxonomy_empty_body">Tạo mục đầu tiên để phân loại sản phẩm.</string>
+    <string name="admin_taxonomy_delete_category_title">Xoá danh mục?</string>
+    <string name="admin_taxonomy_delete_brand_title">Xoá thương hiệu?</string>
+    <string name="admin_taxonomy_delete_body">Chỉ xoá được khi chưa có sản phẩm nào dùng.</string>
+    <string name="admin_taxonomy_delete_in_use">%1$d sản phẩm đang dùng, không thể xoá. Hãy chuyển sang Đã ẩn thay vì xoá.</string>
+    <string name="admin_taxonomy_created">Đã thêm.</string>
+    <string name="admin_taxonomy_saved">Đã lưu thay đổi.</string>
+    <string name="admin_taxonomy_deleted">Đã xoá.</string>
+    <string name="admin_taxonomy_name_taken">Tên này đã được sử dụng.</string>
+    <string name="admin_taxonomy_keep">Giữ lại</string>
+    <string name="admin_taxonomy_disable">Chuyển sang Đã ẩn</string>
 </resources>
