@@ -1,7 +1,20 @@
+import { rmSync } from 'node:fs'
+import path from 'node:path'
 import { Prisma } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
-import type { CatalogFilters, ProductCard, ProductDetail } from './catalog.dto.js'
-import type { ListProductsQuery } from './catalog.schema.js'
+import { getEnv } from '../../config/env.js'
+import type { CatalogStatus } from '../../generated/prisma/client.js'
+import type {
+  CatalogFilters,
+  ProductCard,
+  ProductDetail,
+} from './catalog.dto.js'
+import type {
+  AdminListQuery,
+  CreateProductInput,
+  ListProductsQuery,
+  PatchProductInput,
+} from './catalog.schema.js'
 
 function escapeLike(text: string): string {
   return text.replace(/[%_\\]/g, '\\$&')
@@ -264,3 +277,4 @@ export async function getCatalogFilters(): Promise<CatalogFilters> {
     priceRange,
   }
 }
+
