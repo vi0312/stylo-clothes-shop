@@ -1,4 +1,10 @@
-import { conflict, notFound } from '../../utils/errors.js'
+import { badRequest, conflict, notFound } from '../../utils/errors.js'
+import { MAX_PRODUCT_IMAGES } from './catalog.constants.js'
+import {
+  deleteUploadedFiles,
+  detectImageExtension,
+  writeProductImageFile,
+} from '../../lib/fileStorage.js'
 import type { CatalogStatus } from '../../generated/prisma/client.js'
 import type {
   AdminVariantDto,
@@ -6,6 +12,7 @@ import type {
   AdminProductSummary,
   BrandDto,
   CategoryDto,
+  ProductImageDto,
 } from './catalog.dto.js'
 import type {
   AdminListQuery,
@@ -313,7 +320,62 @@ export async function deleteProductSafely(id: number): Promise<void> {
     })
   }
 
-  await repository.deleteProduct(id)
+  const urls = await repository.deleteProduct(id)
+  deleteUploadedFiles(urls)
+}
+
+// ─── Images ──────────────────────────────────────────────────────────────
+
+export async function addProductImage(
+  productId: number,
+  file: { buffer: Buffer } | undefined,
+): Promise<ProductImageDto> {
+  if (!file) {
+    throw badRequest('VALIDATION_FAILED', 'An image file is required', [
+      { field: 'file', message: 'An image file is required' },
+    ])
+  }
+
+  const extension = detectImageExtension(file.buffer)
+  if (!extension) {
+    throw badRequest('VALIDATION_FAILED', 'Unsupported image type', [
+      { field: 'file', message: 'File must be a JPEG, PNG or WebP image' },
+    ])
+  }
+
+  const product = await repository.findProductById(productId)
+  if (!product) {
+    throw notFound('NOT_FOUND', `Product ${productId} not found`)
+  }
+
+  const url = writeProductImageFile(file.buffer, extension)
+  try {
+    const result = await repository.insertProductImage(productId, url)
+    if (result.status === 'missing') {
+      throw notFound('NOT_FOUND', `Product ${productId} not found`)
+    }
+    if (result.status === 'full') {
+      const message = `A product can have at most ${MAX_PRODUCT_IMAGES} images`
+      throw badRequest('VALIDATION_FAILED', message, [{ field: 'file', message }])
+    }
+    return result.image
+  } catch (error) {
+    deleteUploadedFiles([url])
+    throw error
+  }
+}
+
+export async function removeProductImage(productId: number, imageId: number): Promise<void> {
+  const image = await repository.findProductImage(productId, imageId)
+  if (!image) {
+    throw notFound('NOT_FOUND', `Image ${imageId} not found for product ${productId}`)
+  }
+
+  if (!(await repository.deleteProductImage(productId, imageId))) {
+    throw notFound('NOT_FOUND', `Image ${imageId} not found for product ${productId}`)
+  }
+
+  deleteUploadedFiles([image.url])
 }
 
 // ─── Variants ────────────────────────────────────────────────────────────

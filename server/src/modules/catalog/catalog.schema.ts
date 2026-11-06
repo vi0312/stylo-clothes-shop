@@ -60,6 +60,13 @@ export const productParamsSchema = z.object({
 
 export type ProductParams = z.infer<typeof productParamsSchema>
 
+export const productImageParamsSchema = z.object({
+  id: z.coerce.number().int().positive(),
+  imageId: z.coerce.number().int().positive(),
+})
+
+export type ProductImageParams = z.infer<typeof productImageParamsSchema>
+
 // ─── Admin ───────────────────────────────────────────────────────────────
 
 export const adminListQuerySchema = z

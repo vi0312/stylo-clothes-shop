@@ -1,24 +1,8 @@
-import { rmSync } from 'node:fs'
-import path from 'node:path'
 import { Prisma } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
-import { getEnv } from '../../config/env.js'
 import type { CatalogStatus } from '../../generated/prisma/client.js'
 import type { AdminListQuery, CreateProductInput, PatchProductInput } from './catalog.schema.js'
-
-function uploadDirPath(): string {
-  return path.resolve(getEnv().UPLOAD_DIR)
-}
-
-/**
- * Image URLs are relative (`/uploads/...`) and were validated at upload time,
- * so deleting by basename is safe.
- */
-function deleteImageFiles(urls: string[]): void {
-  for (const url of urls) {
-    rmSync(path.join(uploadDirPath(), path.basename(url)), { force: true })
-  }
-}
+import { MAX_PRODUCT_IMAGES } from './catalog.constants.js'
 
 const productInclude = {
   category: true,
@@ -252,15 +236,79 @@ export function mapAdminVariantStats(product: {
   }
 }
 
-export function deleteProduct(id: number): Promise<void> {
+export async function deleteProduct(id: number): Promise<string[]> {
   return prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM product WHERE id = ${id} FOR UPDATE`
+
     const imageRows = await tx.productImage.findMany({
       where: { productId: id },
       select: { id: true, url: true },
     })
     await tx.product.delete({ where: { id } })
-    await deleteImageFiles(imageRows.map((row) => row.url))
+
+    return imageRows.map((row) => row.url)
   })
+}
+
+export interface ProductImageRow {
+  id: number
+  url: string
+  position: number
+}
+
+export type InsertProductImageResult =
+  | { status: 'created'; image: ProductImageRow }
+  | { status: 'missing' }
+  | { status: 'full' }
+
+/**
+ * Locks the product row so two concurrent uploads cannot claim the same free
+ * position; `(product_id, position)` stays unique even under HTTP races.
+ */
+export function insertProductImage(
+  productId: number,
+  url: string,
+): Promise<InsertProductImageResult> {
+  return prisma.$transaction(async (tx) => {
+    const product = await tx.$queryRaw<{ id: number }[]>`
+      SELECT id FROM product WHERE id = ${productId} FOR UPDATE
+    `
+    if (product.length === 0) {
+      return { status: 'missing' as const }
+    }
+
+    const images = await tx.productImage.findMany({
+      where: { productId },
+      select: { position: true },
+    })
+    if (images.length >= MAX_PRODUCT_IMAGES) {
+      return { status: 'full' as const }
+    }
+
+    const used = new Set(images.map((image) => image.position))
+    let position = 0
+    while (used.has(position)) {
+      position += 1
+    }
+
+    const image = await tx.productImage.create({
+      data: { productId, url, position },
+      select: { id: true, url: true, position: true },
+    })
+    return { status: 'created' as const, image }
+  })
+}
+
+export function findProductImage(productId: number, imageId: number) {
+  return prisma.productImage.findFirst({
+    where: { id: imageId, productId },
+    select: { id: true, url: true },
+  })
+}
+
+export async function deleteProductImage(productId: number, imageId: number): Promise<boolean> {
+  const result = await prisma.productImage.deleteMany({ where: { id: imageId, productId } })
+  return result.count > 0
 }
 
 export async function insertVariant(variant: {

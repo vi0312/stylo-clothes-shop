@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { productImageUpload } from '../../middleware/upload.js'
 import { requireAuth } from '../../middleware/auth.js'
 import { requireRole } from '../../middleware/requireRole.js'
 import { parseBody, parseParams, parseQuery } from '../../middleware/validate.js'
@@ -14,6 +15,7 @@ import {
   patchCategorySchema,
   patchProductSchema,
   patchVariantSchema,
+  productImageParamsSchema,
   productParamsSchema,
   listProductsQuerySchema,
 } from './catalog.schema.js'
@@ -114,6 +116,22 @@ adminCatalogRouter.patch('/admin/products/:id', async (request, response) => {
 adminCatalogRouter.delete('/admin/products/:id', async (request, response) => {
   const params = parseParams(productParamsSchema, request)
   await adminService.deleteProductSafely(params.id)
+  response.status(204).end()
+})
+
+adminCatalogRouter.post(
+  '/admin/products/:id/images',
+  productImageUpload.single('file'),
+  async (request, response) => {
+    const params = parseParams(productParamsSchema, request)
+    const image = await adminService.addProductImage(params.id, request.file)
+    response.status(201).json(image)
+  },
+)
+
+adminCatalogRouter.delete('/admin/products/:id/images/:imageId', async (request, response) => {
+  const params = parseParams(productImageParamsSchema, request)
+  await adminService.removeProductImage(params.id, params.imageId)
   response.status(204).end()
 })
 

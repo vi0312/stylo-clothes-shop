@@ -44,10 +44,17 @@ export const errorHandler: ErrorRequestHandler = (error, request, response, next
     status = 400
     code = 'VALIDATION_FAILED'
     message = 'Malformed JSON body'
-  } else if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
-    status = 413
-    code = 'FILE_TOO_LARGE'
-    message = 'Uploaded file exceeds the size limit'
+  } else if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      status = 413
+      code = 'FILE_TOO_LARGE'
+      message = 'Uploaded file exceeds the size limit'
+    } else {
+      status = 400
+      code = 'VALIDATION_FAILED'
+      message = 'Invalid file upload'
+      details = [{ field: error.field ?? 'file', message: error.message }]
+    }
   } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === 'P2025') {
       status = 404
