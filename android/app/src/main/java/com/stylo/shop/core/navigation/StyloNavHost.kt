@@ -39,6 +39,9 @@ import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
 import com.stylo.shop.feature.home.ui.HomeScreen
+import com.stylo.shop.feature.profile.ui.ProfileScreen
+import com.stylo.shop.feature.profile.ui.address.AddressFormScreen
+import com.stylo.shop.feature.profile.ui.address.AddressListScreen
 
 import com.stylo.shop.feature.catalog.ui.ProductDetailScreen
 @Composable
@@ -96,12 +99,34 @@ private fun SessionNavHost(
                     if (user != null) {
                         HomeScreen(
                             user = user,
-                            onLogout = onLogout,
                             onNavigateToProduct = { productId ->
                                 navController.navigate(ProductDetailRoute(productId))
                             },
+                            onNavigateToProfile = { navController.navigate(ProfileRoute) },
                         )
                     }
+                }
+                composable<ProfileRoute> {
+                    ProfileScreen(
+                        onBack = { navController.popBackStack() },
+                        onOpenAddresses = { navController.navigate(AddressListRoute) },
+                        onLogout = onLogout,
+                    )
+                }
+                composable<AddressListRoute> {
+                    AddressListScreen(
+                        onBack = { navController.popBackStack() },
+                        onAdd = { navController.navigate(AddressCreateRoute) },
+                        onEdit = { addressId ->
+                            navController.navigate(AddressEditRoute(addressId))
+                        },
+                    )
+                }
+                composable<AddressCreateRoute> {
+                    AddressFormScreen(onBack = { navController.popBackStack() })
+                }
+                composable<AddressEditRoute> {
+                    AddressFormScreen(onBack = { navController.popBackStack() })
                 }
                 composable<ProductDetailRoute> {
                     ProductDetailScreen(

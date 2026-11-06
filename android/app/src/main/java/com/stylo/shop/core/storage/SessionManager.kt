@@ -68,6 +68,14 @@ class SessionManager @Inject constructor(
         tokenStore.save(tokens)
     }
 
+    /** The profile screen edits the signed-in user in place so every header reflects the save. */
+    fun updateUser(user: User) {
+        val current = _state.value
+        if (current is SessionState.Authenticated) {
+            _state.value = SessionState.Authenticated(user)
+        }
+    }
+
     /** Synchronous: OkHttp's authenticator ends the session from its own thread. */
     fun onRefreshFailed() {
         clearMemory()

@@ -33,3 +33,15 @@ data object AdminProductCreateRoute
 data class AdminProductEditRoute(val productId: Long)
 @Serializable
 data object AdminTaxonomyRoute
+
+@Serializable
+data object ProfileRoute
+
+@Serializable
+data object AddressListRoute
+
+@Serializable
+data object AddressCreateRoute
+
+@Serializable
+data class AddressEditRoute(val addressId: Long)

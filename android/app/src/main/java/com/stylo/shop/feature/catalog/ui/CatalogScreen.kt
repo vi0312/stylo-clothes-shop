@@ -28,6 +28,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -76,7 +77,7 @@ import com.stylo.shop.feature.catalog.ui.components.SortSelector
 @Composable
 fun CatalogScreen(
     onNavigateToProduct: (Long) -> Unit,
-    onLogout: () -> Unit,
+    onNavigateToProfile: () -> Unit,
     user: User?,
     modifier: Modifier = Modifier,
     viewModel: CatalogViewModel = hiltViewModel(),
@@ -132,14 +133,11 @@ fun CatalogScreen(
                 }
             }
 
-            OutlinedButton(
-                onClick = onLogout,
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.action_logout),
-                    style = MaterialTheme.typography.labelSmall,
+            IconButton(onClick = onNavigateToProfile) {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = stringResource(R.string.profile_title),
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }

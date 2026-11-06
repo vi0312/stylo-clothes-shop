@@ -8,13 +8,13 @@ import com.stylo.shop.feature.catalog.ui.CatalogScreen
 @Composable
 fun HomeScreen(
     user: User,
-    onLogout: () -> Unit,
     onNavigateToProduct: (Long) -> Unit,
+    onNavigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CatalogScreen(
         onNavigateToProduct = onNavigateToProduct,
-        onLogout = onLogout,
+        onNavigateToProfile = onNavigateToProfile,
         user = user,
         modifier = modifier,
     )
