@@ -5,6 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.stylo.shop.core.storage.DataStoreTokenStore
+import com.stylo.shop.core.storage.TokenStore
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +35,13 @@ object StorageModule {
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { context.preferencesDataStoreFile("session") },
         )
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class TokenStoreModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenStore(implementation: DataStoreTokenStore): TokenStore
 }

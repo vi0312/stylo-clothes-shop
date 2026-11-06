@@ -2,10 +2,10 @@ package com.stylo.shop.core.network
 
 import com.stylo.shop.core.storage.SessionManager
 import com.stylo.shop.core.storage.TokenPair
+import com.stylo.shop.feature.auth.data.AuthRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.Serializable
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -77,30 +77,9 @@ interface TokenRefresher {
 }
 
 class HttpTokenRefresher @Inject constructor(
-    private val api: RefreshApi,
+    private val authRepository: AuthRepository,
 ) : TokenRefresher {
 
     override suspend fun refresh(refreshToken: String): ApiResult<TokenPair> =
-        when (val result = apiCall { api.refresh(RefreshRequest(refreshToken)) }) {
-            is ApiResult.Success -> ApiResult.Success(
-                TokenPair(
-                    accessToken = result.data.accessToken,
-                    refreshToken = result.data.refreshToken,
-                ),
-            )
-            is ApiResult.Failure -> result
-        }
+        authRepository.refresh(refreshToken)
 }
-
-interface RefreshApi {
-    @retrofit2.http.POST("auth/refresh")
-    suspend fun refresh(
-        @retrofit2.http.Body body: RefreshRequest,
-    ): RefreshResponse
-}
-
-@Serializable
-data class RefreshRequest(val refreshToken: String)
-
-@Serializable
-data class RefreshResponse(val accessToken: String, val refreshToken: String)

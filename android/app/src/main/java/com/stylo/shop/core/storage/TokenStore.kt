@@ -10,26 +10,34 @@ import javax.inject.Singleton
 
 data class TokenPair(val accessToken: String, val refreshToken: String)
 
-@Singleton
-class TokenStore @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
-) {
+interface TokenStore {
+    suspend fun read(): TokenPair?
 
-    suspend fun read(): TokenPair? {
+    suspend fun save(tokens: TokenPair)
+
+    suspend fun clear()
+}
+
+@Singleton
+class DataStoreTokenStore @Inject constructor(
+    private val dataStore: DataStore<Preferences>,
+) : TokenStore {
+
+    override suspend fun read(): TokenPair? {
         val preferences = dataStore.data.first()
         val access = preferences[ACCESS_TOKEN] ?: return null
         val refresh = preferences[REFRESH_TOKEN] ?: return null
         return TokenPair(accessToken = access, refreshToken = refresh)
     }
 
-    suspend fun save(tokens: TokenPair) {
+    override suspend fun save(tokens: TokenPair) {
         dataStore.edit { preferences ->
             preferences[ACCESS_TOKEN] = tokens.accessToken
             preferences[REFRESH_TOKEN] = tokens.refreshToken
         }
     }
 
-    suspend fun clear() {
+    override suspend fun clear() {
         dataStore.edit { preferences ->
             preferences.remove(ACCESS_TOKEN)
             preferences.remove(REFRESH_TOKEN)
