@@ -3,6 +3,7 @@ skills-lock.json
 AGENTS.md
 docs/agents
 .scratch/stylo-app/probe/
+.scratch/dev-server.log
 .scratch/stylo-app/assets
 .scratch/*.png
 
