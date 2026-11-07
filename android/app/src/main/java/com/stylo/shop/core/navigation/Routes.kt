@@ -54,6 +54,15 @@ data object AdminOrdersRoute
 data class AdminOrderDetailRoute(val orderId: Long)
 
 @Serializable
+data object AdminInventoryRoute
+
+@Serializable
+data object AdminReceiptCreateRoute
+
+@Serializable
+data class AdminReceiptDetailRoute(val receiptId: Long)
+
+@Serializable
 data object ProfileRoute
 
 @Serializable

@@ -17,6 +17,8 @@ enum class AdminFieldError {
     TOO_LONG,
     INVALID_NUMBER,
     INVALID_PRICE,
+    INVALID_QUANTITY,
+    INVALID_COST,
     SKU_TAKEN,
     VARIANT_EXISTS,
     NAME_TAKEN,

@@ -37,11 +37,12 @@ enum class AdminTab {
     DASHBOARD,
     ORDERS,
     PRODUCTS,
+    INVENTORY,
 }
 
 /**
- * Shared admin chrome. Only destinations that exist are listed; inventory, users and reports join
- * the bar as their tickets land, so no tab points at an empty route.
+ * Shared admin chrome. Only destinations that exist are listed; users and reports join the bar as
+ * their tickets land, so no tab points at an empty route.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,6 +96,15 @@ fun AdminScaffold(
                         Icon(Icons.Filled.ShoppingCart, contentDescription = null)
                     },
                     label = { Text(stringResource(R.string.admin_tab_products)) },
+                )
+                NavigationBarItem(
+                    selected = selectedTab == AdminTab.INVENTORY,
+                    onClick = { onSelectTab(AdminTab.INVENTORY) },
+                    icon = {
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = null)
+                    },
+                    label = { Text(stringResource(R.string.admin_tab_inventory)) },
+                    modifier = Modifier.testTag(UiTags.AdminInventoryTab),
                 )
             }
         },

@@ -35,6 +35,9 @@ import com.stylo.shop.feature.admin.ui.AdminDashboardScreen
 import com.stylo.shop.feature.admin.ui.AdminTab
 import com.stylo.shop.feature.admin.ui.products.AdminProductFormScreen
 import com.stylo.shop.feature.admin.ui.products.AdminProductListScreen
+import com.stylo.shop.feature.admin.ui.inventory.AdminReceiptCreateScreen
+import com.stylo.shop.feature.admin.ui.inventory.AdminReceiptDetailScreen
+import com.stylo.shop.feature.admin.ui.inventory.AdminReceiptListScreen
 import com.stylo.shop.feature.admin.ui.orders.AdminOrderDetailScreen
 import com.stylo.shop.feature.admin.ui.orders.AdminOrderListScreen
 import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
@@ -227,6 +230,30 @@ private fun SessionNavHost(
                 composable<AdminOrderDetailRoute> {
                     AdminOrderDetailScreen(onBack = { navController.popBackStack() })
                 }
+                composable<AdminInventoryRoute> {
+                    AdminReceiptListScreen(
+                        onSelectTab = { tab -> navController.navigateAdminTab(tab) },
+                        onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                        onLogout = onLogout,
+                        onAdd = { navController.navigate(AdminReceiptCreateRoute) },
+                        onOpenReceipt = { receiptId ->
+                            navController.navigate(AdminReceiptDetailRoute(receiptId))
+                        },
+                    )
+                }
+                composable<AdminReceiptCreateRoute> {
+                    AdminReceiptCreateScreen(
+                        onBack = { navController.popBackStack() },
+                        onCreated = { receiptId ->
+                            navController.navigate(AdminReceiptDetailRoute(receiptId)) {
+                                popUpTo<AdminReceiptCreateRoute> { inclusive = true }
+                            }
+                        },
+                    )
+                }
+                composable<AdminReceiptDetailRoute> {
+                    AdminReceiptDetailScreen(onBack = { navController.popBackStack() })
+                }
                 composable<AdminTaxonomyRoute> {
                     AdminTaxonomyScreen(onBack = { navController.popBackStack() })
                 }
@@ -240,6 +267,7 @@ private fun NavHostController.navigateAdminTab(tab: AdminTab) {
         AdminTab.DASHBOARD -> AdminDashboardRoute
         AdminTab.ORDERS -> AdminOrdersRoute
         AdminTab.PRODUCTS -> AdminProductsRoute
+        AdminTab.INVENTORY -> AdminInventoryRoute
     }
     navigate(destination) {
         popUpTo<AdminDashboardRoute> { inclusive = false }

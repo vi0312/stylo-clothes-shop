@@ -134,6 +134,10 @@ fun adminFieldErrorText(
         stringResource(R.string.admin_field_invalid_number)
     AdminFieldError.INVALID_PRICE ->
         stringResource(R.string.admin_field_invalid_price)
+    AdminFieldError.INVALID_QUANTITY ->
+        stringResource(R.string.admin_field_invalid_quantity)
+    AdminFieldError.INVALID_COST ->
+        stringResource(R.string.admin_field_invalid_cost)
     AdminFieldError.SKU_TAKEN ->
         stringResource(R.string.admin_variant_sku_taken)
     AdminFieldError.VARIANT_EXISTS ->

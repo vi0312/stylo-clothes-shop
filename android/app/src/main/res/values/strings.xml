@@ -85,6 +85,8 @@
     <string name="action_delete">Xoá</string>
     <string name="action_back">Quay lại</string>
     <string name="action_more">Tuỳ chọn khác</string>
+    <string name="action_close">Đóng</string>
+    <string name="action_clear">Xoá nội dung</string>
 
     <string name="admin_tab_dashboard">Tổng quan</string>
     <string name="admin_tab_products">Sản phẩm</string>
@@ -349,4 +351,38 @@
     <string name="admin_payment_status_pending">Đang chờ</string>
     <string name="admin_payment_status_succeeded">Thành công</string>
     <string name="admin_payment_status_failed">Thất bại</string>
+
+    <string name="admin_field_invalid_quantity">Số lượng phải là số nguyên lớn hơn 0.</string>
+    <string name="admin_field_invalid_cost">Đơn giá nhập phải là số không âm.</string>
+    <string name="admin_tab_inventory">Kho</string>
+    <string name="admin_receipts_title">Phiếu nhập kho</string>
+    <string name="admin_receipts_add">Tạo phiếu</string>
+    <string name="admin_receipts_count">%1$d phiếu</string>
+    <string name="admin_receipts_empty">Chưa có phiếu nhập</string>
+    <string name="admin_receipts_empty_hint">Tạo phiếu để nhập hàng và tăng tồn kho.</string>
+    <string name="admin_receipts_row_meta">%1$s · %2$d dòng</string>
+    <string name="admin_receipt_lines_count">%1$d dòng</string>
+    <string name="admin_receipts_row_creator">Người tạo: %1$s</string>
+    <string name="admin_receipt_create_title">Tạo phiếu nhập</string>
+    <string name="admin_receipt_detail_title">Chi tiết phiếu nhập</string>
+    <string name="admin_receipt_section_info">Thông tin phiếu</string>
+    <string name="admin_receipt_section_lines">Dòng nhập hàng</string>
+    <string name="admin_receipt_supplier">Nhà cung cấp</string>
+    <string name="admin_receipt_note">Ghi chú</string>
+    <string name="admin_receipt_add_line">Thêm dòng</string>
+    <string name="admin_receipt_remove_line">Xoá dòng</string>
+    <string name="admin_receipt_quantity">Số lượng</string>
+    <string name="admin_receipt_unit_cost">Đơn giá nhập</string>
+    <string name="admin_receipt_line_stock">Tồn hiện tại %1$d</string>
+    <string name="admin_receipt_line_total">Thành tiền %1$s</string>
+    <string name="admin_receipt_total">Tổng tiền</string>
+    <string name="admin_receipt_submit">Lưu phiếu</string>
+    <string name="admin_receipt_items_required">Thêm ít nhất một dòng nhập hàng.</string>
+    <string name="admin_receipt_code_label">Mã phiếu</string>
+    <string name="admin_receipt_created_at">Ngày tạo</string>
+    <string name="admin_receipt_created_by">Người tạo</string>
+    <string name="admin_receipt_picker_title">Chọn variant</string>
+    <string name="admin_receipt_picker_search">Tìm theo SKU hoặc tên sản phẩm</string>
+    <string name="admin_receipt_picker_hint">Nhập SKU hoặc tên sản phẩm để tìm.</string>
+    <string name="admin_receipt_picker_empty">Không tìm thấy variant phù hợp</string>
 </resources>
