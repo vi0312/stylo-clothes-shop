@@ -1,29 +1,9 @@
 import { randomInt } from 'node:crypto'
 import type { CatalogStatus, OrderStatus, PaymentStatus } from '../../generated/prisma/client.js'
-
-const ORDER_CODE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-const ORDER_CODE_SUFFIX_LENGTH = 4
-
-/** `order.code` is a display/reconciliation code dated in the business time zone. */
-const ORDER_TIME_ZONE = 'Asia/Ho_Chi_Minh'
+import { datedCode } from '../../lib/businessCode.js'
 
 export function orderCode(now: Date, nextInt: (max: number) => number = randomInt): string {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: ORDER_TIME_ZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(now)
-
-  const part = (type: Intl.DateTimeFormatPartTypes): string =>
-    parts.find((entry) => entry.type === type)?.value ?? ''
-
-  let suffix = ''
-  for (let index = 0; index < ORDER_CODE_SUFFIX_LENGTH; index += 1) {
-    suffix += ORDER_CODE_ALPHABET[nextInt(ORDER_CODE_ALPHABET.length)]
-  }
-
-  return `STY-${part('year').slice(-2)}${part('month')}${part('day')}-${suffix}`
+  return datedCode('STY', now, nextInt)
 }
 
 export interface OrderTotals {
@@ -156,27 +136,3 @@ export function canTransition(from: OrderStatus, to: OrderStatus): boolean {
   return ORDER_TRANSITIONS[from].includes(to)
 }
 
-/** Vietnam has no DST, so a calendar day always starts at the same UTC offset. */
-const BUSINESS_UTC_OFFSET_MS = 7 * 60 * 60 * 1000
-const DAY_MS = 24 * 60 * 60 * 1000
-
-export interface BusinessDayWindow {
-  gte?: Date
-  lt?: Date
-}
-
-/**
- * `from`/`to` are `YYYY-MM-DD` calendar dates in `Asia/Ho_Chi_Minh`; the window is
- * half-open `[from 00:00, (to + 1) 00:00)` so both ends include the whole day.
- */
-export function businessDayWindow(from?: string, to?: string): BusinessDayWindow {
-  const window: BusinessDayWindow = {}
-  if (from) window.gte = businessDayStart(from)
-  if (to) window.lt = new Date(businessDayStart(to).getTime() + DAY_MS)
-  return window
-}
-
-function businessDayStart(date: string): Date {
-  const [year, month, day] = date.split('-').map(Number)
-  return new Date(Date.UTC(year, month - 1, day) - BUSINESS_UTC_OFFSET_MS)
-}

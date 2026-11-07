@@ -1,6 +1,7 @@
 import { getEnv } from '../../config/env.js'
 import { Prisma, type Payment, type PaymentStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
+import { isUniqueViolation } from '../../lib/prismaErrors.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import type { PublicUser } from '../users/user.dto.js'
 import type { PaymentAttemptDto, PaymentDetailDto, PaymentDto } from './payments.dto.js'
@@ -14,13 +15,6 @@ export interface OrderForPayment {
   id: number
   code: string
   total: number
-}
-
-/** The MariaDB adapter surfaces a unique violation as the driver code, not only P2002. */
-function isUniqueViolation(error: unknown): boolean {
-  if (error === null || typeof error !== 'object' || !('code' in error)) return false
-  const { code } = error
-  return code === 'P2002' || code === 'ER_DUP_ENTRY'
 }
 
 /** Public so checkout can render the attempt it just created inside its own transaction. */

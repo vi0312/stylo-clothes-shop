@@ -1,6 +1,6 @@
 import { Prisma, type CatalogStatus, type OrderStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
-import { businessDayWindow } from './orders.logic.js'
+import { businessDayWindow } from '../../lib/businessDay.js'
 import type { ListAdminOrdersQuery, ListOrdersQuery } from './orders.schema.js'
 
 export const orderInclude = {

@@ -1,6 +1,7 @@
 import { getEnv } from '../../config/env.js'
 import { Prisma, type OrderStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
+import { isUniqueViolation } from '../../lib/prismaErrors.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import { lockCart } from '../cart/cart.repository.js'
 import type { PaymentAttemptDto } from '../payments/payments.dto.js'
@@ -77,13 +78,6 @@ function toOrderDto(row: repository.OrderRow): OrderDto {
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   }
-}
-
-/** The MariaDB adapter surfaces a unique violation as the driver code, not only P2002. */
-function isUniqueViolation(error: unknown): boolean {
-  if (error === null || typeof error !== 'object' || !('code' in error)) return false
-  const { code } = error
-  return code === 'P2002' || code === 'ER_DUP_ENTRY'
 }
 
 async function placeOrder(userId: number, input: CreateOrderInput): Promise<CreateOrderResult> {

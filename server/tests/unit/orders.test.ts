@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { businessDayWindow } from '../../src/lib/businessDay.js'
 import {
-  businessDayWindow,
   canTransition,
   collectCheckoutFailures,
   computeTotals,
