@@ -44,3 +44,21 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Wordmark | `stylo-wordmark-*` | Phần chữ "stylo" của logo (4 path) | Không đứng một mình trong app; luôn đi cùng symbol trong lockup |
 | Lockup | `ic_stylo_lockup_horizontal`, `ic_stylo_lockup_stacked` | Bố cục symbol + wordmark | Horizontal cho header, stacked cho màn đăng nhập; trong app luôn monochrome, tô bằng `MaterialTheme` |
 | Themed icon | `ic_launcher_monochrome` | Lớp alpha cho icon Material You (Android 13+) | Hệ thống tô màu theo wallpaper; không đặt màu thương hiệu ở đây |
+
+## Thuật ngữ UI
+
+Cùng một khái niệm nhưng chuỗi hiển thị khác nhau giữa các màn là lỗi (audit 2026-11-08 tìm thấy
+"Kích cỡ" ở PDP và "Size S" ở giỏ). Bảng dưới là chuỗi chuẩn; screen chỉ dùng `stringResource`,
+không hardcode, và **không** để tên model (`Variant`, `size`, `color`) lọt ra UI.
+
+| Thuật ngữ (model) | Chuỗi UI | Dùng ở | Cấm |
+|---|---|---|---|
+| `ProductVariant` | "Biến thể" (số nhiều: "biến thể"), trong câu ngắn có thể là "phân loại" | Dashboard, form sản phẩm, chi tiết phiếu nhập | "Variant", "variant" |
+| `ProductVariant.size` | "Kích cỡ" (giá trị hiển thị nguyên: S, M, L, 39…) | PDP, giỏ, đơn, phiếu nhập | "Size" |
+| `ProductVariant.color` | "Màu sắc" (giá trị: Đen, Trắng…) | PDP, giỏ, đơn | "Màu" khi đứng một mình làm nhãn; "Color" |
+| `ProductVariant` đang chọn ở PDP | "Thêm {size} vào giỏ" trong CTA | PDP | "Thêm size S vào giỏ" (lẫn chữ "size"), "Thêm vào giỏ" chung chung |
+| `Product.soldCount` | *không hiển thị* | — | "Đã bán N" (xem ADR 0016 §4) |
+| `stock` | "Tồn kho" cho admin, "Còn {n} sản phẩm" cho khách | Dashboard, PDP | "Stock", "Tồn" |
+| `InventoryReceipt` | "Phiếu nhập kho", dòng: "dòng" | Admin kho | "Receipt", "phiếu nhập hàng" lẫn lộn |
+| `ProductVariant` tồn thấp (dashboard) | "Biến thể tồn thấp" | Dashboard KPI, báo cáo | "Variant tồn thấp" |
+| Giá | `Formatters.money` → `289.000 ₫` (NBSP trước ₫) | Mọi nơi | "289k", "289.000đ" không NBSP, dấu "-" làm khoảng giá (dùng "–") |
