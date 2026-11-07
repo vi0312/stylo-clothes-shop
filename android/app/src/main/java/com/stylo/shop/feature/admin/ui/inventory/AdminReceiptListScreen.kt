@@ -51,6 +51,7 @@ import com.stylo.shop.feature.admin.ui.AdminTab
 fun AdminReceiptListScreen(
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
+    onOpenUsers: () -> Unit,
     onLogout: () -> Unit,
     onAdd: () -> Unit,
     onOpenReceipt: (Long) -> Unit,
@@ -70,6 +71,7 @@ fun AdminReceiptListScreen(
         title = stringResource(R.string.admin_receipts_title),
         onSelectTab = onSelectTab,
         onOpenTaxonomy = onOpenTaxonomy,
+        onOpenUsers = onOpenUsers,
         onLogout = onLogout,
         modifier = modifier,
     ) { padding ->

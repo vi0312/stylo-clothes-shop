@@ -105,6 +105,12 @@ object UiTags {
     const val AdminReceiptPickerRow = "admin_receipt_picker_row"
     const val AdminReceiptDetailList = "admin_receipt_detail_list"
 
+    const val AdminUserList = "admin_user_list"
+    const val AdminUserRow = "admin_user_row"
+    const val AdminUserEmpty = "admin_user_empty"
+    const val AdminUserSearch = "admin_user_search"
+    const val AdminUserStatusChip = "admin_user_status_chip"
+
     const val CartBack = "cart_back"
     const val CartClear = "cart_clear"
     const val CartClearConfirm = "cart_clear_confirm"

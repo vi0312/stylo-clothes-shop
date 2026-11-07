@@ -91,7 +91,24 @@
     <string name="admin_tab_dashboard">Tổng quan</string>
     <string name="admin_tab_products">Sản phẩm</string>
     <string name="admin_menu_taxonomy">Danh mục &amp; thương hiệu</string>
+    <string name="admin_menu_users">Người dùng</string>
     <string name="admin_dashboard_hint">Chọn Sản phẩm hoặc Danh mục &amp; thương hiệu để quản lý cửa hàng.</string>
+
+    <string name="admin_users_title">Người dùng</string>
+    <string name="admin_users_count">%1$d người dùng</string>
+    <string name="admin_users_search_hint">Tìm theo tên, email hoặc SĐT</string>
+    <string name="admin_users_empty_title">Không tìm thấy người dùng</string>
+    <string name="admin_users_empty_body">Thử từ khoá khác hoặc bỏ bộ lọc trạng thái.</string>
+    <string name="admin_user_status_active">Hoạt động</string>
+    <string name="admin_user_status_disabled">Đã khoá</string>
+    <string name="admin_user_role_admin">Quản trị viên</string>
+    <string name="admin_user_role_customer">Khách hàng</string>
+    <string name="admin_user_disable">Khoá</string>
+    <string name="admin_user_enable">Mở khoá</string>
+    <string name="admin_user_disable_title">Khoá tài khoản?</string>
+    <string name="admin_user_disable_body">%1$s sẽ bị đăng xuất khỏi mọi thiết bị và không thể đăng nhập cho đến khi được mở khoá.</string>
+    <string name="admin_user_disabled_done">Đã khoá tài khoản.</string>
+    <string name="admin_user_enabled_done">Đã mở khoá tài khoản.</string>
 
     <string name="admin_products_count">%1$d sản phẩm</string>
     <string name="admin_products_add">Thêm sản phẩm</string>

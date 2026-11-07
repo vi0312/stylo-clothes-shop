@@ -23,6 +23,7 @@ fun AdminDashboardScreen(
     user: User,
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
+    onOpenUsers: () -> Unit,
     onLogout: () -> Unit,
 ) {
     AdminScaffold(
@@ -30,6 +31,7 @@ fun AdminDashboardScreen(
         title = stringResource(R.string.admin_tab_dashboard),
         onSelectTab = onSelectTab,
         onOpenTaxonomy = onOpenTaxonomy,
+        onOpenUsers = onOpenUsers,
         onLogout = onLogout,
     ) { padding ->
         Column(

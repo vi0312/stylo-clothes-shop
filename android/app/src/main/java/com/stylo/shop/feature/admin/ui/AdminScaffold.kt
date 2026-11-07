@@ -41,8 +41,8 @@ enum class AdminTab {
 }
 
 /**
- * Shared admin chrome. Only destinations that exist are listed; users and reports join the bar as
- * their tickets land, so no tab points at an empty route.
+ * Shared admin chrome. The four bottom tabs are the product areas; users and reports arrive as
+ * overflow entries (docs/ui.md) so no tab points at an empty route.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +51,7 @@ fun AdminScaffold(
     title: String,
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
+    onOpenUsers: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
@@ -63,7 +64,11 @@ fun AdminScaffold(
             TopAppBar(
                 title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
                 actions = {
-                    OverflowMenu(onOpenTaxonomy = onOpenTaxonomy, onLogout = onLogout)
+                    OverflowMenu(
+                        onOpenTaxonomy = onOpenTaxonomy,
+                        onOpenUsers = onOpenUsers,
+                        onLogout = onLogout,
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
@@ -150,6 +155,7 @@ fun AdminDetailScaffold(
 @Composable
 private fun OverflowMenu(
     onOpenTaxonomy: () -> Unit,
+    onOpenUsers: () -> Unit,
     onLogout: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -166,6 +172,13 @@ private fun OverflowMenu(
                 onClick = {
                     expanded = false
                     onOpenTaxonomy()
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.admin_menu_users)) },
+                onClick = {
+                    expanded = false
+                    onOpenUsers()
                 },
             )
             DropdownMenuItem(

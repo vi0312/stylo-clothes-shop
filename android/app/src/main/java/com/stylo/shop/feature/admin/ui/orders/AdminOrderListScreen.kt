@@ -56,6 +56,7 @@ fun AdminOrderListScreen(
     onOpenOrder: (Long) -> Unit,
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
+    onOpenUsers: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AdminOrderListViewModel = hiltViewModel(),
@@ -73,6 +74,7 @@ fun AdminOrderListScreen(
         title = stringResource(R.string.admin_orders_title),
         onSelectTab = onSelectTab,
         onOpenTaxonomy = onOpenTaxonomy,
+        onOpenUsers = onOpenUsers,
         onLogout = onLogout,
         modifier = modifier,
     ) { padding ->
