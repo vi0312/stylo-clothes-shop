@@ -41,6 +41,7 @@ import com.stylo.shop.feature.admin.ui.inventory.AdminReceiptListScreen
 import com.stylo.shop.feature.admin.ui.orders.AdminOrderDetailScreen
 import com.stylo.shop.feature.admin.ui.orders.AdminOrderListScreen
 import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
+import com.stylo.shop.feature.admin.ui.reports.AdminReportsScreen
 import com.stylo.shop.feature.admin.ui.users.AdminUserListScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
@@ -191,6 +192,7 @@ private fun SessionNavHost(
                             onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                             onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                             onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                        onOpenReports = { navController.navigate(AdminReportsRoute) },
                             onLogout = onLogout,
                         )
                     }
@@ -204,6 +206,7 @@ private fun SessionNavHost(
                         onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                         onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                         onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                        onOpenReports = { navController.navigate(AdminReportsRoute) },
                         onLogout = onLogout,
                     )
                 }
@@ -228,6 +231,7 @@ private fun SessionNavHost(
                         onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                         onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                         onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                        onOpenReports = { navController.navigate(AdminReportsRoute) },
                         onLogout = onLogout,
                     )
                 }
@@ -239,6 +243,7 @@ private fun SessionNavHost(
                         onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                         onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                         onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                        onOpenReports = { navController.navigate(AdminReportsRoute) },
                         onLogout = onLogout,
                         onAdd = { navController.navigate(AdminReceiptCreateRoute) },
                         onOpenReceipt = { receiptId ->
@@ -261,6 +266,9 @@ private fun SessionNavHost(
                 }
                 composable<AdminUsersRoute> {
                     AdminUserListScreen(onBack = { navController.popBackStack() })
+                }
+                composable<AdminReportsRoute> {
+                    AdminReportsScreen(onBack = { navController.popBackStack() })
                 }
                 composable<AdminTaxonomyRoute> {
                     AdminTaxonomyScreen(onBack = { navController.popBackStack() })

@@ -92,6 +92,7 @@
     <string name="admin_tab_products">Sản phẩm</string>
     <string name="admin_menu_taxonomy">Danh mục &amp; thương hiệu</string>
     <string name="admin_menu_users">Người dùng</string>
+    <string name="admin_menu_reports">Báo cáo</string>
     <string name="admin_dashboard_hint">Chọn Sản phẩm hoặc Danh mục &amp; thương hiệu để quản lý cửa hàng.</string>
 
     <string name="admin_users_title">Người dùng</string>
@@ -402,4 +403,39 @@
     <string name="admin_receipt_picker_search">Tìm theo SKU hoặc tên sản phẩm</string>
     <string name="admin_receipt_picker_hint">Nhập SKU hoặc tên sản phẩm để tìm.</string>
     <string name="admin_receipt_picker_empty">Không tìm thấy variant phù hợp</string>
+
+    <string name="admin_reports_title">Báo cáo</string>
+    <string name="admin_reports_kind_revenue">Doanh thu</string>
+    <string name="admin_reports_kind_top_products">Top sản phẩm</string>
+    <string name="admin_reports_kind_orders">Đơn theo trạng thái</string>
+    <string name="admin_reports_kind_low_stock">Tồn thấp</string>
+    <string name="admin_reports_kind_cost">Chi phí &amp; lãi</string>
+    <string name="admin_reports_from">Từ %1$s</string>
+    <string name="admin_reports_to">Đến %1$s</string>
+    <string name="admin_reports_group_day">Theo ngày</string>
+    <string name="admin_reports_group_month">Theo tháng</string>
+    <string name="admin_reports_choose">Chọn</string>
+    <string name="admin_reports_apply">Áp dụng</string>
+    <string name="admin_reports_threshold">Ngưỡng tồn ≤</string>
+    <string name="admin_reports_revenue_title">Doanh thu</string>
+    <string name="admin_reports_revenue_orders">%1$d đơn đã thanh toán</string>
+    <string name="admin_reports_chart_description">Biểu đồ doanh thu: %1$s</string>
+    <string name="admin_reports_chart_point">%1$s: %2$s, %3$d đơn</string>
+    <string name="admin_reports_cost_title">Chi phí nhập &amp; lãi gộp</string>
+    <string name="admin_reports_cost_receipts">Chi phí nhập hàng</string>
+    <string name="admin_reports_cost_cogs">Giá vốn hàng bán</string>
+    <string name="admin_reports_cost_revenue">Doanh thu</string>
+    <string name="admin_reports_cost_profit">Lãi gộp</string>
+    <string name="admin_reports_col_product">Sản phẩm</string>
+    <string name="admin_reports_col_quantity">SL</string>
+    <string name="admin_reports_col_revenue">Doanh thu</string>
+    <string name="admin_reports_col_status">Trạng thái</string>
+    <string name="admin_reports_col_orders">Số đơn</string>
+    <string name="admin_reports_col_total">Tổng</string>
+    <string name="admin_reports_col_sku">SKU</string>
+    <string name="admin_reports_col_stock">Tồn</string>
+    <string name="admin_reports_empty_title">Không có dữ liệu trong khoảng</string>
+    <string name="admin_reports_empty_body">Thử chọn khoảng ngày khác để xem báo cáo.</string>
+    <string name="admin_reports_low_stock_empty_title">Không có variant tồn thấp</string>
+    <string name="admin_reports_low_stock_empty_body">Mọi variant đang bán đều có tồn trên %1$d.</string>
 </resources>

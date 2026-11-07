@@ -75,6 +75,7 @@ fun AdminProductListScreen(
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
     onOpenUsers: () -> Unit,
+    onOpenReports: () -> Unit,
     onLogout: () -> Unit,
     viewModel: AdminProductListViewModel = hiltViewModel(),
 ) {
@@ -90,6 +91,7 @@ fun AdminProductListScreen(
         onSelectTab = onSelectTab,
         onOpenTaxonomy = onOpenTaxonomy,
         onOpenUsers = onOpenUsers,
+        onOpenReports = onOpenReports,
         onLogout = onLogout,
         snackbarHostState = snackbarHostState,
     ) { padding ->

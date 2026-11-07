@@ -52,6 +52,7 @@ fun AdminReceiptListScreen(
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
     onOpenUsers: () -> Unit,
+    onOpenReports: () -> Unit,
     onLogout: () -> Unit,
     onAdd: () -> Unit,
     onOpenReceipt: (Long) -> Unit,
@@ -72,6 +73,7 @@ fun AdminReceiptListScreen(
         onSelectTab = onSelectTab,
         onOpenTaxonomy = onOpenTaxonomy,
         onOpenUsers = onOpenUsers,
+        onOpenReports = onOpenReports,
         onLogout = onLogout,
         modifier = modifier,
     ) { padding ->

@@ -48,6 +48,9 @@ data class AdminProductEditRoute(val productId: Long)
 data object AdminUsersRoute
 
 @Serializable
+data object AdminReportsRoute
+
+@Serializable
 data object AdminTaxonomyRoute
 
 @Serializable

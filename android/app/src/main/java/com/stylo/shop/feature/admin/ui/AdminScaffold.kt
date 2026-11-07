@@ -52,6 +52,7 @@ fun AdminScaffold(
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
     onOpenUsers: () -> Unit,
+    onOpenReports: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
@@ -67,6 +68,7 @@ fun AdminScaffold(
                     OverflowMenu(
                         onOpenTaxonomy = onOpenTaxonomy,
                         onOpenUsers = onOpenUsers,
+                        onOpenReports = onOpenReports,
                         onLogout = onLogout,
                     )
                 },
@@ -156,6 +158,7 @@ fun AdminDetailScaffold(
 private fun OverflowMenu(
     onOpenTaxonomy: () -> Unit,
     onOpenUsers: () -> Unit,
+    onOpenReports: () -> Unit,
     onLogout: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -179,6 +182,13 @@ private fun OverflowMenu(
                 onClick = {
                     expanded = false
                     onOpenUsers()
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.admin_menu_reports)) },
+                onClick = {
+                    expanded = false
+                    onOpenReports()
                 },
             )
             DropdownMenuItem(

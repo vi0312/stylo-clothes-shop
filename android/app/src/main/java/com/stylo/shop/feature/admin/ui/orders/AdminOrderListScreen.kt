@@ -57,6 +57,7 @@ fun AdminOrderListScreen(
     onSelectTab: (AdminTab) -> Unit,
     onOpenTaxonomy: () -> Unit,
     onOpenUsers: () -> Unit,
+    onOpenReports: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AdminOrderListViewModel = hiltViewModel(),
@@ -75,6 +76,7 @@ fun AdminOrderListScreen(
         onSelectTab = onSelectTab,
         onOpenTaxonomy = onOpenTaxonomy,
         onOpenUsers = onOpenUsers,
+        onOpenReports = onOpenReports,
         onLogout = onLogout,
         modifier = modifier,
     ) { padding ->
