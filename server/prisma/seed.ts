@@ -1,5 +1,5 @@
 import argon2 from 'argon2'
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { copyFileSync, mkdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { getEnv } from '../src/config/env.js'
@@ -25,14 +25,28 @@ interface SeedVariant {
   targetStock: number
 }
 
-interface SeedProduct {
+interface SeedCatalogProduct {
+  datasetId: number
+  sourceName: string
   name: string
   description: string
   category: string
   brand: string
   status?: CatalogStatus
-  imageIndexes: number[]
+  image: string
   variants: SeedVariant[]
+}
+
+interface SeedCatalog {
+  source: {
+    name: string
+    mirror: string
+    original: string
+    license: string
+    retrievedAt: string
+    selection: string
+  }
+  products: SeedCatalogProduct[]
 }
 
 interface SeedOrderItem {
@@ -49,6 +63,23 @@ interface SeedOrder {
   payment?: PaymentPlan
   note?: string
   items: SeedOrderItem[]
+}
+
+interface VariantRow {
+  id: number
+  productId: number
+  productName: string
+  sku: string
+  size: string
+  color: string
+  price: number
+}
+
+interface ReceiptLinePlan {
+  variant: VariantRow
+  quantity: number
+  unitCost: number
+  share: 0 | 1 | 2
 }
 
 const DAY_MS = 86_400_000
@@ -70,6 +101,15 @@ function addHours(date: Date, hours: number): Date {
 
 function earlier(first: Date, second: Date): Date {
   return first.getTime() <= second.getTime() ? first : second
+}
+
+/** YYMMDD in Asia/Ho_Chi_Minh, matching the order and receipt code prefixes. */
+function vnDateCode(date: Date): string {
+  const vn = new Date(date.getTime() + 7 * 3_600_000)
+  const year = String(vn.getUTCFullYear() % 100).padStart(2, '0')
+  const month = String(vn.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(vn.getUTCDate()).padStart(2, '0')
+  return `${year}${month}${day}`
 }
 
 const CUSTOMER_PASSWORD = 'Customer@12345'
@@ -101,505 +141,62 @@ const CATEGORIES: SeedCategory[] = [
 
 const BRANDS = ['Stylo', 'Local Brand', 'Urban Viet', 'Basic Lab']
 
-const PRODUCTS: SeedProduct[] = [
-  {
-    name: 'Áo thun basic',
-    description: 'Áo thun cotton mềm, form regular, dễ phối đồ hằng ngày.',
-    category: 'Áo',
-    brand: 'Stylo',
-    imageIndexes: [0, 1],
-    variants: [
-      { sku: 'STY-AO-001-S', size: 'S', color: 'Đen', price: 199_000, targetStock: 12 },
-      { sku: 'STY-AO-001-M', size: 'M', color: 'Đen', price: 199_000, targetStock: 13 },
-      { sku: 'STY-AO-001-L', size: 'L', color: 'Trắng', price: 209_000, targetStock: 3 },
-    ],
-  },
-  {
-    name: 'Áo sơ mi linen',
-    description: 'Sơ mi linen thoáng mát cho mùa hè.',
-    category: 'Áo',
-    brand: 'Stylo',
-    imageIndexes: [1],
-    variants: [
-      { sku: 'STY-AO-002-M', size: 'M', color: 'Be', price: 359_000, targetStock: 10 },
-      { sku: 'STY-AO-002-L', size: 'L', color: 'Be', price: 359_000, targetStock: 9 },
-      { sku: 'STY-AO-002-XL', size: 'XL', color: 'Trắng', price: 369_000, targetStock: 4 },
-    ],
-  },
-  {
-    name: 'Áo polo pique',
-    description: 'Polo pique co giãn, cổ bẻ gọn.',
-    category: 'Áo',
-    brand: 'Urban Viet',
-    imageIndexes: [2],
-    variants: [
-      { sku: 'STY-AO-003-S', size: 'S', color: 'Xanh navy', price: 329_000, targetStock: 14 },
-      { sku: 'STY-AO-003-M', size: 'M', color: 'Xanh navy', price: 329_000, targetStock: 11 },
-      { sku: 'STY-AO-003-L', size: 'L', color: 'Trắng', price: 329_000, targetStock: 8 },
-    ],
-  },
-  {
-    name: 'Áo hoodie nỉ',
-    description: 'Hoodie nỉ bông dày vừa, mũ hai lớp.',
-    category: 'Áo khoác',
-    brand: 'Local Brand',
-    imageIndexes: [3],
-    variants: [
-      { sku: 'STY-AK-001-M', size: 'M', color: 'Xám', price: 499_000, targetStock: 7 },
-      { sku: 'STY-AK-001-L', size: 'L', color: 'Xám', price: 499_000, targetStock: 6 },
-      { sku: 'STY-AK-001-XL', size: 'XL', color: 'Đen', price: 519_000, targetStock: 9 },
-    ],
-  },
-  {
-    name: 'Áo khoác bomber',
-    description: 'Bomber chống gió nhẹ, form hộp.',
-    category: 'Áo khoác',
-    brand: 'Urban Viet',
-    imageIndexes: [4],
-    variants: [
-      { sku: 'STY-AK-002-M', size: 'M', color: 'Đen', price: 659_000, targetStock: 9 },
-      { sku: 'STY-AK-002-L', size: 'L', color: 'Đen', price: 659_000, targetStock: 8 },
-      { sku: 'STY-AK-002-XL', size: 'XL', color: 'Nâu', price: 679_000, targetStock: 6 },
-    ],
-  },
-  {
-    name: 'Áo cardigan len',
-    description: 'Cardigan len mảnh, phù hợp thời tiết se lạnh.',
-    category: 'Áo khoác',
-    brand: 'Basic Lab',
-    imageIndexes: [5],
-    variants: [
-      { sku: 'STY-AK-003-M', size: 'M', color: 'Kem', price: 429_000, targetStock: 6 },
-      { sku: 'STY-AK-003-L', size: 'L', color: 'Kem', price: 429_000, targetStock: 1 },
-    ],
-  },
-  {
-    name: 'Quần jeans straight',
-    description: 'Jeans ống suông, chất denim dày vừa.',
-    category: 'Quần',
-    brand: 'Local Brand',
-    imageIndexes: [0],
-    variants: [
-      { sku: 'STY-QU-001-29', size: '29', color: 'Xanh đậm', price: 459_000, targetStock: 7 },
-      { sku: 'STY-QU-001-30', size: '30', color: 'Xanh đậm', price: 459_000, targetStock: 8 },
-      { sku: 'STY-QU-001-31', size: '31', color: 'Xanh đậm', price: 459_000, targetStock: 5 },
-    ],
-  },
-  {
-    name: 'Quần short kaki',
-    description: 'Short kaki túi hộp, lên form gọn.',
-    category: 'Quần',
-    brand: 'Local Brand',
-    imageIndexes: [1],
-    variants: [
-      { sku: 'STY-QU-002-29', size: '29', color: 'Kem', price: 289_000, targetStock: 6 },
-      { sku: 'STY-QU-002-30', size: '30', color: 'Kem', price: 289_000, targetStock: 9 },
-      { sku: 'STY-QU-002-31', size: '31', color: 'Kem', price: 289_000, targetStock: 7 },
-    ],
-  },
-  {
-    name: 'Quần jogger',
-    description: 'Jogger nỉ co giãn, bo gấu.',
-    category: 'Quần',
-    brand: 'Basic Lab',
-    imageIndexes: [2],
-    variants: [
-      { sku: 'STY-QU-003-M', size: 'M', color: 'Xám', price: 349_000, targetStock: 7 },
-      { sku: 'STY-QU-003-L', size: 'L', color: 'Xám', price: 349_000, targetStock: 6 },
-      { sku: 'STY-QU-003-XL', size: 'XL', color: 'Đen', price: 359_000, targetStock: 8 },
-    ],
-  },
-  {
-    name: 'Quần tây slim',
-    description: 'Quần tây slim fit, lưng co giãn.',
-    category: 'Quần',
-    brand: 'Stylo',
-    imageIndexes: [3],
-    variants: [
-      { sku: 'STY-QU-004-29', size: '29', color: 'Đen', price: 399_000, targetStock: 8 },
-      { sku: 'STY-QU-004-30', size: '30', color: 'Đen', price: 399_000, targetStock: 7 },
-      { sku: 'STY-QU-004-31', size: '31', color: 'Đen', price: 399_000, targetStock: 6 },
-    ],
-  },
-  {
-    name: 'Chân váy chữ A',
-    description: 'Chân váy chữ A cạp cao, vải tuyết mưa.',
-    category: 'Quần',
-    brand: 'Urban Viet',
-    imageIndexes: [4],
-    variants: [
-      { sku: 'STY-QU-005-S', size: 'S', color: 'Đen', price: 329_000, targetStock: 6 },
-      { sku: 'STY-QU-005-M', size: 'M', color: 'Đen', price: 329_000, targetStock: 9 },
-    ],
-  },
-  {
-    name: 'Giày sneaker trắng',
-    description: 'Sneaker trắng tối giản, đế cao su.',
-    category: 'Giày',
-    brand: 'Stylo',
-    imageIndexes: [5],
-    variants: [
-      { sku: 'STY-GI-001-38', size: '38', color: 'Trắng', price: 799_000, targetStock: 10 },
-      { sku: 'STY-GI-001-39', size: '39', color: 'Trắng', price: 799_000, targetStock: 9 },
-      { sku: 'STY-GI-001-40', size: '40', color: 'Trắng', price: 799_000, targetStock: 8 },
-      { sku: 'STY-GI-001-41', size: '41', color: 'Trắng', price: 799_000, targetStock: 6 },
-      { sku: 'STY-GI-001-42', size: '42', color: 'Trắng', price: 799_000, targetStock: 0 },
-    ],
-  },
-  {
-    name: 'Giày slip-on',
-    description: 'Slip-on vải canvas, lót êm.',
-    category: 'Giày',
-    brand: 'Basic Lab',
-    imageIndexes: [0],
-    variants: [
-      { sku: 'STY-GI-002-38', size: '38', color: 'Be', price: 459_000, targetStock: 9 },
-      { sku: 'STY-GI-002-39', size: '39', color: 'Be', price: 459_000, targetStock: 7 },
-      { sku: 'STY-GI-002-40', size: '40', color: 'Be', price: 459_000, targetStock: 6 },
-    ],
-  },
-  {
-    name: 'Dép quai ngang',
-    description: 'Dép quai ngang đế mềm, chống trượt.',
-    category: 'Giày',
-    brand: 'Local Brand',
-    imageIndexes: [1],
-    variants: [
-      { sku: 'STY-GI-003-38', size: '38', color: 'Đen', price: 259_000, targetStock: 2 },
-      { sku: 'STY-GI-003-39', size: '39', color: 'Đen', price: 259_000, targetStock: 9 },
-      { sku: 'STY-GI-003-40', size: '40', color: 'Đen', price: 259_000, targetStock: 7 },
-    ],
-  },
-  {
-    name: 'Túi tote canvas',
-    description: 'Túi tote canvas dày, quai dài.',
-    category: 'Phụ kiện',
-    brand: 'Stylo',
-    status: 'INACTIVE',
-    imageIndexes: [2],
-    variants: [
-      { sku: 'STY-PK-001-FREE', size: 'FREE', color: 'Kem', price: 189_000, targetStock: 0 },
-      { sku: 'STY-PK-001-M', size: 'M', color: 'Kem', price: 199_000, targetStock: 0 },
-      { sku: 'STY-PK-001-L', size: 'L', color: 'Kem', price: 199_000, targetStock: 0 },
-    ],
-  },
-  {
-    name: 'Mũ lưỡi trai',
-    description: 'Mũ lưỡi trai vải kaki, khoá sau.',
-    category: 'Phụ kiện',
-    brand: 'Basic Lab',
-    status: 'INACTIVE',
-    imageIndexes: [3],
-    variants: [
-      { sku: 'STY-PK-002-FREE', size: 'FREE', color: 'Đen', price: 149_000, targetStock: 0 },
-      { sku: 'STY-PK-002-M', size: 'M', color: 'Đen', price: 149_000, targetStock: 0 },
-    ],
-  },
-  {
-    name: 'Thắt lưng da',
-    description: 'Thắt lưng da bò, khoá kim loại.',
-    category: 'Phụ kiện',
-    brand: 'Urban Viet',
-    status: 'INACTIVE',
-    imageIndexes: [4],
-    variants: [
-      { sku: 'STY-PK-003-M', size: 'M', color: 'Nâu', price: 249_000, targetStock: 0 },
-      { sku: 'STY-PK-003-L', size: 'L', color: 'Nâu', price: 249_000, targetStock: 0 },
-    ],
-  },
-  {
-    name: 'Áo thun oversize',
-    description: 'Áo thun oversize đã ngừng kinh doanh, còn lịch sử đơn.',
-    category: 'Áo',
-    brand: 'Stylo',
-    status: 'INACTIVE',
-    imageIndexes: [5],
-    variants: [
-      { sku: 'STY-AO-004-M', size: 'M', color: 'Xanh rêu', price: 249_000, targetStock: 3 },
-      { sku: 'STY-AO-004-L', size: 'L', color: 'Xanh rêu', price: 249_000, targetStock: 3 },
-      { sku: 'STY-AO-004-XL', size: 'XL', color: 'Đen', price: 259_000, targetStock: 2 },
-    ],
-  },
-  {
-    name: 'Áo ba lỗ thể thao',
-    description: 'Áo ba lỗ thể thao mới lên kế hoạch, chưa có phân loại.',
-    category: 'Áo',
-    brand: 'Basic Lab',
-    imageIndexes: [0],
-    variants: [],
-  },
-  {
-    name: 'Áo khoác dù',
-    description: 'Áo khoác dù chống nước nhẹ, chưa chụp ảnh.',
-    category: 'Áo khoác',
-    brand: 'Urban Viet',
-    imageIndexes: [],
-    variants: [
-      { sku: 'STY-AK-004-M', size: 'M', color: 'Xanh', price: 549_000, targetStock: 8 },
-      { sku: 'STY-AK-004-L', size: 'L', color: 'Xanh', price: 549_000, targetStock: 10 },
-      // Never received: no receipt line, so every cost report shows it with a null cost.
-      { sku: 'STY-AK-004-XL', size: 'XL', color: 'Đen', price: 559_000, targetStock: 0 },
-    ],
-  },
-]
+function loadCatalog(): SeedCatalog {
+  const filename = fileURLToPath(new URL('../seed-assets/catalog/catalog.json', import.meta.url))
+  const catalog = JSON.parse(readFileSync(filename, 'utf8')) as SeedCatalog
+  const names = new Set<string>()
+  const skus = new Set<string>()
+  const categories = new Set(CATEGORIES.map((entry) => entry.name))
+  const brands = new Set(BRANDS)
 
-const ORDERS: SeedOrder[] = [
-  {
-    code: 'STY-261010-0001',
-    customer: 1,
-    daysAgo: 28,
-    status: 'DELIVERED',
-    method: 'COD',
-    items: [
-      { sku: 'STY-AO-001-M', quantity: 1 },
-      { sku: 'STY-QU-002-30', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261011-0002',
-    customer: 2,
-    daysAgo: 27,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-QU-001-30', quantity: 1 },
-      { sku: 'STY-AO-001-S', quantity: 2 },
-    ],
-  },
-  {
-    code: 'STY-261013-0003',
-    customer: 3,
-    daysAgo: 25,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'FAILED_THEN_SUCCEEDED',
-    note: 'Khách đổi thẻ sau lần thanh toán đầu.',
-    items: [
-      { sku: 'STY-AK-001-L', quantity: 1 },
-      { sku: 'STY-AO-002-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261014-0004',
-    customer: 4,
-    daysAgo: 24,
-    status: 'DELIVERED',
-    method: 'COD',
-    items: [
-      { sku: 'STY-AO-001-M', quantity: 2 },
-      { sku: 'STY-GI-002-39', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261016-0005',
-    customer: 5,
-    daysAgo: 22,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-QU-004-30', quantity: 1 },
-      { sku: 'STY-AO-003-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261018-0006',
-    customer: 6,
-    daysAgo: 20,
-    status: 'DELIVERED',
-    method: 'COD',
-    items: [
-      { sku: 'STY-GI-001-40', quantity: 1 },
-      { sku: 'STY-AO-002-L', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261020-0007',
-    customer: 7,
-    daysAgo: 18,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-AO-001-L', quantity: 2 },
-      { sku: 'STY-QU-003-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261022-0008',
-    customer: 8,
-    daysAgo: 16,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-AK-002-M', quantity: 1 },
-      { sku: 'STY-QU-001-29', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261024-0009',
-    customer: 1,
-    daysAgo: 14,
-    status: 'DELIVERED',
-    method: 'COD',
-    items: [
-      { sku: 'STY-AO-001-S', quantity: 3 },
-      { sku: 'STY-QU-002-29', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261026-0010',
-    customer: 9,
-    daysAgo: 12,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-GI-001-38', quantity: 1 },
-      { sku: 'STY-AO-003-L', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261028-0011',
-    customer: 10,
-    daysAgo: 10,
-    status: 'DELIVERED',
-    method: 'COD',
-    items: [
-      { sku: 'STY-AK-003-M', quantity: 1 },
-      { sku: 'STY-QU-005-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261030-0012',
-    customer: 2,
-    daysAgo: 8,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-GI-001-42', quantity: 1 },
-      { sku: 'STY-AO-004-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261101-0013',
-    customer: 3,
-    daysAgo: 6,
-    status: 'DELIVERED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-QU-004-31', quantity: 1 },
-      { sku: 'STY-AK-004-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261102-0014',
-    customer: 4,
-    daysAgo: 5,
-    status: 'CANCELLED',
-    method: 'COD',
-    note: 'Khách huỷ trước khi giao.',
-    items: [
-      { sku: 'STY-GI-001-41', quantity: 1 },
-      { sku: 'STY-AO-001-M', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261103-0015',
-    customer: 5,
-    daysAgo: 4,
-    status: 'SHIPPING',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-AO-002-XL', quantity: 1 },
-      { sku: 'STY-QU-003-L', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261104-0016',
-    customer: 6,
-    daysAgo: 3,
-    status: 'SHIPPING',
-    method: 'COD',
-    items: [
-      { sku: 'STY-AK-001-M', quantity: 1 },
-      { sku: 'STY-GI-003-38', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261105-0017',
-    customer: 7,
-    daysAgo: 2,
-    status: 'CONFIRMED',
-    method: 'ONLINE',
-    payment: 'SUCCEEDED',
-    items: [
-      { sku: 'STY-QU-001-30', quantity: 1 },
-      { sku: 'STY-AO-003-S', quantity: 1 },
-    ],
-  },
-  {
-    code: 'STY-261105-0018',
-    customer: 8,
-    daysAgo: 2,
-    status: 'CANCELLED',
-    method: 'ONLINE',
-    payment: 'FAILED',
-    note: 'Thanh toán thất bại, khách không thử lại.',
-    items: [{ sku: 'STY-AK-002-L', quantity: 1 }],
-  },
-  {
-    code: 'STY-261106-0019',
-    customer: 9,
-    daysAgo: 1,
-    status: 'PENDING',
-    method: 'ONLINE',
-    payment: 'PENDING',
-    items: [{ sku: 'STY-AO-001-M', quantity: 2 }],
-  },
-  {
-    code: 'STY-261107-0020',
-    customer: 10,
-    daysAgo: 0,
-    status: 'DELIVERED',
-    method: 'COD',
-    items: [
-      { sku: 'STY-GI-001-42', quantity: 1 },
-      { sku: 'STY-AO-004-L', quantity: 1 },
-    ],
-  },
+  if (!Array.isArray(catalog.products) || catalog.products.length === 0) {
+    throw new Error(`Seed catalog ${filename} has no products`)
+  }
+
+  for (const product of catalog.products) {
+    if (names.has(product.name)) throw new Error(`Duplicate seed product name: ${product.name}`)
+    names.add(product.name)
+    if (!categories.has(product.category)) {
+      throw new Error(`Seed product ${product.name} references unknown category ${product.category}`)
+    }
+    if (!brands.has(product.brand)) {
+      throw new Error(`Seed product ${product.name} references unknown brand ${product.brand}`)
+    }
+    if (!product.image) throw new Error(`Seed product ${product.name} has no image`)
+    if (product.variants.length === 0) throw new Error(`Seed product ${product.name} has no variants`)
+
+    for (const variant of product.variants) {
+      if (skus.has(variant.sku)) throw new Error(`Duplicate seed SKU: ${variant.sku}`)
+      if (variant.price <= 0) throw new Error(`Seed variant ${variant.sku} has no price`)
+      if (variant.targetStock < 0) throw new Error(`Seed variant ${variant.sku} has negative stock`)
+      skus.add(variant.sku)
+    }
+  }
+
+  return catalog
+}
+
+const CATALOG = loadCatalog()
+const PRODUCTS = CATALOG.products
+
+/**
+ * The pinned demo product is created last so the public "newest" sort still
+ * exposes it first; E2E journeys search for its name without scrolling.
+ */
+const PINNED_PRODUCT_NAME = 'Áo thun basic'
+const CREATION_ORDER = [
+  ...PRODUCTS.filter((product) => product.name !== PINNED_PRODUCT_NAME),
+  ...PRODUCTS.filter((product) => product.name === PINNED_PRODUCT_NAME),
 ]
 
 const RECEIPTS = [
-  {
-    code: 'PN-261003-0001',
-    supplier: 'Xưởng may Hà Nội',
-    note: 'Lô đầu mùa thu.',
-    daysAgo: 35,
-    share: 0 as const,
-  },
-  {
-    code: 'PN-261009-0002',
-    supplier: 'Kho tổng Sài Gòn',
-    note: 'Bổ sung sizes bán chạy.',
-    daysAgo: 29,
-    share: 1 as const,
-  },
-  {
-    code: 'PN-261014-0003',
-    supplier: 'Nhà phân phối Đông Á',
-    note: 'Nhập thêm với giá điều chỉnh.',
-    daysAgo: 24,
-    share: 2 as const,
-  },
-]
-
-const SEED_IMAGES = ['catalog-01.png', 'catalog-02.png', 'catalog-03.png', 'catalog-04.png', 'catalog-05.png', 'catalog-06.png']
+  { daysAgo: 100, supplier: 'Xưởng may Hà Nội', note: 'Lô đầu mùa thu.', share: 0 as const },
+  { daysAgo: 95, supplier: 'Kho tổng Sài Gòn', note: 'Bổ sung sizes bán chạy.', share: 1 as const },
+  { daysAgo: 90, supplier: 'Nhà phân phối Đông Á', note: 'Nhập thêm với giá điều chỉnh.', share: 2 as const },
+].map((plan) => ({
+  ...plan,
+  code: `PN-${vnDateCode(daysAgoAt(plan.daysAgo, 2))}-${String(plan.share + 1).padStart(4, '0')}`,
+}))
 
 function imageUrl(filename: string): string {
   return `/uploads/products/${filename}`
@@ -618,32 +215,115 @@ function addressFor(customerIndex: number): { defaultLine: string; secondaryLine
   }
 }
 
-interface VariantRow {
-  id: number
-  productId: number
-  productName: string
-  sku: string
-  size: string
-  color: string
-  price: number
+function mulberry32(seed: number): () => number {
+  let state = seed >>> 0
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0
+    let value = state
+    value = Math.imul(value ^ (value >>> 15), value | 1)
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61)
+    return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296
+  }
 }
 
-interface ReceiptLinePlan {
-  variant: VariantRow
-  quantity: number
-  unitCost: number
-  share: 0 | 1 | 2
+const ORDER_COUNT = 140
+
+function buildOrders(products: SeedCatalogProduct[]): SeedOrder[] {
+  const sellable = products
+    .filter((product) => (product.status ?? 'ACTIVE') === 'ACTIVE')
+    .flatMap((product) => product.variants)
+  if (sellable.length === 0) throw new Error('Seed catalog has no sellable variants')
+
+  const pinned = products.find((product) => product.name === 'Áo thun basic')?.variants ?? []
+  const random = mulberry32(20261107)
+  // Delivered-heavy so revenue reports have history, with every order state represented.
+  const statusPlan: OrderStatus[] = [
+    'DELIVERED', 'SHIPPING', 'DELIVERED', 'PENDING', 'DELIVERED',
+    'CONFIRMED', 'DELIVERED', 'CANCELLED', 'DELIVERED', 'SHIPPING',
+    'DELIVERED', 'PENDING', 'DELIVERED', 'CONFIRMED', 'DELIVERED',
+    'CANCELLED', 'DELIVERED', 'PENDING', 'DELIVERED', 'DELIVERED',
+  ]
+
+  const orders: SeedOrder[] = []
+  for (let index = 0; index < ORDER_COUNT; index += 1) {
+    const daysAgo = Math.floor((index * 89) / (ORDER_COUNT - 1))
+    const createdAt = orderTime(daysAgo)
+    const status: OrderStatus =
+      index === 0 ? 'PENDING' : index === 1 ? 'CONFIRMED' : statusPlan[(index - 2) % statusPlan.length]
+
+    const method: PaymentMethod =
+      index === 0
+        ? 'ONLINE'
+        : index === 1
+          ? 'COD'
+          : status === 'PENDING'
+            ? 'ONLINE'
+            : status === 'DELIVERED'
+              ? index % 3 === 0
+                ? 'COD'
+                : 'ONLINE'
+              : index % 2 === 0
+                ? 'ONLINE'
+                : 'COD'
+
+    let payment: PaymentPlan | undefined
+    if (method === 'ONLINE') {
+      if (index === 0) payment = 'PENDING'
+      else if (status === 'PENDING') payment = index % 2 === 0 ? 'PENDING' : 'FAILED'
+      else if (status === 'CANCELLED') payment = 'FAILED'
+      else if (status === 'DELIVERED' && index % 9 === 0) payment = 'FAILED_THEN_SUCCEEDED'
+      else payment = 'SUCCEEDED'
+    }
+
+    const items: SeedOrderItem[] = []
+    const used = new Set<string>()
+    if (index === 0 && pinned[0]) {
+      items.push({ sku: pinned[0].sku, quantity: 2 })
+      used.add(pinned[0].sku)
+    }
+    if (index === 1 && pinned[1]) {
+      items.push({ sku: pinned[1].sku, quantity: 1 })
+      used.add(pinned[1].sku)
+    }
+
+    const itemCount = 1 + Math.floor(random() * 3)
+    let guard = 0
+    while (items.length < itemCount && guard < 50) {
+      guard += 1
+      const variant = sellable[Math.floor(random() * sellable.length)]
+      if (used.has(variant.sku)) continue
+      used.add(variant.sku)
+      items.push({ sku: variant.sku, quantity: 1 + Math.floor(random() * 2) })
+    }
+
+    orders.push({
+      code: `STY-${vnDateCode(createdAt)}-${String(index + 1).padStart(4, '0')}`,
+      customer: 1 + ((index * 7) % 11),
+      daysAgo,
+      status,
+      method,
+      payment,
+      items,
+    })
+  }
+
+  if (!orders.some((order) => order.payment === 'FAILED_THEN_SUCCEEDED')) {
+    const target = orders.find((order) => order.status === 'DELIVERED' && order.method === 'ONLINE')
+    if (target) target.payment = 'FAILED_THEN_SUCCEEDED'
+  }
+
+  return orders
 }
+
+const ORDERS = buildOrders(PRODUCTS)
 
 function copySeedImages(): void {
-  const assetsDir = fileURLToPath(new URL('../seed-assets/', import.meta.url))
+  const assetsDir = fileURLToPath(new URL('../seed-assets/catalog/images/', import.meta.url))
   const uploadDir = path.resolve(getEnv().UPLOAD_DIR, 'products')
   mkdirSync(uploadDir, { recursive: true })
 
-  for (const filename of SEED_IMAGES) {
-    const target = path.join(uploadDir, filename)
-    if (existsSync(target)) continue
-    copyFileSync(path.join(assetsDir, filename), target)
+  for (const product of PRODUCTS) {
+    copyFileSync(path.join(assetsDir, product.image), path.join(uploadDir, product.image))
   }
 }
 
@@ -742,7 +422,7 @@ export async function seed(): Promise<void> {
   copySeedImages()
 
   const variantsBySku = new Map<string, VariantRow>()
-  for (const entry of PRODUCTS) {
+  for (const entry of CREATION_ORDER) {
     const categoryId = categories.get(entry.category)
     const brandId = brands.get(entry.brand)
     if (categoryId === undefined || brandId === undefined) {
@@ -772,14 +452,10 @@ export async function seed(): Promise<void> {
       })
     }
 
-    for (const [position, imageIndex] of entry.imageIndexes.entries()) {
-      const filename = SEED_IMAGES[imageIndex]
-      await prisma.productImage.upsert({
-        where: { productId_position: { productId: product.id, position } },
-        update: { url: imageUrl(filename) },
-        create: { productId: product.id, position, url: imageUrl(filename) },
-      })
-    }
+    await prisma.productImage.deleteMany({ where: { productId: product.id } })
+    await prisma.productImage.create({
+      data: { productId: product.id, position: 0, url: imageUrl(entry.image) },
+    })
 
     for (const variant of entry.variants) {
       const saved = await prisma.productVariant.upsert({
@@ -944,7 +620,7 @@ export async function seed(): Promise<void> {
         subtotal,
         shippingFee,
         total,
-        note: orderPlan.note ?? null,
+        note: orderPlan.note,
         createdAt,
         items: {
           create: items.map((item) => ({
@@ -1026,22 +702,16 @@ export async function seed(): Promise<void> {
   await prisma.$executeRaw`
     UPDATE product_variant v
     LEFT JOIN (
-      SELECT variant_id, SUM(delta) AS total
+      SELECT variant_id, COALESCE(SUM(delta), 0) AS stock
       FROM stock_movement
       GROUP BY variant_id
     ) m ON m.variant_id = v.id
-    SET v.stock = COALESCE(m.total, 0)
+    SET v.stock = COALESCE(m.stock, 0)
   `
-
-  const variantCount = PRODUCTS.reduce((sum, product) => sum + product.variants.length, 0)
-  console.log(
-    `Seed complete: 1 admin, ${CUSTOMER_EMAILS.length} customers, ${CATEGORIES.length} categories, ` +
-      `${BRANDS.length} brands, ${PRODUCTS.length} products, ${variantCount} variants, ` +
-      `${RECEIPTS.length} receipts, ${ORDERS.length} orders`,
-  )
 }
 
-const isDirectRun = process.argv[1] !== undefined && /seed\.(?:ts|js)$/.test(process.argv[1])
+const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
+
 if (isDirectRun) {
   seed()
     .catch((error: unknown) => {

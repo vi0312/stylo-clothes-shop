@@ -534,7 +534,7 @@ describe('Seed data catalog query', () => {
     expect(listRes.body.total).toBeGreaterThan(0)
     expect(listRes.body.items.length).toBeGreaterThan(0)
 
-    const searchRes = await request(app).get('/api/v1/products').query({ search: 'áo thun basic' })
+    const searchRes = await request(app).get('/api/v1/products').query({ q: 'áo thun basic' })
     expect(searchRes.status).toBe(200)
     const productNames = searchRes.body.items.map((p: { name: string }) => p.name)
     expect(productNames).toContain('Áo thun basic')

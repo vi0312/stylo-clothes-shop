@@ -38,3 +38,5 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Return URL | `returnUrl` | URL trình duyệt quay về sau khi thanh toán | Chỉ VNPay dùng; verify checksum trước khi đổi trạng thái |
 | IPN | `ipn` | Gateway gọi server-to-server báo kết quả | Server local không có IPN public; endpoint vẫn idempotent và trả `RspCode` |
 | Refresh token | `RefreshToken` | Token dài hạn đã hash để cấp access token mới | Không lưu token thô; access 15 phút, refresh 30 ngày |
+| Seed catalog | `seed-assets/catalog/catalog.json` | 100 sản phẩm mẫu lấy từ dataset sản phẩm thật, đã chuẩn hoá sang schema Stylo | Seed chỉ đọc snapshot + ảnh commit, không gọi mạng; giá/size/tồn kho là dữ liệu demo |
+| Pinned product | `Áo thun basic` | Sản phẩm seed cố định cho catalog integration test và journey Kaspresso | Không đổi tên hoặc SKU `STY-AO-001-*` khi tái tạo snapshot; seed tạo nó cuối để đứng đầu sort `newest` |
