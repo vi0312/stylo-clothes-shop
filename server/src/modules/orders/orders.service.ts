@@ -2,6 +2,8 @@ import { getEnv } from '../../config/env.js'
 import { prisma } from '../../lib/prisma.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import { lockCart } from '../cart/cart.repository.js'
+import type { PaymentAttemptDto } from '../payments/payments.dto.js'
+import { createAttemptInTx, toPaymentAttempt } from '../payments/payments.service.js'
 import type { OrderDto } from './orders.dto.js'
 import type { CreateOrderInput } from './orders.schema.js'
 import {
@@ -17,7 +19,19 @@ const MAX_ORDER_CODE_ATTEMPTS = 3
 
 export interface CreateOrderResult {
   order: OrderDto
+  payment: PaymentAttemptDto | null
   created: boolean
+}
+
+/**
+ * A repeated `clientOrderId` replays only a still-pending attempt; a failed one is left for
+ * `POST /orders/:id/payments`, which expires and replaces it.
+ */
+function currentAttempt(row: repository.OrderRow): PaymentAttemptDto | null {
+  if (row.paymentMethod !== 'ONLINE') return null
+  const latest = row.payments[0]
+  if (!latest || latest.status !== 'PENDING') return null
+  return toPaymentAttempt(latest, row.code)
 }
 
 function toOrderDto(row: repository.OrderRow): OrderDto {
@@ -72,7 +86,11 @@ async function placeOrder(userId: number, input: CreateOrderInput): Promise<Crea
       input.clientOrderId,
     )
     if (duplicate) {
-      return { order: toOrderDto(duplicate), created: false }
+      return {
+        order: toOrderDto(duplicate),
+        payment: currentAttempt(duplicate),
+        created: false,
+      }
     }
 
     const cart = await repository.findCartForCheckout(tx, userId)
@@ -145,7 +163,11 @@ async function placeOrder(userId: number, input: CreateOrderInput): Promise<Crea
     }
     await repository.deleteCartItems(tx, cart.id)
 
-    return { order: toOrderDto(order), created: true }
+    // `ONLINE` and its first attempt commit together (erd.md, "Place order" step 7).
+    const payment =
+      input.paymentMethod === 'ONLINE' ? await createAttemptInTx(tx, order) : null
+
+    return { order: toOrderDto(order), payment, created: true }
   })
 }
 
@@ -155,7 +177,11 @@ export async function createOrder(
 ): Promise<CreateOrderResult> {
   const existing = await repository.findOrderByClientOrderId(userId, input.clientOrderId)
   if (existing) {
-    return { order: toOrderDto(existing), created: false }
+    return {
+      order: toOrderDto(existing),
+      payment: currentAttempt(existing),
+      created: false,
+    }
   }
 
   for (let attempt = 1; ; attempt += 1) {
@@ -166,7 +192,11 @@ export async function createOrder(
 
       const duplicate = await repository.findOrderByClientOrderId(userId, input.clientOrderId)
       if (duplicate) {
-        return { order: toOrderDto(duplicate), created: false }
+        return {
+        order: toOrderDto(duplicate),
+        payment: currentAttempt(duplicate),
+        created: false,
+      }
       }
       // Not the idempotency key, so the generated order code collided: retry with a fresh one.
       if (attempt < MAX_ORDER_CODE_ATTEMPTS) continue
