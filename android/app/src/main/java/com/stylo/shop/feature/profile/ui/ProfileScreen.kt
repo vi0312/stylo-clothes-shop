@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,6 +54,7 @@ import com.stylo.shop.feature.profile.model.PROFILE_PHONE_MAX
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit,
+    onOpenOrders: () -> Unit,
     onOpenAddresses: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
@@ -141,42 +144,21 @@ fun ProfileScreen(
 
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
 
-            Surface(
+            ProfileLinkRow(
+                icon = Icons.AutoMirrored.Filled.List,
+                title = stringResource(R.string.profile_orders),
+                hint = stringResource(R.string.profile_orders_hint),
+                onClick = onOpenOrders,
+                tag = UiTags.ProfileOrders,
+            )
+
+            ProfileLinkRow(
+                icon = Icons.Filled.LocationOn,
+                title = stringResource(R.string.profile_addresses),
+                hint = stringResource(R.string.profile_addresses_hint),
                 onClick = onOpenAddresses,
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(UiTags.ProfileAddresses),
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        Icons.Filled.LocationOn,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.profile_addresses),
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                        Text(
-                            text = stringResource(R.string.profile_addresses_hint),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    Icon(
-                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
+                tag = UiTags.ProfileAddresses,
+            )
 
             OutlinedButton(
                 onClick = { confirmLogout = true },
@@ -215,5 +197,51 @@ fun ProfileScreen(
                 }
             },
         )
+    }
+}
+
+@Composable
+private fun ProfileLinkRow(
+    icon: ImageVector,
+    title: String,
+    hint: String,
+    onClick: () -> Unit,
+    tag: String,
+) {
+    Surface(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(tag),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                Text(
+                    text = hint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }

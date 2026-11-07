@@ -31,6 +31,9 @@ data object CartRoute
 data object CheckoutRoute
 
 @Serializable
+data object OrdersRoute
+
+@Serializable
 data class OrderDetailRoute(val orderId: Long)
 
 @Serializable
@@ -43,6 +46,12 @@ data object AdminProductCreateRoute
 data class AdminProductEditRoute(val productId: Long)
 @Serializable
 data object AdminTaxonomyRoute
+
+@Serializable
+data object AdminOrdersRoute
+
+@Serializable
+data class AdminOrderDetailRoute(val orderId: Long)
 
 @Serializable
 data object ProfileRoute

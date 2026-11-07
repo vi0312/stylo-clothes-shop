@@ -35,6 +35,8 @@ import com.stylo.shop.feature.admin.ui.AdminDashboardScreen
 import com.stylo.shop.feature.admin.ui.AdminTab
 import com.stylo.shop.feature.admin.ui.products.AdminProductFormScreen
 import com.stylo.shop.feature.admin.ui.products.AdminProductListScreen
+import com.stylo.shop.feature.admin.ui.orders.AdminOrderDetailScreen
+import com.stylo.shop.feature.admin.ui.orders.AdminOrderListScreen
 import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
@@ -42,6 +44,7 @@ import com.stylo.shop.feature.cart.ui.CartScreen
 import com.stylo.shop.feature.checkout.ui.CheckoutScreen
 import com.stylo.shop.feature.home.ui.HomeScreen
 import com.stylo.shop.feature.orders.ui.OrderDetailScreen
+import com.stylo.shop.feature.orders.ui.OrderListScreen
 import com.stylo.shop.feature.profile.ui.ProfileScreen
 import com.stylo.shop.feature.profile.ui.address.AddressFormScreen
 import com.stylo.shop.feature.profile.ui.address.AddressListScreen
@@ -138,9 +141,18 @@ private fun SessionNavHost(
                 composable<OrderDetailRoute> {
                     OrderDetailScreen(onBack = { navController.popBackStack() })
                 }
+                composable<OrdersRoute> {
+                    OrderListScreen(
+                        onBack = { navController.popBackStack() },
+                        onOpenOrder = { orderId ->
+                            navController.navigate(OrderDetailRoute(orderId))
+                        },
+                    )
+                }
                 composable<ProfileRoute> {
                     ProfileScreen(
                         onBack = { navController.popBackStack() },
+                        onOpenOrders = { navController.navigate(OrdersRoute) },
                         onOpenAddresses = { navController.navigate(AddressListRoute) },
                         onLogout = onLogout,
                     )
@@ -172,11 +184,7 @@ private fun SessionNavHost(
                     if (user != null) {
                         AdminDashboardScreen(
                             user = user,
-                            onSelectTab = { tab ->
-                                if (tab == AdminTab.PRODUCTS) {
-                                    navController.navigateAdminTab(AdminProductsRoute)
-                                }
-                            },
+                            onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                             onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                             onLogout = onLogout,
                         )
@@ -188,11 +196,7 @@ private fun SessionNavHost(
                         onEdit = { productId ->
                             navController.navigate(AdminProductEditRoute(productId))
                         },
-                        onSelectTab = { tab ->
-                            if (tab == AdminTab.DASHBOARD) {
-                                navController.navigateAdminTab(AdminDashboardRoute)
-                            }
-                        },
+                        onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                         onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                         onLogout = onLogout,
                     )
@@ -210,6 +214,19 @@ private fun SessionNavHost(
                         onBack = { navController.popBackStack() },
                     )
                 }
+                composable<AdminOrdersRoute> {
+                    AdminOrderListScreen(
+                        onOpenOrder = { orderId ->
+                            navController.navigate(AdminOrderDetailRoute(orderId))
+                        },
+                        onSelectTab = { tab -> navController.navigateAdminTab(tab) },
+                        onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                        onLogout = onLogout,
+                    )
+                }
+                composable<AdminOrderDetailRoute> {
+                    AdminOrderDetailScreen(onBack = { navController.popBackStack() })
+                }
                 composable<AdminTaxonomyRoute> {
                     AdminTaxonomyScreen(onBack = { navController.popBackStack() })
                 }
@@ -218,7 +235,12 @@ private fun SessionNavHost(
     }
 }
 
-private fun NavHostController.navigateAdminTab(destination: Any) {
+private fun NavHostController.navigateAdminTab(tab: AdminTab) {
+    val destination: Any = when (tab) {
+        AdminTab.DASHBOARD -> AdminDashboardRoute
+        AdminTab.ORDERS -> AdminOrdersRoute
+        AdminTab.PRODUCTS -> AdminProductsRoute
+    }
     navigate(destination) {
         popUpTo<AdminDashboardRoute> { inclusive = false }
         launchSingleTop = true

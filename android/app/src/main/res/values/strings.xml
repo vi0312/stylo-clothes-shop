@@ -197,6 +197,8 @@
     <string name="profile_phone">Số điện thoại</string>
     <string name="profile_save">Lưu thay đổi</string>
     <string name="profile_saved">Đã lưu hồ sơ.</string>
+    <string name="profile_orders">Đơn hàng của tôi</string>
+    <string name="profile_orders_hint">Theo dõi và huỷ đơn đã đặt</string>
     <string name="profile_addresses">Địa chỉ giao hàng</string>
     <string name="profile_addresses_hint">Quản lý địa chỉ nhận hàng</string>
     <string name="profile_logout_title">Đăng xuất?</string>
@@ -305,4 +307,46 @@
     <string name="order_detail_total">Tổng cộng</string>
     <string name="order_detail_note_title">Ghi chú</string>
     <string name="order_detail_refresh">Tải lại đơn</string>
+    <string name="order_cancel">Huỷ đơn</string>
+    <string name="order_cancel_title">Huỷ đơn hàng?</string>
+    <string name="order_cancel_body">Đơn %1$s sẽ bị huỷ và tồn kho được trả lại. Không thể hoàn tác.</string>
+    <string name="order_cancel_confirm">Huỷ đơn</string>
+    <string name="order_cancel_keep">Giữ đơn</string>
+
+    <string name="orders_title">Đơn hàng của tôi</string>
+    <string name="orders_filter_all">Tất cả</string>
+    <string name="orders_row_meta">%1$s · %2$d món</string>
+    <string name="orders_empty">Chưa có đơn hàng</string>
+    <string name="orders_empty_filtered">Chưa có đơn ở trạng thái này</string>
+    <string name="orders_empty_hint">Đơn bạn đặt sẽ xuất hiện ở đây.</string>
+
+    <string name="admin_tab_orders">Đơn hàng</string>
+    <string name="admin_orders_title">Đơn hàng</string>
+    <string name="admin_orders_search_hint">Mã đơn, người nhận, SĐT</string>
+    <string name="admin_orders_empty">Chưa có đơn trong khoảng</string>
+    <string name="admin_orders_empty_hint">Thử đổi bộ lọc trạng thái hoặc từ khoá.</string>
+    <string name="admin_orders_filter_today">Hôm nay</string>
+    <string name="admin_orders_filter_7">7 ngày</string>
+    <string name="admin_orders_filter_30">30 ngày</string>
+    <string name="admin_orders_row_meta">%1$s · %2$s</string>
+    <string name="admin_orders_row_items">%1$d món</string>
+    <string name="admin_order_detail_title">Chi tiết đơn</string>
+    <string name="admin_order_customer_title">Khách hàng</string>
+    <string name="admin_order_cost_label">Giá vốn %1$s</string>
+    <string name="admin_order_payment_title">Thanh toán</string>
+    <string name="admin_order_payment_empty">Chưa có giao dịch thanh toán</string>
+    <string name="admin_order_actions_title">Xử lý đơn</string>
+    <string name="admin_order_note_title">Ghi chú của khách</string>
+    <string name="admin_order_action_confirm">Xác nhận đơn</string>
+    <string name="admin_order_action_ship">Bắt đầu giao</string>
+    <string name="admin_order_action_deliver">Đã giao</string>
+    <string name="admin_order_action_cancel">Huỷ đơn</string>
+    <string name="admin_order_transition_title">Chuyển trạng thái?</string>
+    <string name="admin_order_transition_body">Đơn %1$s: %2$s → %3$s.</string>
+    <string name="admin_order_transition_confirm">Xác nhận</string>
+    <string name="admin_order_transition_done">Đã cập nhật đơn %1$s</string>
+    <string name="admin_order_terminal">Đơn đã ở trạng thái cuối, không còn thao tác.</string>
+    <string name="admin_payment_status_pending">Đang chờ</string>
+    <string name="admin_payment_status_succeeded">Thành công</string>
+    <string name="admin_payment_status_failed">Thất bại</string>
 </resources>

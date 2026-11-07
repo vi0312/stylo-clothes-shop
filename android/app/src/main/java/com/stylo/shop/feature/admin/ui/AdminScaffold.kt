@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -27,17 +28,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.stylo.shop.R
+import com.stylo.shop.core.ui.UiTags
 
 enum class AdminTab {
     DASHBOARD,
+    ORDERS,
     PRODUCTS,
 }
 
 /**
- * Shared admin chrome. Only destinations that exist are listed; orders, inventory, users and
- * reports join the bar as their tickets land, so no tab points at an empty route.
+ * Shared admin chrome. Only destinations that exist are listed; inventory, users and reports join
+ * the bar as their tickets land, so no tab points at an empty route.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +78,15 @@ fun AdminScaffold(
                         Icon(Icons.Filled.Home, contentDescription = null)
                     },
                     label = { Text(stringResource(R.string.admin_tab_dashboard)) },
+                )
+                NavigationBarItem(
+                    selected = selectedTab == AdminTab.ORDERS,
+                    onClick = { onSelectTab(AdminTab.ORDERS) },
+                    icon = {
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = null)
+                    },
+                    label = { Text(stringResource(R.string.admin_tab_orders)) },
+                    modifier = Modifier.testTag(UiTags.AdminOrdersTab),
                 )
                 NavigationBarItem(
                     selected = selectedTab == AdminTab.PRODUCTS,

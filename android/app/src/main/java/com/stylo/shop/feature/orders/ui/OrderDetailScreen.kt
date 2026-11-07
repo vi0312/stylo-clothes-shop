@@ -20,19 +20,28 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +75,8 @@ fun OrderDetailScreen(
     viewModel: OrderDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var showCancelDialog by remember { mutableStateOf(false) }
 
     // A payment page runs outside the app: the screen can be first composed while the tab
     // covers it, so every resume re-reads the order instead of trusting the initial load.
@@ -74,9 +85,19 @@ fun OrderDetailScreen(
         onPauseOrDispose { }
     }
 
+    val cancelError = state.cancelError
+    val cancelErrorMessage = cancelError?.let { stringResource(ErrorMessages.resourceId(it)) }
+    LaunchedEffect(cancelErrorMessage) {
+        if (cancelErrorMessage != null) {
+            snackbarHostState.showSnackbar(cancelErrorMessage)
+            viewModel.dismissCancelError()
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -128,19 +149,60 @@ fun OrderDetailScreen(
             }
             is UiState.Content -> OrderContent(
                 order = orderState.data,
+                canCancel = state.canCancel,
+                isCancelling = state.isCancelling,
                 onRefresh = viewModel::refresh,
+                onCancel = { showCancelDialog = true },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
             )
         }
     }
+
+    if (showCancelDialog) {
+        val order = (state.orderState as? UiState.Content)?.data
+        AlertDialog(
+            onDismissRequest = { showCancelDialog = false },
+            title = { Text(stringResource(R.string.order_cancel_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.order_cancel_body,
+                        order?.code.orEmpty(),
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showCancelDialog = false
+                        viewModel.cancel()
+                    },
+                    modifier = Modifier.testTag(UiTags.OrderCancelConfirm),
+                ) {
+                    Text(
+                        text = stringResource(R.string.order_cancel_confirm),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCancelDialog = false }) {
+                    Text(stringResource(R.string.order_cancel_keep))
+                }
+            },
+        )
+    }
 }
 
 @Composable
 private fun OrderContent(
     order: Order,
+    canCancel: Boolean,
+    isCancelling: Boolean,
     onRefresh: () -> Unit,
+    onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -159,6 +221,34 @@ private fun OrderContent(
         item { SummaryCard(order) }
         order.note?.takeIf { it.isNotBlank() }?.let { note ->
             item { NoteCard(note) }
+        }
+        if (canCancel) {
+            item { CancelOrderButton(isCancelling = isCancelling, onCancel = onCancel) }
+        }
+    }
+}
+
+@Composable
+private fun CancelOrderButton(isCancelling: Boolean, onCancel: () -> Unit) {
+    OutlinedButton(
+        onClick = onCancel,
+        enabled = !isCancelling,
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(UiTags.OrderCancel),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colorScheme.error,
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+    ) {
+        if (isCancelling) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                strokeWidth = 2.dp,
+                color = MaterialTheme.colorScheme.error,
+            )
+        } else {
+            Text(stringResource(R.string.order_cancel))
         }
     }
 }

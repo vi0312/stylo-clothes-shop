@@ -30,6 +30,7 @@ object UiTags {
     const val ProfilePhone = "profile_phone"
     const val ProfileSave = "profile_save"
     const val ProfileAddresses = "profile_addresses"
+    const val ProfileOrders = "profile_orders"
     const val ProfileLogout = "profile_logout"
     const val ProfileLogoutConfirm = "profile_logout_confirm"
 
@@ -40,6 +41,20 @@ object UiTags {
     const val AddressPhone = "address_phone"
     const val AddressLine = "address_line"
     const val AddressSave = "address_save"
+
+    const val OrdersList = "orders_list"
+    const val OrderRow = "order_row"
+    const val OrderEmpty = "order_empty"
+    const val OrderCancel = "order_cancel"
+    const val OrderCancelConfirm = "order_cancel_confirm"
+
+    const val AdminOrdersTab = "admin_orders_tab"
+    const val AdminOrderList = "admin_order_list"
+    const val AdminOrderRow = "admin_order_row"
+    const val AdminOrderEmpty = "admin_order_empty"
+    const val AdminOrderSearch = "admin_order_search"
+    const val AdminOrderTransition = "admin_order_transition"
+    const val AdminOrderTransitionConfirm = "admin_order_transition_confirm"
 
     const val CartBack = "cart_back"
     const val CartClear = "cart_clear"
