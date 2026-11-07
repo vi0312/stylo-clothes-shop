@@ -11,6 +11,7 @@ import {
   idParamsSchema,
   adminListQuerySchema,
   adminProductListQuerySchema,
+  adminVariantSearchQuerySchema,
   patchBrandSchema,
   patchCategorySchema,
   patchProductSchema,
@@ -133,6 +134,11 @@ adminCatalogRouter.delete('/admin/products/:id/images/:imageId', async (request,
   const params = parseParams(productImageParamsSchema, request)
   await adminService.removeProductImage(params.id, params.imageId)
   response.status(204).end()
+})
+
+adminCatalogRouter.get('/admin/variants', async (request, response) => {
+  const query = parseQuery(adminVariantSearchQuerySchema, request)
+  response.json({ items: await adminService.searchAdminVariants(query) })
 })
 
 adminCatalogRouter.post('/admin/products/:id/variants', async (request, response) => {

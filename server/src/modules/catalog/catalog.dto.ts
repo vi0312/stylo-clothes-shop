@@ -120,6 +120,17 @@ export interface AdminVariantDto {
   updatedAt: string
 }
 
+export interface AdminVariantSearchItemDto {
+  id: number
+  productId: number
+  productName: string
+  sku: string
+  size: string
+  color: string
+  price: number
+  stock: number
+}
+
 export interface AdminProductDetail {
   id: number
   name: string

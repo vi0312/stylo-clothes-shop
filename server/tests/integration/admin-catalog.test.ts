@@ -590,6 +590,56 @@ describe('variant CRUD', () => {
     expect(clash.body.error.code).toBe('VARIANT_EXISTS')
   })
 
+  it('searches variants by SKU or product name for the receipt picker', async () => {
+    const product = await createProduct({
+      name: 'Áo sơ mi linen',
+      variants: [
+        { sku: 'ASL-TRANG-L', size: 'L', color: 'Trắng', price: 320_000, stock: 4 },
+        { sku: 'ASL-DEN-M', size: 'M', color: 'Đen', price: 320_000, stock: 0 },
+      ],
+    })
+    await createProduct({
+      name: 'Áo khoác ẩn',
+      status: 'INACTIVE',
+      variants: [{ sku: 'AK-AN-M', size: 'M', color: 'Xanh', price: 500_000, stock: 2 }],
+    })
+
+    const bySku = await request(app)
+      .get('/api/v1/admin/variants?q=ASL-DEN')
+      .set(auth(adminToken))
+    expect(bySku.status).toBe(200)
+    expect(bySku.body.items).toEqual([
+      {
+        id: product.variants[1].id,
+        productId: product.id,
+        productName: 'Áo sơ mi linen',
+        sku: 'ASL-DEN-M',
+        size: 'M',
+        color: 'Đen',
+        price: 320_000,
+        stock: 0,
+      },
+    ])
+
+    const byName = await request(app)
+      .get(`/api/v1/admin/variants?q=${encodeURIComponent('sơ mi')}&limit=10`)
+      .set(auth(adminToken))
+    expect(byName.body.items.map((item: { sku: string }) => item.sku)).toEqual([
+      'ASL-DEN-M',
+      'ASL-TRANG-L',
+    ])
+
+    const inactiveHit = await request(app)
+      .get('/api/v1/admin/variants?q=AK-AN')
+      .set(auth(adminToken))
+    expect(inactiveHit.body.items).toHaveLength(1)
+
+    const forbidden = await request(app)
+      .get('/api/v1/admin/variants?q=ASL')
+      .set(auth(customerToken))
+    expect(forbidden.status).toBe(403)
+  })
+
   it('blocks deleting a variant referenced by receipts or movements with 409 IN_USE', async () => {
     const product = await createProduct({
       name: 'Sản phẩm để kho',

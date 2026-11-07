@@ -100,6 +100,22 @@ export type AdminListQuery = z.infer<typeof adminListQuerySchema>
 
 export const adminProductListQuerySchema = adminListQuerySchema
 
+/** Variant picker for the inventory receipt form: matches by SKU or product name. */
+export const adminVariantSearchQuerySchema = z
+  .object({
+    q: z.preprocess(
+      (v) => (v === '' || v === undefined ? undefined : v),
+      z.string().trim().min(1).max(100).optional(),
+    ),
+    limit: z.preprocess(
+      (v) => (v === '' || v === undefined ? undefined : v),
+      z.coerce.number().int().min(1).max(50).default(20),
+    ),
+  })
+  .strict()
+
+export type AdminVariantSearchQuery = z.infer<typeof adminVariantSearchQuerySchema>
+
 const nameInputSchema = z.string().trim().min(1).max(100)
 
 export const createCategorySchema = z.strictObject({

@@ -8,6 +8,7 @@ import {
 import type { CatalogStatus } from '../../generated/prisma/client.js'
 import type {
   AdminVariantDto,
+  AdminVariantSearchItemDto,
   AdminProductDetail,
   AdminProductSummary,
   BrandDto,
@@ -16,6 +17,7 @@ import type {
 } from './catalog.dto.js'
 import type {
   AdminListQuery,
+  AdminVariantSearchQuery,
   CreateBrandInput,
   CreateCategoryInput,
   CreateProductInput,
@@ -248,6 +250,22 @@ function toAdminProductSummary(product: AdminProductSummaryRow): AdminProductSum
     createdAt: product.createdAt.toISOString(),
     updatedAt: product.updatedAt.toISOString(),
   }
+}
+
+export async function searchAdminVariants(
+  query: AdminVariantSearchQuery,
+): Promise<AdminVariantSearchItemDto[]> {
+  const rows = await repository.searchAdminVariants(query)
+  return rows.map((row) => ({
+    id: row.id,
+    productId: row.product.id,
+    productName: row.product.name,
+    sku: row.sku,
+    size: row.size,
+    color: row.color,
+    price: row.price,
+    stock: row.stock,
+  }))
 }
 
 export async function listAdminProducts(query: AdminListQuery): Promise<{

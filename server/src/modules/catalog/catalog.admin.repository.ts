@@ -1,7 +1,12 @@
 import { Prisma } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
 import type { CatalogStatus } from '../../generated/prisma/client.js'
-import type { AdminListQuery, CreateProductInput, PatchProductInput } from './catalog.schema.js'
+import type {
+  AdminListQuery,
+  AdminVariantSearchQuery,
+  CreateProductInput,
+  PatchProductInput,
+} from './catalog.schema.js'
 import { MAX_PRODUCT_IMAGES } from './catalog.constants.js'
 
 const productInclude = {
@@ -73,6 +78,44 @@ export function listAdminProducts(
       take: query.limit,
     }),
   ]).then(([total, products]) => ({ products, total }))
+}
+
+export interface AdminVariantSearchRow {
+  id: number
+  sku: string
+  size: string
+  color: string
+  price: number
+  stock: number
+  product: { id: number; name: string }
+}
+
+export function searchAdminVariants(
+  query: AdminVariantSearchQuery,
+): Promise<AdminVariantSearchRow[]> {
+  const where: Prisma.ProductVariantWhereInput | undefined = query.q
+    ? {
+        OR: [
+          { sku: { contains: query.q } },
+          { product: { is: { name: { contains: query.q } } } },
+        ],
+      }
+    : undefined
+
+  return prisma.productVariant.findMany({
+    where,
+    select: {
+      id: true,
+      sku: true,
+      size: true,
+      color: true,
+      price: true,
+      stock: true,
+      product: { select: { id: true, name: true } },
+    },
+    orderBy: [{ sku: 'asc' }, { id: 'asc' }],
+    take: query.limit,
+  })
 }
 
 function buildAdminProductWhere(query: AdminListQuery): Prisma.ProductWhereInput {
