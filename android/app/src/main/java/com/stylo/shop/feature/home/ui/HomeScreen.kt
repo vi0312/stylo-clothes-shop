@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
 import com.stylo.shop.core.model.User
+import com.stylo.shop.core.ui.StyloLockupHorizontal
 import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.core.ui.message
@@ -130,13 +130,8 @@ private fun HomeHeader(user: User?, onSearch: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            Text(
-                text = "STYLO",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    letterSpacing = 4.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
-                color = MaterialTheme.colorScheme.primary,
+            StyloLockupHorizontal(
+                modifier = Modifier.height(22.dp),
             )
             if (user != null) {
                 Text(

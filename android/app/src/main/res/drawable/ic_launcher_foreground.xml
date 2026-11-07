@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive launcher foreground. Glyph = 58% of the 108dp canvas so it stays inside the 66dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:scaleX="0.32625" android:scaleY="0.32625" android:translateX="12.240" android:translateY="12.240">
+        <path android:fillColor="#F4EFE6" android:pathData="M151.00,32.00 L101.00,32.00 L62.00,71.00 L87.00,96.00 Z"/>
+        <path android:fillColor="#141210" android:pathData="M158.00,35.00 L135.00,58.00 L179.00,102.00 L202.00,79.00 Z"/>
+        <path android:fillColor="#F4EFE6" android:pathData="M56.00,75.00 L56.00,125.00 L106.00,175.00 L150.00,131.00 L200.00,181.00 L200.00,131.00 L150.00,81.00 L106.00,125.00 Z"/>
+        <path android:fillColor="#141210" android:pathData="M98.00,221.00 L121.00,198.00 L77.00,154.00 L54.00,177.00 Z"/>
+        <path android:fillColor="#F4EFE6" android:pathData="M105.00,224.00 L155.00,224.00 L194.00,185.00 L169.00,160.00 Z"/>
+    </group>
+</vector>

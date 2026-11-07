@@ -66,6 +66,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.ErrorMessages
+import com.stylo.shop.core.ui.StyloLockupHorizontal
 import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CategoryItem
@@ -124,12 +125,8 @@ fun CatalogScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "STYLO",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                letterSpacing = 2.sp,
+            StyloLockupHorizontal(
+                modifier = Modifier.height(20.dp),
             )
         }
 

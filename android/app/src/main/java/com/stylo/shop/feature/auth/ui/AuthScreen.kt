@@ -31,17 +31,16 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
+import com.stylo.shop.core.ui.StyloLockupStacked
 import com.stylo.shop.core.ui.UiTags
 
 @Composable
@@ -93,15 +92,10 @@ private fun AuthContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(R.string.app_name).uppercase(),
-            style = MaterialTheme.typography.displaySmall.copy(
-                letterSpacing = 8.sp,
-                fontWeight = FontWeight.SemiBold,
-            ),
-            color = MaterialTheme.colorScheme.onBackground,
+        StyloLockupStacked(
+            modifier = Modifier.height(96.dp),
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(if (isRegister) R.string.auth_register_subtitle else R.string.auth_login_subtitle),
             style = MaterialTheme.typography.bodyMedium,

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome mark: colour is a MaterialTheme tint, never hardcoded ink. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="53.02dp"
+    android:height="48dp"
+    android:viewportWidth="391"
+    android:viewportHeight="354">
+    <group android:translateX="67.00" android:translateY="-32.00">
+        <path android:fillColor="#FF000000" android:pathData="M151.00,32.00 L101.00,32.00 L62.00,71.00 L87.00,96.00 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M158.00,35.00 L135.00,58.00 L179.00,102.00 L202.00,79.00 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M56.00,75.00 L56.00,125.00 L106.00,175.00 L150.00,131.00 L200.00,181.00 L200.00,131.00 L150.00,81.00 L106.00,125.00 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M98.00,221.00 L121.00,198.00 L77.00,154.00 L54.00,177.00 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M105.00,224.00 L155.00,224.00 L194.00,185.00 L169.00,160.00 Z"/>
+    </group>
+    <group android:translateX="-311.00" android:translateY="152.00">
+        <path android:fillColor="#FF000000" android:pathData="M 312 154 C 312 169 326 178 348 178 C 371 178 386 168 386 151 C 386 135 373 128 353 124 L 341 121 C 333 119 329 116 329 111 C 329 105 335 101 346 101 C 357 101 364 105 366 113 L 384 109 C 381 94 367 86 346 86 C 325 86 311 96 311 112 C 311 127 322 134 342 138 L 354 141 C 363 143 367 146 367 152 C 367 159 360 163 348 163 C 336 163 329 158 327 150 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M 416 64 L 416 88 L 399 88 L 399 103 L 416 103 L 416 152 C 416 169 426 177 444 177 C 451 177 456 176 460 175 L 460 159 C 456 160 452 161 447 161 C 438 161 435 157 435 149 L 435 103 L 458 103 L 458 88 L 435 88 L 435 64 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M 472 88 L 503 168 L 490 202 L 510 202 L 554 88 L 534 88 L 512 148 L 492 88 Z"/>
+        <path android:fillColor="#FF000000" android:pathData="M572.00,54.00 h20.00 v122.00 h-20.00 Z"/>
+        <path android:fillColor="#FF000000" android:fillType="evenOdd" android:pathData="M 656 86 C 629 86 610 105 610 132 C 610 159 629 178 656 178 C 683 178 702 159 702 132 C 702 105 683 86 656 86 Z M 656 103 C 672 103 683 115 683 132 C 683 149 672 161 656 161 C 640 161 629 149 629 132 C 629 115 640 103 656 103 Z"/>
+    </group>
+</vector>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Kit brand orange. System-surface only: inside the app every colour comes from StyloTheme. -->
+    <color name="ic_launcher_background">#E04F26</color>
+</resources>
