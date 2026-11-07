@@ -23,6 +23,9 @@ data object HomeRoute
 
 @Serializable
 data class ProductDetailRoute(val productId: Long)
+
+@Serializable
+data object CartRoute
 @Serializable
 data object AdminDashboardRoute
 @Serializable

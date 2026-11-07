@@ -224,4 +224,23 @@
     <string name="address_form_default_locked">Địa chỉ mặc định hiện tại. Hãy đặt địa chỉ khác làm mặc định để thay đổi.</string>
     <string name="address_form_default_hint">Đặt địa chỉ này làm mặc định.</string>
     <string name="address_form_save">Lưu địa chỉ</string>
+
+    <string name="cart_title">Giỏ hàng</string>
+    <string name="cart_empty_title">Giỏ hàng trống</string>
+    <string name="cart_empty_body">Thêm sản phẩm để bắt đầu mua sắm.</string>
+    <string name="cart_shop">Mua sắm</string>
+    <string name="cart_summary_count">%1$d sản phẩm</string>
+    <string name="cart_color_size">Màu %1$s · Size %2$s</string>
+    <string name="cart_unavailable">Ngừng bán</string>
+    <string name="cart_quantity_locked">Không thể chỉnh sửa</string>
+    <string name="cart_stock_limit">Tối đa</string>
+    <string name="cart_subtotal">Tạm tính</string>
+    <string name="cart_shipping_note">Phí vận chuyển được tính ở bước thanh toán.</string>
+    <string name="cart_clear_all">Xoá tất cả</string>
+    <string name="cart_clear_title">Xoá giỏ hàng?</string>
+    <string name="cart_clear_body">Toàn bộ sản phẩm trong giỏ sẽ bị xoá khỏi tài khoản.</string>
+    <string name="cart_clear_confirm">Xoá giỏ</string>
+    <string name="cart_added">Đã thêm vào giỏ.</string>
+    <string name="cart_view_cart">Xem giỏ</string>
+    <string name="detail_add_to_cart_unavailable">Sản phẩm này hiện không thể thêm vào giỏ.</string>
 </resources>

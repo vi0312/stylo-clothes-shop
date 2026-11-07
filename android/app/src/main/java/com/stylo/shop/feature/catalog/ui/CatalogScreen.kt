@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -80,6 +81,7 @@ import com.stylo.shop.feature.catalog.ui.components.SortSelector
 fun CatalogScreen(
     onNavigateToProduct: (Long) -> Unit,
     onNavigateToProfile: () -> Unit,
+    onNavigateToCart: () -> Unit,
     user: User?,
     modifier: Modifier = Modifier,
     viewModel: CatalogViewModel = hiltViewModel(),
@@ -135,15 +137,27 @@ fun CatalogScreen(
                 }
             }
 
-            IconButton(
-                onClick = onNavigateToProfile,
-                modifier = Modifier.testTag(UiTags.CatalogProfile),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = stringResource(R.string.profile_title),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = onNavigateToCart,
+                    modifier = Modifier.testTag(UiTags.CatalogCart),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ShoppingCart,
+                        contentDescription = stringResource(R.string.cart_title),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                IconButton(
+                    onClick = onNavigateToProfile,
+                    modifier = Modifier.testTag(UiTags.CatalogProfile),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Person,
+                        contentDescription = stringResource(R.string.profile_title),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
         }
 

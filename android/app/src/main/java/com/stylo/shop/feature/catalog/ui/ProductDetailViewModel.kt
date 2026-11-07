@@ -3,16 +3,21 @@ package com.stylo.shop.feature.catalog.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stylo.shop.core.network.ApiError
 import com.stylo.shop.core.network.ApiResult
 import com.stylo.shop.core.ui.UiState
+import com.stylo.shop.feature.cart.data.CartRepository
 import com.stylo.shop.feature.catalog.data.CatalogRepository
 import com.stylo.shop.feature.catalog.model.ProductDetail
 import com.stylo.shop.feature.catalog.model.ProductVariant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,11 +39,18 @@ data class ProductDetailUiState(
     val isCtaEnabled: Boolean = false,
     val currentPrice: Long = 0L,
     val isLowStock: Boolean = false,
+    val isAddingToCart: Boolean = false,
 )
+
+sealed interface ProductDetailEffect {
+    data object AddedToCart : ProductDetailEffect
+    data class AddFailed(val error: ApiError) : ProductDetailEffect
+}
 
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     private val repository: CatalogRepository,
+    private val cartRepository: CartRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -49,8 +61,26 @@ class ProductDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductDetailUiState())
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
 
+    private val _effects = Channel<ProductDetailEffect>(Channel.BUFFERED)
+    val effects: Flow<ProductDetailEffect> = _effects.receiveAsFlow()
+
     init {
         loadDetail()
+    }
+
+    fun addToCart() {
+        val state = _uiState.value
+        val variant = state.selectedVariant ?: return
+        if (state.isAddingToCart) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isAddingToCart = true) }
+            when (val result = cartRepository.addItem(variant.id, 1)) {
+                is ApiResult.Success -> _effects.send(ProductDetailEffect.AddedToCart)
+                is ApiResult.Failure -> _effects.send(ProductDetailEffect.AddFailed(result.error))
+            }
+            _uiState.update { it.copy(isAddingToCart = false) }
+        }
     }
 
     fun loadDetail() {

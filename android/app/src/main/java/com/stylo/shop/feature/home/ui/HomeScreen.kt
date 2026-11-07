@@ -10,11 +10,13 @@ fun HomeScreen(
     user: User,
     onNavigateToProduct: (Long) -> Unit,
     onNavigateToProfile: () -> Unit,
+    onNavigateToCart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CatalogScreen(
         onNavigateToProduct = onNavigateToProduct,
         onNavigateToProfile = onNavigateToProfile,
+        onNavigateToCart = onNavigateToCart,
         user = user,
         modifier = modifier,
     )

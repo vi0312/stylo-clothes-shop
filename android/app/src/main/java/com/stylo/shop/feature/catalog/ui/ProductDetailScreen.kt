@@ -33,18 +33,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,19 +68,37 @@ import com.stylo.shop.core.ui.theme.statusColors
 import com.stylo.shop.feature.catalog.model.ProductDetail
 import com.stylo.shop.feature.catalog.ui.components.ColorSelector
 import com.stylo.shop.feature.catalog.ui.components.SizeSelector
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
     onBack: () -> Unit,
+    onOpenCart: () -> Unit,
     modifier: Modifier = Modifier,
-    onAddToCart: (Long) -> Unit = {},
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is ProductDetailEffect.AddedToCart -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.cart_added),
+                        actionLabel = context.getString(R.string.cart_view_cart),
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        onOpenCart()
+                    }
+                }
+                is ProductDetailEffect.AddFailed -> snackbarHostState.showSnackbar(
+                    message = context.getString(ErrorMessages.resourceId(effect.error)),
+                )
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier
@@ -135,31 +155,27 @@ fun ProductDetailScreen(
                         }
 
                         Button(
-                            onClick = {
-                                val variant = state.selectedVariant
-                                if (variant != null) {
-                                    onAddToCart(variant.id)
-                                    scope.launch {
-                                        val product = (state.productState as? UiState.Content)?.data
-                                        val productName = product?.name ?: ""
-                                        snackbarHostState.showSnackbar(
-                                            "Đã chọn: $productName - ${variant.color} - ${variant.size}. Tính năng giỏ hàng sẽ có ở Ticket 22.",
-                                        )
-                                    }
-                                }
-                            },
-                            enabled = state.isCtaEnabled,
+                            onClick = viewModel::addToCart,
+                            enabled = state.isCtaEnabled && !state.isAddingToCart,
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .height(48.dp)
                                 .defaultMinSize(minWidth = 140.dp)
                                 .testTag(UiTags.ProductDetailCta),
                         ) {
-                            Text(
-                                text = state.ctaButtonText,
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.Bold,
-                            )
+                            if (state.isAddingToCart) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                )
+                            } else {
+                                Text(
+                                    text = state.ctaButtonText,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.stylo.shop.feature.catalog
 
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
 import com.stylo.shop.MainDispatcherRule
 import com.stylo.shop.core.network.ApiError
 import com.stylo.shop.core.network.ApiErrorKind
@@ -10,7 +11,9 @@ import com.stylo.shop.feature.catalog.model.BrandItem
 import com.stylo.shop.feature.catalog.model.CategoryItem
 import com.stylo.shop.feature.catalog.model.ProductDetail
 import com.stylo.shop.feature.catalog.model.ProductVariant
+import com.stylo.shop.feature.catalog.ui.ProductDetailEffect
 import com.stylo.shop.feature.catalog.ui.ProductDetailViewModel
+import com.stylo.shop.feature.cart.FakeCartRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -51,7 +54,7 @@ class ProductDetailViewModelTest {
             getDetailResult = { ApiResult.Success(sampleProductDetail()) }
         }
         val savedState = SavedStateHandle(mapOf("productId" to 1L))
-        val viewModel = ProductDetailViewModel(repo, savedState)
+        val viewModel = ProductDetailViewModel(repo, FakeCartRepository(), savedState)
         dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
@@ -70,7 +73,7 @@ class ProductDetailViewModelTest {
             getDetailResult = { ApiResult.Success(sampleProductDetail()) }
         }
         val savedState = SavedStateHandle(mapOf("productId" to 1L))
-        val viewModel = ProductDetailViewModel(repo, savedState)
+        val viewModel = ProductDetailViewModel(repo, FakeCartRepository(), savedState)
         dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
 
         // Size M has stock = 0, so clicking it must be ignored per design spec
@@ -94,7 +97,7 @@ class ProductDetailViewModelTest {
             getDetailResult = { ApiResult.Success(outOfStockProduct) }
         }
         val savedState = SavedStateHandle(mapOf("productId" to 1L))
-        val viewModel = ProductDetailViewModel(repo, savedState)
+        val viewModel = ProductDetailViewModel(repo, FakeCartRepository(), savedState)
         dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
@@ -110,7 +113,7 @@ class ProductDetailViewModelTest {
             getDetailResult = { ApiResult.Success(sampleProductDetail()) }
         }
         val savedState = SavedStateHandle(mapOf("productId" to 1L))
-        val viewModel = ProductDetailViewModel(repo, savedState)
+        val viewModel = ProductDetailViewModel(repo, FakeCartRepository(), savedState)
         dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
 
         // Trắng has size L with stock = 2 (low stock)
@@ -131,12 +134,58 @@ class ProductDetailViewModelTest {
             getDetailResult = { ApiResult.Failure(ApiError(ApiErrorKind.HTTP, code = "NOT_FOUND")) }
         }
         val savedState = SavedStateHandle(mapOf("productId" to 999L))
-        val viewModel = ProductDetailViewModel(repo, savedState)
+        val viewModel = ProductDetailViewModel(repo, FakeCartRepository(), savedState)
         dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertTrue(state.productState is UiState.Error)
         val error = (state.productState as UiState.Error).error
         assertEquals("NOT_FOUND", error.code)
+    }
+
+    @Test
+    fun addToCartSendsTheSelectedVariantAndEmitsAdded() = runTest {
+        val cartRepository = FakeCartRepository()
+        val repo = FakeCatalogRepository().apply {
+            getDetailResult = { ApiResult.Success(sampleProductDetail()) }
+        }
+        val savedState = SavedStateHandle(mapOf("productId" to 1L))
+        val viewModel = ProductDetailViewModel(repo, cartRepository, savedState)
+        dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.effects.test {
+            viewModel.addToCart()
+            dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(ProductDetailEffect.AddedToCart, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        assertEquals(listOf(1L to 1), cartRepository.added)
+        assertFalse(viewModel.uiState.value.isAddingToCart)
+    }
+
+    @Test
+    fun addToCartFailureEmitsTheError() = runTest {
+        val error = ApiError(ApiErrorKind.HTTP, code = "OUT_OF_STOCK", httpStatus = 409)
+        val cartRepository = FakeCartRepository().apply {
+            addResult = ApiResult.Failure(error)
+        }
+        val repo = FakeCatalogRepository().apply {
+            getDetailResult = { ApiResult.Success(sampleProductDetail()) }
+        }
+        val savedState = SavedStateHandle(mapOf("productId" to 1L))
+        val viewModel = ProductDetailViewModel(repo, cartRepository, savedState)
+        dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.effects.test {
+            viewModel.addToCart()
+            dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(ProductDetailEffect.AddFailed(error), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        assertFalse(viewModel.uiState.value.isAddingToCart)
     }
 }

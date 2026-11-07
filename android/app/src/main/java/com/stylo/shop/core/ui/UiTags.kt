@@ -12,6 +12,7 @@ object UiTags {
 
     const val CatalogSearch = "catalog_search"
     const val CatalogProfile = "catalog_profile"
+    const val CatalogCart = "catalog_cart"
     const val CatalogSort = "catalog_sort"
     const val FilterOpen = "filter_open"
     const val FilterCategory = "filter_category"
@@ -39,4 +40,15 @@ object UiTags {
     const val AddressPhone = "address_phone"
     const val AddressLine = "address_line"
     const val AddressSave = "address_save"
+
+    const val CartBack = "cart_back"
+    const val CartClear = "cart_clear"
+    const val CartClearConfirm = "cart_clear_confirm"
+    const val CartEmpty = "cart_empty"
+    const val CartShop = "cart_shop"
+    const val CartItem = "cart_item"
+    const val CartItemName = "cart_item_name"
+    const val CartStepperMinus = "cart_stepper_minus"
+    const val CartStepperPlus = "cart_stepper_plus"
+    const val CartSubtotal = "cart_subtotal"
 }

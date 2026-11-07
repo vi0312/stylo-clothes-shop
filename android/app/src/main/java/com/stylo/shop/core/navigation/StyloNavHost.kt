@@ -38,6 +38,7 @@ import com.stylo.shop.feature.admin.ui.products.AdminProductListScreen
 import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
+import com.stylo.shop.feature.cart.ui.CartScreen
 import com.stylo.shop.feature.home.ui.HomeScreen
 import com.stylo.shop.feature.profile.ui.ProfileScreen
 import com.stylo.shop.feature.profile.ui.address.AddressFormScreen
@@ -103,8 +104,20 @@ private fun SessionNavHost(
                                 navController.navigate(ProductDetailRoute(productId))
                             },
                             onNavigateToProfile = { navController.navigate(ProfileRoute) },
+                            onNavigateToCart = { navController.navigate(CartRoute) },
                         )
                     }
+                }
+                composable<CartRoute> {
+                    CartScreen(
+                        onBack = { navController.popBackStack() },
+                        onShop = {
+                            navController.navigate(HomeRoute) {
+                                popUpTo<HomeRoute> { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                    )
                 }
                 composable<ProfileRoute> {
                     ProfileScreen(
@@ -131,6 +144,7 @@ private fun SessionNavHost(
                 composable<ProductDetailRoute> {
                     ProductDetailScreen(
                         onBack = { navController.popBackStack() },
+                        onOpenCart = { navController.navigate(CartRoute) },
                     )
                 }
             }
