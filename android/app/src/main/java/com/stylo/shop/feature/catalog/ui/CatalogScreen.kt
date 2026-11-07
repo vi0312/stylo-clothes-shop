@@ -73,6 +73,9 @@ import com.stylo.shop.feature.catalog.model.CategoryItem
 import com.stylo.shop.feature.catalog.ui.components.FilterBottomSheet
 import com.stylo.shop.feature.catalog.ui.components.ProductCardView
 import com.stylo.shop.feature.catalog.ui.components.SortSelector
+import androidx.compose.foundation.BorderStroke
+import com.stylo.shop.core.ui.components.StyloFilterChip
+import com.stylo.shop.core.ui.components.StyloSearchField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,69 +140,38 @@ fun CatalogScreen(
                 .padding(horizontal = 20.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            OutlinedTextField(
-                value = state.searchQuery,
-                onValueChange = viewModel::onSearchQueryChanged,
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.catalog_search_hint),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+            StyloSearchField(
+                query = state.searchQuery,
+                hint = stringResource(R.string.catalog_search_hint),
+                onQueryChange = viewModel::onSearchQueryChanged,
+                onSubmit = {
+                    focusManager.clearFocus()
+                    viewModel.onSearchSubmit()
                 },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                },
-                trailingIcon = {
-                    if (state.searchQuery.isNotBlank()) {
-                        IconButton(
-                            onClick = viewModel::onClearSearch,
-                            modifier = Modifier.testTag(UiTags.CatalogSearchClear),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Clear,
-                                contentDescription = "Xoá",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        focusManager.clearFocus()
-                        viewModel.onSearchSubmit()
-                    },
-                ),
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp)
+                onClear = viewModel::onClearSearch,
+                textFieldModifier = Modifier
                     .focusRequester(searchFocusRequester)
                     .testTag(UiTags.CatalogSearch),
+                clearTestTag = UiTags.CatalogSearchClear,
+                modifier = Modifier.weight(1f),
             )
 
             Spacer(Modifier.width(10.dp))
 
-            // Filter button with badge
+            // Filters need the filter payload; while it is loading or failed the button is dead
+            // weight, so it reports that state instead of swallowing taps.
             Surface(
                 onClick = viewModel::onOpenFilterSheet,
-                shape = RoundedCornerShape(12.dp),
+                enabled = state.filtersState is UiState.Content,
+                shape = CircleShape,
                 color = if (state.activeFilterCount > 0) {
                     MaterialTheme.colorScheme.primaryContainer
                 } else {
                     MaterialTheme.colorScheme.surfaceVariant
                 },
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier
-                    .height(52.dp)
+                    .height(48.dp)
                     .testTag(UiTags.FilterOpen),
             ) {
                 Row(
@@ -209,7 +181,6 @@ fun CatalogScreen(
                     Text(
                         text = stringResource(R.string.catalog_filter_title),
                         style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium,
                     )
                     if (state.activeFilterCount > 0) {
                         Spacer(Modifier.width(6.dp))
@@ -244,30 +215,20 @@ fun CatalogScreen(
             ) {
                 // "Tất cả" chip
                 item {
-                    val isAllSelected = state.activeCategoryId == null
-                    FilterChip(
-                        selected = isAllSelected,
+                    StyloFilterChip(
+                        label = stringResource(R.string.catalog_all_categories),
+                        selected = state.activeCategoryId == null,
                         onClick = { viewModel.onSelectCategoryTab(null) },
-                        label = { Text(stringResource(R.string.catalog_all_categories)) },
                         modifier = Modifier.testTag(UiTags.CatalogCategoryChip),
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
                     )
                 }
 
                 items(filtersState.data.categories, key = { it.id }) { category ->
-                    val isSelected = state.activeCategoryId == category.id
-                    FilterChip(
-                        selected = isSelected,
+                    StyloFilterChip(
+                        label = category.name,
+                        selected = state.activeCategoryId == category.id,
                         onClick = { viewModel.onSelectCategoryTab(category.id) },
-                        label = { Text(category.name) },
                         modifier = Modifier.testTag(UiTags.CatalogCategoryChip),
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
                     )
                 }
             }

@@ -64,15 +64,16 @@ import com.stylo.shop.feature.admin.model.RevenueReport
 import com.stylo.shop.feature.admin.model.TopProductRow
 import com.stylo.shop.feature.admin.ui.AdminDatePickerDialog
 import com.stylo.shop.feature.admin.ui.AdminDetailScaffold
-import com.stylo.shop.feature.admin.ui.AdminEmptyState
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
 import com.stylo.shop.feature.admin.ui.AdminRevenueChart
-import com.stylo.shop.feature.admin.ui.AdminSectionCard
 import com.stylo.shop.feature.orders.ui.OrderStatusBadge
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import com.stylo.shop.core.ui.components.StyloCard
+import com.stylo.shop.core.ui.components.StyloEmptyState
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloFilterChip
 
 private val reportDatePattern = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.forLanguageTag("vi-VN"))
 
@@ -112,13 +113,13 @@ fun AdminReportsScreen(
                     .fillMaxWidth(),
             ) {
                 when (val content = state.content) {
-                    UiState.Loading -> AdminListSkeleton(
+                    UiState.Loading -> StyloListSkeleton(
                         rows = 6,
                         thumbnail = false,
                         modifier = Modifier.padding(20.dp),
                     )
 
-                    is UiState.Error -> AdminErrorState(
+                    is UiState.Error -> StyloErrorState(
                         error = content.error,
                         onRetry = viewModel::retry,
                     )
@@ -158,10 +159,10 @@ private fun ReportKindChips(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         AdminReportKind.entries.forEach { entry ->
-            FilterChip(
+            StyloFilterChip(
+                label = stringResource(entry.labelRes),
                 selected = kind == entry,
                 onClick = { onSelect(entry) },
-                label = { Text(stringResource(entry.labelRes)) },
             )
         }
     }
@@ -220,6 +221,7 @@ private fun ReportFilters(
                 Text(
                     text = stringResource(R.string.admin_reports_from, reportDateLabel(state.from)),
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             OutlinedButton(
@@ -230,6 +232,7 @@ private fun ReportFilters(
                 Text(
                     text = stringResource(R.string.admin_reports_to, reportDateLabel(state.to)),
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -282,7 +285,7 @@ private fun RevenueReportBody(report: RevenueReport) {
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 8.dp),
     ) {
-        AdminSectionCard(title = stringResource(R.string.admin_reports_revenue_title)) {
+        StyloCard(title = stringResource(R.string.admin_reports_revenue_title)) {
             Text(
                 text = Formatters.money(report.totalRevenue),
                 style = MaterialTheme.typography.headlineSmall,
@@ -293,10 +296,18 @@ private fun RevenueReportBody(report: RevenueReport) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            if (report.series.size > MAX_CHART_COLUMNS) {
+                Text(
+                    text = stringResource(R.string.admin_reports_chart_capped, MAX_CHART_COLUMNS),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         Spacer(Modifier.height(16.dp))
+        // docs/ui.md caps the chart at 14 columns; a longer range keeps its latest 14 periods.
         AdminRevenueChart(
-            series = report.series,
+            series = report.series.takeLast(MAX_CHART_COLUMNS),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp),
@@ -388,7 +399,7 @@ private fun OrdersByStatusTable(items: List<OrdersByStatusRow>) {
 @Composable
 private fun LowStockTable(threshold: Int, items: List<LowStockRow>) {
     if (items.isEmpty()) {
-        AdminEmptyState(
+        StyloEmptyState(
             icon = Icons.Filled.Warning,
             title = stringResource(R.string.admin_reports_low_stock_empty_title),
             body = stringResource(R.string.admin_reports_low_stock_empty_body, threshold),
@@ -453,7 +464,7 @@ private fun InventoryCostBody(report: InventoryCostReport) {
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 8.dp),
     ) {
-        AdminSectionCard(title = stringResource(R.string.admin_reports_cost_title)) {
+        StyloCard(title = stringResource(R.string.admin_reports_cost_title)) {
             CostRow(
                 label = stringResource(R.string.admin_reports_cost_receipts),
                 value = report.receiptsCost,
@@ -509,7 +520,7 @@ private fun CostRow(
 
 @Composable
 private fun NoDataState() {
-    AdminEmptyState(
+    StyloEmptyState(
         icon = Icons.Filled.Info,
         title = stringResource(R.string.admin_reports_empty_title),
         body = stringResource(R.string.admin_reports_empty_body),
@@ -586,3 +597,5 @@ private val ReportGroupBy.labelRes: Int
 
 private fun reportDateLabel(isoDate: String): String =
     LocalDate.parse(isoDate).format(reportDatePattern)
+
+private const val MAX_CHART_COLUMNS = 14

@@ -59,14 +59,15 @@ import com.stylo.shop.core.ui.theme.statusColors
 import com.stylo.shop.feature.admin.model.AdminProductSummary
 import com.stylo.shop.feature.admin.model.AdminTaxonomy
 import com.stylo.shop.feature.admin.model.CatalogStatus
-import com.stylo.shop.feature.admin.ui.AdminEmptyState
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
-import com.stylo.shop.feature.admin.ui.AdminProductThumbnail
 import com.stylo.shop.feature.admin.ui.AdminScaffold
-import com.stylo.shop.feature.admin.ui.AdminSearchField
 import com.stylo.shop.feature.admin.ui.AdminTab
 import com.stylo.shop.feature.admin.ui.ProductStatusBadge
+import com.stylo.shop.core.ui.components.StyloEmptyState
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloSearchField
+import com.stylo.shop.core.ui.components.StyloThumbnail
+import com.stylo.shop.core.ui.components.StyloFilterChip
 
 @Composable
 fun AdminProductListScreen(
@@ -121,9 +122,9 @@ fun AdminProductListScreen(
                 }
             }
 
-            AdminSearchField(
+            StyloSearchField(
                 query = state.searchQuery,
-                placeholder = stringResource(R.string.admin_products_search_hint),
+                hint = stringResource(R.string.admin_products_search_hint),
                 onQueryChange = viewModel::onSearchQueryChanged,
                 onSubmit = viewModel::onSearchSubmit,
                 onClear = viewModel::onClearSearch,
@@ -140,27 +141,10 @@ fun AdminProductListScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(AdminStatusFilter.entries, key = { it.name }) { filter ->
-                    val selected = state.statusFilter == filter
-                    FilterChip(
-                        selected = selected,
+                    StyloFilterChip(
+                        label = filter.label(),
+                        selected = state.statusFilter == filter,
                         onClick = { viewModel.onStatusFilterSelected(filter) },
-                        label = { Text(filter.label()) },
-                        leadingIcon = if (selected) {
-                            {
-                                Icon(
-                                    Icons.Filled.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                )
-                            }
-                        } else {
-                            null
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
                     )
                 }
             }
@@ -199,14 +183,14 @@ fun AdminProductListScreen(
                     .weight(1f),
             ) {
                 when (val products = state.productsState) {
-                    is UiState.Loading -> AdminListSkeleton(rows = 6)
-                    is UiState.Error -> AdminErrorState(
+                    is UiState.Loading -> StyloListSkeleton(rows = 6)
+                    is UiState.Error -> StyloErrorState(
                         error = products.error,
                         onRetry = viewModel::onRetry,
                     )
                     is UiState.Content -> {
                         if (products.data.isEmpty()) {
-                            AdminEmptyState(
+                            StyloEmptyState(
                                 icon = Icons.Filled.ShoppingCart,
                                 title = stringResource(R.string.admin_products_empty_title),
                                 body = stringResource(R.string.admin_products_empty_body),
@@ -308,7 +292,7 @@ private fun ProductRow(
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AdminProductThumbnail(url = product.coverUrl, name = product.name)
+        StyloThumbnail(url = product.coverUrl, name = product.name)
         Spacer(Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -368,16 +352,10 @@ private fun TaxonomyFilterChip(
     val selectedName = items.firstOrNull { it.id == selectedId }?.name
 
     Box {
-        FilterChip(
+        StyloFilterChip(
+            label = if (selectedName != null) "$label: $selectedName" else label,
             selected = selectedId != null,
             onClick = { expanded = true },
-            label = {
-                Text(
-                    if (selectedName != null) "$label: $selectedName" else label,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            },
             trailingIcon = {
                 Icon(
                     Icons.Filled.KeyboardArrowDown,
@@ -385,22 +363,6 @@ private fun TaxonomyFilterChip(
                     modifier = Modifier.size(18.dp),
                 )
             },
-            leadingIcon = if (selectedId != null) {
-                {
-                    Icon(
-                        Icons.Filled.Check,
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize),
-                    )
-                }
-            } else {
-                null
-            },
-            colors = FilterChipDefaults.filterChipColors(
-                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-            ),
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
@@ -439,9 +401,10 @@ private fun AdminStatusFilter.label(): String = when (this) {
     AdminStatusFilter.LOW_STOCK -> stringResource(R.string.admin_filter_low_stock)
 }
 
+@Composable
 private fun AdminProductSummary.priceLabel(): String = when {
     minPrice != null && maxPrice != null && minPrice != maxPrice ->
-        "${Formatters.money(minPrice)} - ${Formatters.money(maxPrice)}"
+        stringResource(R.string.price_range, Formatters.money(minPrice), Formatters.money(maxPrice))
     minPrice != null -> Formatters.money(minPrice)
     maxPrice != null -> Formatters.money(maxPrice)
     else -> "—"

@@ -47,6 +47,7 @@ import com.stylo.shop.core.ui.Formatters
 import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.orders.model.OrderSummary
+import com.stylo.shop.core.ui.components.StyloFilterChip
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,10 +131,10 @@ private fun StatusFilterChips(
         contentPadding = PaddingValues(vertical = 8.dp),
     ) {
         items(OrderStatusFilter.entries) { filter ->
-            FilterChip(
+            StyloFilterChip(
+                label = filterLabel(filter),
                 selected = filter == selected,
                 onClick = { onSelect(filter) },
-                label = { Text(filterLabel(filter)) },
                 modifier = Modifier.testTag(UiTags.OrdersStatusFilter),
             )
         }

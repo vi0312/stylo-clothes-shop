@@ -82,6 +82,8 @@ class AdminTaxonomyViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AdminTaxonomyUiState())
     val uiState: StateFlow<AdminTaxonomyUiState> = _uiState.asStateFlow()
 
+    private val loadGenerations = mutableMapOf<TaxonomyTab, Int>()
+
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects: Flow<UiEffect> = _effects.receiveAsFlow()
 
@@ -295,6 +297,13 @@ class AdminTaxonomyViewModel @Inject constructor(
         }
         if (page > 1 && (list.isLoadingMore || !list.hasMore)) return
 
+        // One counter per tab: the two tabs load in parallel and must not cancel each other, but a
+        // slower earlier response for the same tab must not overwrite a newer filter.
+        val generation = (loadGenerations[tab] ?: 0) + 1
+        loadGenerations[tab] = generation
+        if (page > 1) {
+            updateTab(tab) { it.copy(isLoadingMore = true, loadMoreError = null) }
+        }
         viewModelScope.launch {
             val isInitial = page == 1
             updateTab(tab) {
@@ -325,6 +334,7 @@ class AdminTaxonomyViewModel @Inject constructor(
             } else {
                 repository.listBrands(query)
             }
+            if (generation != loadGenerations[tab]) return@launch
 
             when (result) {
                 is ApiResult.Success -> {

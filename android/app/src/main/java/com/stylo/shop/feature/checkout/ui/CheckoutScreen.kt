@@ -75,6 +75,7 @@ import com.stylo.shop.feature.checkout.model.SubmitError
 import com.stylo.shop.feature.checkout.model.UnavailableLine
 import com.stylo.shop.feature.orders.model.OrderPaymentMethod
 import com.stylo.shop.feature.profile.model.Address
+import androidx.compose.foundation.layout.imePadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +120,9 @@ fun CheckoutScreen(
     val showBottomBar = !state.isLoading && state.loadError == null && cart?.isEmpty == false
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -287,6 +290,8 @@ private fun CheckoutContent(
                 onAdd = onAddAddress,
             )
         }
+        item { SectionTitle(stringResource(R.string.checkout_items_title)) }
+        items(cart.items, key = { it.id }) { item -> CheckoutLine(item) }
         item {
             PaymentSection(
                 selected = state.paymentMethod,
@@ -296,8 +301,6 @@ private fun CheckoutContent(
         item {
             NoteSection(note = state.note, onNoteChange = onNoteChange)
         }
-        item { SectionTitle(stringResource(R.string.checkout_items_title)) }
-        items(cart.items, key = { it.id }) { item -> CheckoutLine(item) }
     }
 }
 
@@ -408,11 +411,24 @@ private fun PaymentOption(
             .fillMaxWidth()
             .selectable(selected = selected, onClick = onClick, role = Role.RadioButton)
             .testTag(tag),
-        shape = RoundedCornerShape(14.dp),
-        color = if (selected) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
+        shape = MaterialTheme.shapes.medium,
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerLowest
+        },
+        contentColor = if (selected) {
+            MaterialTheme.colorScheme.onPrimaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        },
         border = BorderStroke(
             width = if (selected) 2.dp else 1.dp,
-            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+            color = if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outline
+            },
         ),
     ) {
         Row(
@@ -499,7 +515,7 @@ private fun SubmitErrorSection(
         modifier = Modifier
             .fillMaxWidth()
             .testTag(UiTags.CheckoutError),
-        shape = RoundedCornerShape(16.dp),
+        shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.errorContainer,
         contentColor = MaterialTheme.colorScheme.onErrorContainer,
     ) {
@@ -617,7 +633,6 @@ private fun CheckoutBottomBar(
     onSubmit: () -> Unit,
 ) {
     Surface(
-        shadowElevation = 8.dp,
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
@@ -758,9 +773,8 @@ private fun AddressPickerSheet(
 private fun SectionCard(content: @Composable () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
     ) {
         Column(modifier = Modifier.padding(16.dp)) { content() }
     }

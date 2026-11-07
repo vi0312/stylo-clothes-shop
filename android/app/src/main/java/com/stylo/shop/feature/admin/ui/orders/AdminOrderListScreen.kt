@@ -43,13 +43,14 @@ import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.admin.model.AdminOrderRange
 import com.stylo.shop.feature.admin.model.AdminOrderSummary
-import com.stylo.shop.feature.admin.ui.AdminEmptyState
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
 import com.stylo.shop.feature.admin.ui.AdminScaffold
-import com.stylo.shop.feature.admin.ui.AdminSearchField
 import com.stylo.shop.feature.admin.ui.AdminTab
 import com.stylo.shop.feature.orders.ui.OrderStatusBadge
+import com.stylo.shop.core.ui.components.StyloEmptyState
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloSearchField
+import com.stylo.shop.core.ui.components.StyloFilterChip
 
 @Composable
 fun AdminOrderListScreen(
@@ -85,9 +86,9 @@ fun AdminOrderListScreen(
                 .fillMaxSize()
                 .padding(padding),
         ) {
-            AdminSearchField(
+            StyloSearchField(
                 query = state.searchQuery,
-                placeholder = stringResource(R.string.admin_orders_search_hint),
+                hint = stringResource(R.string.admin_orders_search_hint),
                 onQueryChange = viewModel::onSearchQueryChange,
                 onSubmit = viewModel::onSearch,
                 onClear = {
@@ -106,10 +107,10 @@ fun AdminOrderListScreen(
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
             ) {
                 items(AdminOrderStatusFilter.entries) { filter ->
-                    FilterChip(
+                    StyloFilterChip(
+                        label = statusFilterLabel(filter),
                         selected = state.statusFilter == filter,
                         onClick = { viewModel.onStatusFilterSelected(filter) },
-                        label = { Text(statusFilterLabel(filter)) },
                     )
                 }
             }
@@ -119,22 +120,22 @@ fun AdminOrderListScreen(
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 8.dp),
             ) {
                 items(AdminOrderRange.entries) { range ->
-                    FilterChip(
+                    StyloFilterChip(
+                        label = rangeLabel(range),
                         selected = state.range == range,
                         onClick = { viewModel.onRangeSelected(range) },
-                        label = { Text(rangeLabel(range)) },
                     )
                 }
             }
 
             when (val ordersState = state.ordersState) {
-                is UiState.Loading -> AdminListSkeleton(rows = 6, thumbnail = false)
-                is UiState.Error -> AdminErrorState(
+                is UiState.Loading -> StyloListSkeleton(rows = 6, thumbnail = false)
+                is UiState.Error -> StyloErrorState(
                     error = ordersState.error,
                     onRetry = viewModel::onRetry,
                 )
                 is UiState.Content -> if (ordersState.data.isEmpty()) {
-                    AdminEmptyState(
+                    StyloEmptyState(
                         icon = Icons.AutoMirrored.Filled.List,
                         title = stringResource(R.string.admin_orders_empty),
                         body = stringResource(R.string.admin_orders_empty_hint),
@@ -226,7 +227,7 @@ private fun AdminOrderRow(order: AdminOrderSummary, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier
             .fillMaxWidth()
             .testTag(UiTags.AdminOrderRow),
@@ -289,7 +290,7 @@ private fun statusFilterLabel(filter: AdminOrderStatusFilter): String = stringRe
 @Composable
 private fun rangeLabel(range: AdminOrderRange): String = stringResource(
     when (range) {
-        AdminOrderRange.ALL -> R.string.orders_filter_all
+        AdminOrderRange.ALL -> R.string.admin_orders_range_all
         AdminOrderRange.TODAY -> R.string.admin_orders_filter_today
         AdminOrderRange.LAST_7 -> R.string.admin_orders_filter_7
         AdminOrderRange.LAST_30 -> R.string.admin_orders_filter_30

@@ -42,6 +42,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.StyloLockupStacked
 import com.stylo.shop.core.ui.UiTags
+import com.stylo.shop.core.ui.components.StyloBusyButton
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.TextButton
 
 @Composable
 fun AuthScreen(
@@ -80,6 +87,7 @@ private fun AuthContent(
 ) {
     val focusManager = LocalFocusManager.current
     val isRegister = mode == AuthMode.REGISTER
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -179,7 +187,28 @@ private fun AuthContent(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                 onDone = { onSubmit() },
             ),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
+            trailingToggle = {
+                TextButton(
+                    onClick = { passwordVisible = !passwordVisible },
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(
+                            if (passwordVisible) {
+                                R.string.auth_hide_password
+                            } else {
+                                R.string.auth_show_password
+                            },
+                        ),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+            },
         )
 
         if (state.formError != null) {
@@ -188,27 +217,15 @@ private fun AuthContent(
         }
 
         Spacer(Modifier.height(24.dp))
-        Button(
+        StyloBusyButton(
+            text = stringResource(if (isRegister) R.string.auth_register_cta else R.string.auth_login_cta),
+            busy = state.submitting,
             onClick = onSubmit,
-            enabled = !state.submitting,
+            testTag = UiTags.AuthSubmit,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
-                .testTag(UiTags.AuthSubmit),
-        ) {
-            if (state.submitting) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-            } else {
-                Text(
-                    text = stringResource(if (isRegister) R.string.auth_register_cta else R.string.auth_login_cta),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-        }
+                .heightIn(min = 48.dp),
+        )
         Spacer(Modifier.height(32.dp))
     }
 }
@@ -223,6 +240,7 @@ private fun AuthTextField(
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingToggle: (@Composable () -> Unit)? = null,
 ) {
     OutlinedTextField(
         value = value,
@@ -241,6 +259,7 @@ private fun AuthTextField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         visualTransformation = visualTransformation,
+        trailingIcon = trailingToggle,
     )
 }
 

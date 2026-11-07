@@ -43,9 +43,11 @@ fun AdminRevenueChart(
             )
         },
     )
+    // docs/ui.md: every past column secondary, the current one ink.
     val barColor = MaterialTheme.colorScheme.secondary
-    val axisColor = MaterialTheme.colorScheme.outlineVariant
-    val labelStyle = MaterialTheme.typography.labelSmall.copy(
+    val currentBarColor = MaterialTheme.colorScheme.primary
+    val axisColor = MaterialTheme.colorScheme.outline
+    val labelStyle = MaterialTheme.typography.labelMedium.copy(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     val peakLabelStyle = labelStyle.copy(color = MaterialTheme.colorScheme.onSurface)
@@ -54,7 +56,12 @@ fun AdminRevenueChart(
     Canvas(modifier = modifier.semantics { contentDescription = chartDescription }) {
         if (series.isEmpty()) return@Canvas
 
-        val axisLabelSpace = 18.dp.toPx()
+        // Measure the axis band instead of guessing: labelMedium grows with the user's font scale.
+        val axisLabelLayout = textMeasurer.measure(
+            text = AnnotatedString(chartPeriodLabel(series.first().period)),
+            style = labelStyle,
+        )
+        val axisLabelSpace = axisLabelLayout.size.height.toFloat() + 4.dp.toPx()
         val baseLine = size.height - axisLabelSpace
         val maxRevenue = series.maxOf { it.revenue }.coerceAtLeast(1L)
         // Keep the end bars clear of the platform scroll indicator hugging the right edge.
@@ -90,7 +97,7 @@ fun AdminRevenueChart(
             val barHeight = (point.revenue.toFloat() / maxRevenue) * (plotHeight - 2.dp.toPx())
             if (barHeight > 0f) {
                 drawRoundRect(
-                    color = barColor,
+                    color = if (index == series.lastIndex) currentBarColor else barColor,
                     topLeft = Offset(
                         sideInset + index * slot + (slot - barWidth) / 2f,
                         baseLine - barHeight,
@@ -101,10 +108,12 @@ fun AdminRevenueChart(
             }
         }
 
-        if (peakLayout != null) {
+        val peakFits = peakLayout != null &&
+            peakLayout.size.width <= (size.width - sideInset * 2).toInt()
+        if (peakLayout != null && peakFits) {
             val peakBarLeft = sideInset + peakIndex * slot + (slot - barWidth) / 2f
-            val peakX = (peakBarLeft + barWidth - peakLayout.size.width)
-                .coerceIn(sideInset, size.width - sideInset - peakLayout.size.width)
+            val maxX = (size.width - sideInset - peakLayout.size.width).coerceAtLeast(sideInset)
+            val peakX = (peakBarLeft + barWidth - peakLayout.size.width).coerceIn(sideInset, maxX)
             drawText(peakLayout, topLeft = Offset(peakX, 0f))
         }
 
@@ -119,7 +128,7 @@ fun AdminRevenueChart(
                 series.lastIndex -> size.width - sideInset - layout.size.width
                 else -> sideInset + index * slot + (slot - layout.size.width) / 2f
             }
-            drawText(layout, topLeft = Offset(x, baseLine + 2.dp.toPx()))
+            drawText(layout, topLeft = Offset(x, baseLine + 4.dp.toPx()))
         }
     }
 }

@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ProfileUiState(
+    val originalFullName: String = "",
+    val originalPhone: String = "",
     val email: String = "",
     val fullName: String = "",
     val phone: String = "",
@@ -45,6 +47,8 @@ class ProfileViewModel @Inject constructor(
                 email = user.email,
                 fullName = user.fullName,
                 phone = user.phone.orEmpty(),
+                originalFullName = user.fullName,
+                originalPhone = user.phone.orEmpty(),
             )
         } ?: ProfileUiState(),
     )
@@ -97,6 +101,8 @@ class ProfileViewModel @Inject constructor(
                             email = result.data.email,
                             fullName = result.data.fullName,
                             phone = result.data.phone.orEmpty(),
+                            originalFullName = result.data.fullName,
+                            originalPhone = result.data.phone.orEmpty(),
                         )
                     }
                     _effects.send(UiEffect.ShowMessageRes(R.string.profile_saved))

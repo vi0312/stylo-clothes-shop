@@ -62,15 +62,16 @@ import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.feature.admin.model.ADMIN_TAXONOMY_NAME_MAX
 import com.stylo.shop.feature.admin.model.AdminTaxonomy
 import com.stylo.shop.feature.admin.model.CatalogStatus
-import com.stylo.shop.feature.admin.ui.AdminConfirmDialog
 import com.stylo.shop.feature.admin.ui.AdminDetailScaffold
-import com.stylo.shop.feature.admin.ui.AdminEmptyState
 import com.stylo.shop.feature.admin.ui.AdminErrorBanner
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
-import com.stylo.shop.feature.admin.ui.AdminSearchField
 import com.stylo.shop.feature.admin.ui.TaxonomyStatusBadge
 import com.stylo.shop.feature.admin.ui.adminFieldErrorText
+import com.stylo.shop.core.ui.components.StyloConfirmDialog
+import com.stylo.shop.core.ui.components.StyloEmptyState
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloSearchField
+import com.stylo.shop.core.ui.components.StyloFilterChip
 
 @Composable
 fun AdminTaxonomyScreen(
@@ -154,9 +155,9 @@ fun AdminTaxonomyScreen(
                 }
             }
 
-            AdminSearchField(
+            StyloSearchField(
                 query = list.searchQuery,
-                placeholder = stringResource(R.string.admin_taxonomy_search_hint),
+                hint = stringResource(R.string.admin_taxonomy_search_hint),
                 onQueryChange = viewModel::onSearchQueryChanged,
                 onSubmit = viewModel::onSearchSubmit,
                 onClear = viewModel::onClearSearch,
@@ -174,26 +175,10 @@ fun AdminTaxonomyScreen(
             ) {
                 items(TaxonomyStatusFilter.entries, key = { it.name }) { filter ->
                     val selected = list.statusFilter == filter
-                    FilterChip(
+                    StyloFilterChip(
+                        label = filter.label(),
                         selected = selected,
                         onClick = { viewModel.onStatusFilterSelected(filter) },
-                        label = { Text(filter.label()) },
-                        leadingIcon = if (selected) {
-                            {
-                                Icon(
-                                    Icons.Filled.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                )
-                            }
-                        } else {
-                            null
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
                     )
                 }
             }
@@ -204,14 +189,14 @@ fun AdminTaxonomyScreen(
                     .weight(1f),
             ) {
                 when (val items = list.itemsState) {
-                    is UiState.Loading -> AdminListSkeleton(rows = 6, thumbnail = false)
-                    is UiState.Error -> AdminErrorState(
+                    is UiState.Loading -> StyloListSkeleton(rows = 6, thumbnail = false)
+                    is UiState.Error -> StyloErrorState(
                         error = items.error,
                         onRetry = viewModel::onRetry,
                     )
                     is UiState.Content -> {
                         if (items.data.isEmpty()) {
-                            AdminEmptyState(
+                            StyloEmptyState(
                                 icon = Icons.AutoMirrored.Filled.List,
                                 title = stringResource(
                                     if (isCategories) {
@@ -299,7 +284,7 @@ fun AdminTaxonomyScreen(
                 },
             )
         } else {
-            AdminConfirmDialog(
+            StyloConfirmDialog(
                 title = stringResource(
                     if (isCategories) {
                         R.string.admin_taxonomy_delete_category_title
@@ -498,13 +483,13 @@ private fun TaxonomyEditorDialog(
         },
         confirmButton = {
             TextButton(onClick = onSave, enabled = !editor.saving) {
+                Text(stringResource(R.string.action_save))
                 if (editor.saving) {
+                    Spacer(Modifier.width(8.dp))
                     CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
                         strokeWidth = 2.dp,
                     )
-                } else {
-                    Text(stringResource(R.string.action_save))
                 }
             }
         },

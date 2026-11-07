@@ -52,6 +52,7 @@ class AdminDashboardViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 revenue = DashboardBlock.Loading,
+                previousRevenue = DashboardBlock.Loading,
                 topProducts = DashboardBlock.Loading,
                 lowStock = DashboardBlock.Loading,
                 recentOrders = DashboardBlock.Loading,
@@ -66,6 +67,19 @@ class AdminDashboardViewModel @Inject constructor(
             )
             if (generation != loadGeneration) return@launch
             _uiState.update { it.copy(revenue = result.toBlock()) }
+        }
+        viewModelScope.launch {
+            // Same-length window right before the selected one, so KPI deltas compare like periods.
+            val from = LocalDate.parse(snapshot.from)
+            val to = LocalDate.parse(snapshot.to)
+            val days = java.time.temporal.ChronoUnit.DAYS.between(from, to) + 1
+            val result = reportsRepository.revenue(
+                from = from.minusDays(days).toString(),
+                to = from.minusDays(1).toString(),
+                groupBy = ReportGroupBy.DAY,
+            )
+            if (generation != loadGeneration) return@launch
+            _uiState.update { it.copy(previousRevenue = result.toBlock()) }
         }
         viewModelScope.launch {
             val result = reportsRepository.topProducts(

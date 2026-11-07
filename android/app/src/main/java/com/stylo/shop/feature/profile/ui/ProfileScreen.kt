@@ -50,6 +50,11 @@ import com.stylo.shop.core.ui.UiEffectHost
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.profile.model.PROFILE_NAME_MAX
 import com.stylo.shop.feature.profile.model.PROFILE_PHONE_MAX
+import com.stylo.shop.core.ui.components.StyloBusyButton
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.heightIn
+import com.stylo.shop.core.ui.components.StyloConfirmDialog
+import androidx.compose.foundation.layout.Box
 
 @Composable
 fun ProfileScreen(
@@ -75,6 +80,7 @@ fun ProfileScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
+                .imePadding()
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -120,24 +126,18 @@ fun ProfileScreen(
 
             state.formError?.let { ProfileErrorBanner(it) }
 
-            Button(
+            val isDirty = state.fullName != state.originalFullName ||
+                state.phone != state.originalPhone
+            StyloBusyButton(
+                text = stringResource(R.string.profile_save),
+                busy = state.saving,
+                enabled = isDirty,
                 onClick = viewModel::save,
-                enabled = !state.saving,
+                testTag = UiTags.ProfileSave,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
-                    .testTag(UiTags.ProfileSave),
-            ) {
-                if (state.saving) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                } else {
-                    Text(stringResource(R.string.profile_save))
-                }
-            }
+                    .heightIn(min = 48.dp),
+            )
 
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
 
@@ -165,31 +165,20 @@ fun ProfileScreen(
     }
 
     if (confirmLogout) {
-        AlertDialog(
-            onDismissRequest = { confirmLogout = false },
-            modifier = Modifier.e2eTagsAsResourceId(),
-            title = { Text(stringResource(R.string.profile_logout_title)) },
-            text = { Text(stringResource(R.string.profile_logout_body)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        confirmLogout = false
-                        onLogout()
-                    },
-                    modifier = Modifier.testTag(UiTags.ProfileLogoutConfirm),
-                ) {
-                    Text(stringResource(R.string.action_logout))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { confirmLogout = false },
-                    modifier = Modifier.testTag(UiTags.ProfileLogoutCancel),
-                ) {
-                    Text(stringResource(R.string.action_cancel))
-                }
-            },
-        )
+        Box(Modifier.e2eTagsAsResourceId()) {
+            StyloConfirmDialog(
+                title = stringResource(R.string.profile_logout_title),
+                body = stringResource(R.string.profile_logout_body),
+                confirmLabel = stringResource(R.string.action_logout),
+                onConfirm = {
+                    confirmLogout = false
+                    onLogout()
+                },
+                onDismiss = { confirmLogout = false },
+                confirmTestTag = UiTags.ProfileLogoutConfirm,
+                dismissTestTag = UiTags.ProfileLogoutCancel,
+            )
+        }
     }
 }
 

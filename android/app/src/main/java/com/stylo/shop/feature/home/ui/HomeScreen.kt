@@ -1,6 +1,5 @@
 package com.stylo.shop.feature.home.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +55,10 @@ import com.stylo.shop.core.ui.message
 import com.stylo.shop.feature.catalog.model.CategoryItem
 import com.stylo.shop.feature.catalog.model.ProductCard
 import com.stylo.shop.feature.catalog.ui.components.ProductCardView
+import com.stylo.shop.core.ui.components.StyloInlineError
+import androidx.compose.foundation.BorderStroke
+import com.stylo.shop.core.ui.ErrorMessages
+import androidx.compose.foundation.background
 
 /**
  * Home layout A (docs/ui.md). Guests see the same page; the cart badge and greeting wait for a
@@ -70,7 +73,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val categories = (state.categoriesState as? UiState.Content)?.data.orEmpty()
 
     Column(
         modifier = modifier
@@ -87,12 +89,19 @@ fun HomeScreen(
         HeroBanner(onOpenCollection = { onOpenCatalog(null, false) })
         Spacer(Modifier.height(20.dp))
 
-        if (categories.isNotEmpty()) {
-            CategoryChips(
-                categories = categories,
-                onSelect = { category -> onOpenCatalog(category.id, false) },
+        when (val categoriesState = state.categoriesState) {
+            is UiState.Content -> if (categoriesState.data.isNotEmpty()) {
+                CategoryChips(
+                    categories = categoriesState.data,
+                    onSelect = { category -> onOpenCatalog(category.id, false) },
+                )
+                Spacer(Modifier.height(22.dp))
+            }
+            is UiState.Error -> StyloInlineError(
+                message = stringResource(ErrorMessages.resourceId(categoriesState.error)),
+                onRetry = viewModel::loadCategories,
             )
-            Spacer(Modifier.height(22.dp))
+            is UiState.Loading -> Unit
         }
 
         CarouselSection(
@@ -102,10 +111,8 @@ fun HomeScreen(
             onSeeAll = { onOpenCatalog(null, false) },
         )
 
-        if (categories.isNotEmpty()) {
-            FreeshipStrip()
-            Spacer(Modifier.height(24.dp))
-        }
+        FreeshipStrip()
+        Spacer(Modifier.height(24.dp))
 
         state.blocks.forEachIndexed { index, block ->
             if (index > 0) Spacer(Modifier.height(24.dp))
@@ -159,17 +166,14 @@ private fun HomeHeader(user: User?, onSearch: () -> Unit) {
 
 @Composable
 private fun HeroBanner(onOpenCollection: () -> Unit) {
-    val tones = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.secondary,
-    )
+    val heroColor = MaterialTheme.colorScheme.primary
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .aspectRatio(1.15f)
             .clip(MaterialTheme.shapes.large)
-            .background(Brush.linearGradient(tones)),
+            .background(heroColor),
     ) {
         Column(
             modifier = Modifier
@@ -179,7 +183,7 @@ private fun HeroBanner(onOpenCollection: () -> Unit) {
             Text(
                 text = stringResource(R.string.home_hero_kicker),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.75f),
+                color = MaterialTheme.colorScheme.onPrimary,
                 letterSpacing = 2.sp,
             )
             Spacer(Modifier.height(8.dp))
@@ -215,23 +219,19 @@ private fun CategoryChips(categories: List<CategoryItem>, onSelect: (CategoryIte
         contentPadding = PaddingValues(horizontal = 20.dp),
     ) {
         items(categories, key = { it.id }) { category ->
-            FilterChip(
-                selected = false,
+            Surface(
                 onClick = { onSelect(category) },
-                label = {
-                    Text(category.name, style = MaterialTheme.typography.labelLarge)
-                },
                 shape = CircleShape,
-                colors = FilterChipDefaults.filterChipColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-                border = FilterChipDefaults.filterChipBorder(
-                    enabled = true,
-                    selected = false,
-                    borderColor = MaterialTheme.colorScheme.outline,
-                ),
-            )
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            ) {
+                Text(
+                    text = category.name,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                )
+            }
         }
     }
 }

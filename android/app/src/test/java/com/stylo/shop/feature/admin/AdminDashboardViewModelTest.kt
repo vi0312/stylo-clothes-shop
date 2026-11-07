@@ -73,9 +73,14 @@ class AdminDashboardViewModelTest {
         val viewModel = viewModel(reports, orders)
         advance()
 
+        // The current window plus the immediately preceding window of the same length, which
+        // feeds the KPI deltas.
         assertEquals(
-            RevenueCall(from = "2026-10-09", to = "2026-11-07", groupBy = ReportGroupBy.DAY),
-            reports.revenueCalls.single(),
+            listOf(
+                RevenueCall(from = "2026-10-09", to = "2026-11-07", groupBy = ReportGroupBy.DAY),
+                RevenueCall(from = "2026-09-09", to = "2026-10-08", groupBy = ReportGroupBy.DAY),
+            ),
+            reports.revenueCalls,
         )
         assertEquals("2026-10-09" to "2026-11-07", reports.topProductsCalls.single())
         assertEquals(3, reports.topProductsLimits.single())

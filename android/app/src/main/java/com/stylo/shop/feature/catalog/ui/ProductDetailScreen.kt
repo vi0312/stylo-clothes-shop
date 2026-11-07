@@ -68,6 +68,8 @@ import com.stylo.shop.core.ui.theme.statusColors
 import com.stylo.shop.feature.catalog.model.ProductDetail
 import com.stylo.shop.feature.catalog.ui.components.ColorSelector
 import com.stylo.shop.feature.catalog.ui.components.SizeSelector
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloStickyCta
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +111,12 @@ fun ProductDetailScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Text(
+                        text = stringResource(R.string.product_detail_title),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack,
@@ -117,7 +124,7 @@ fun ProductDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Quay lại",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -127,62 +134,26 @@ fun ProductDetailScreen(
             )
         },
         bottomBar = {
-            // Sticky CTA Bar
             if (state.productState is UiState.Content) {
-                Surface(
-                    color = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 3.dp,
-                    shadowElevation = 8.dp,
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 14.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column {
-                            Text(
-                                text = "Giá",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                text = Formatters.money(state.currentPrice),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.testTag(UiTags.ProductDetailPrice),
-                            )
-                        }
-
-                        Button(
-                            onClick = {
-                                if (isSignedIn) viewModel.addToCart() else onRequireLogin()
-                            },
-                            enabled = state.isCtaEnabled && !state.isAddingToCart,
-                            shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier
-                                .height(48.dp)
-                                .defaultMinSize(minWidth = 140.dp)
-                                .testTag(UiTags.ProductDetailCta),
-                        ) {
-                            if (state.isAddingToCart) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(20.dp),
-                                    strokeWidth = 2.dp,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
-                            } else {
-                                Text(
-                                    text = state.ctaButtonText,
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            }
-                        }
-                    }
+                val selectedSize = state.selectedSize
+                val ctaLabel = when {
+                    state.isOutOfStock -> stringResource(R.string.catalog_out_of_stock)
+                    selectedSize != null ->
+                        stringResource(R.string.product_detail_add_size, selectedSize)
+                    else -> stringResource(R.string.catalog_detail_add_to_cart)
                 }
+                StyloStickyCta(
+                    priceLabel = stringResource(R.string.product_detail_price_label),
+                    price = Formatters.money(state.currentPrice),
+                    actionLabel = ctaLabel,
+                    enabled = state.isCtaEnabled,
+                    busy = state.isAddingToCart,
+                    onAction = {
+                        if (isSignedIn) viewModel.addToCart() else onRequireLogin()
+                    },
+                    priceTestTag = UiTags.ProductDetailPrice,
+                    actionTestTag = UiTags.ProductDetailCta,
+                )
             }
         },
     ) { innerPadding ->
@@ -204,42 +175,21 @@ fun ProductDetailScreen(
                 }
 
                 is UiState.Error -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        val messageRes = if (productState.error.code == "NOT_FOUND") {
-                            R.string.catalog_detail_product_not_found
-                        } else {
-                            ErrorMessages.resourceId(productState.error)
-                        }
-                        Text(
-                            text = stringResource(messageRes),
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Spacer(Modifier.height(16.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Button(
-                                onClick = onBack,
-                                modifier = Modifier.testTag(UiTags.ProductDetailErrorBack),
-                            ) {
-                                Text("Quay lại")
-                            }
-                            if (productState.error.code != "NOT_FOUND") {
-                                Button(
-                                    onClick = viewModel::onRetry,
-                                    modifier = Modifier.testTag(UiTags.ProductDetailErrorRetry),
-                                ) {
-                                    Text(stringResource(R.string.action_retry))
-                                }
-                            }
-                        }
-                    }
+                    val notFound = productState.error.code == "NOT_FOUND"
+                    StyloErrorState(
+                        title = stringResource(
+                            if (notFound) {
+                                R.string.catalog_detail_product_not_found
+                            } else {
+                                ErrorMessages.resourceId(productState.error)
+                            },
+                        ),
+                        modifier = Modifier.fillMaxSize(),
+                        onRetry = if (notFound) null else viewModel::onRetry,
+                        retryTestTag = UiTags.ProductDetailErrorRetry,
+                        secondaryLabel = stringResource(R.string.action_back),
+                        onSecondary = onBack,
+                    )
                 }
 
                 is UiState.Content -> {
@@ -334,8 +284,14 @@ private fun ProductDetailContent(
                 else -> MaterialTheme.colorScheme.onSurfaceVariant
             }
 
+            val stockText = when {
+                state.isOutOfStock -> stringResource(R.string.catalog_out_of_stock)
+                state.selectedVariant == null -> stringResource(R.string.catalog_in_stock)
+                state.isLowStock -> stringResource(R.string.catalog_stock_remaining_low, state.stock)
+                else -> stringResource(R.string.catalog_stock_remaining, state.stock)
+            }
             Text(
-                text = state.stockText,
+                text = stockText,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Medium,
                 color = statusColor,

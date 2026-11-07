@@ -66,6 +66,16 @@ import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.cart.model.Cart
 import com.stylo.shop.feature.cart.model.CartItem
+import androidx.compose.material3.ButtonDefaults
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloQtyStepper
+import com.stylo.shop.core.ui.components.StyloStatusBadge
+import com.stylo.shop.core.ui.components.StyloStickyCta
+import com.stylo.shop.core.ui.components.StyloTone
+import com.stylo.shop.core.ui.components.StyloThumbnail
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.shape.CircleShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,54 +131,34 @@ fun CartScreen(
         },
         bottomBar = {
             if (cart != null && !cart.isEmpty) {
-                Surface(
-                    shadowElevation = 8.dp,
-                    color = MaterialTheme.colorScheme.surface,
-                ) {
-                    Button(
-                        onClick = onCheckout,
-                        enabled = !state.isMutating,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 12.dp)
-                            .testTag(UiTags.CartCheckout),
-                    ) {
-                        Text(stringResource(R.string.cart_checkout))
-                    }
-                }
+                StyloStickyCta(
+                    priceLabel = stringResource(R.string.cart_subtotal),
+                    price = Formatters.money(cart.subtotal),
+                    actionLabel = stringResource(R.string.cart_checkout),
+                    enabled = !state.isMutating,
+                    onAction = onCheckout,
+                    priceTestTag = null,
+                    actionTestTag = UiTags.CartCheckout,
+                )
             }
         },
     ) { padding ->
         when (val cartState = state.cartState) {
-            is UiState.Loading -> Box(
+            is UiState.Loading -> StyloListSkeleton(
+                rows = 3,
+                thumbnail = true,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-            }
-            is UiState.Error -> Column(
+            )
+            is UiState.Error -> StyloErrorState(
+                error = cartState.error,
+                onRetry = viewModel::retry,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = stringResource(ErrorMessages.resourceId(cartState.error)),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.height(16.dp))
-                Button(
-                    onClick = viewModel::retry,
-                    modifier = Modifier.testTag(UiTags.CartRetry),
-                ) {
-                    Text(stringResource(R.string.action_retry))
-                }
-            }
+                    .padding(padding),
+                retryTestTag = UiTags.CartRetry,
+            )
             is UiState.Content -> {
                 if (cartState.data.isEmpty) {
                     EmptyCart(
@@ -269,39 +259,19 @@ private fun CartLine(
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier
             .fillMaxWidth()
             .testTag(UiTags.CartItem),
     ) {
         Row(modifier = Modifier.padding(12.dp)) {
-            Box(
-                modifier = Modifier
-                    .size(width = 72.dp, height = 96.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center,
-            ) {
-                val imageUrl = item.imageUrl?.let {
-                    ApiClient.absoluteUrl(BuildConfig.API_BASE_URL, it)
-                }
-                if (!imageUrl.isNullOrBlank()) {
-                    AsyncImage(
-                        model = imageUrl,
-                        contentDescription = item.productName,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.ShoppingCart,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-
+            StyloThumbnail(
+                url = item.imageUrl,
+                name = item.productName,
+                width = 84.dp,
+                height = 112.dp,
+                modifier = Modifier.clip(MaterialTheme.shapes.small),
+            )
             Spacer(Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
@@ -319,7 +289,10 @@ private fun CartLine(
                         modifier = Modifier.weight(1f),
                     )
                     if (!item.available) {
-                        UnavailableBadge()
+                        StyloStatusBadge(
+                            text = stringResource(R.string.cart_unavailable),
+                            tone = StyloTone.Neutral,
+                        )
                     }
                 }
                 Text(
@@ -367,12 +340,12 @@ private fun CartLine(
                     TextButton(
                         onClick = onRemove,
                         enabled = enabled,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error,
+                        ),
                         modifier = Modifier.testTag(UiTags.CartItemRemove),
                     ) {
-                        Text(
-                            text = stringResource(R.string.action_delete),
-                            color = MaterialTheme.colorScheme.error,
-                        )
+                        Text(stringResource(R.string.action_delete))
                     }
                 }
             }
@@ -389,62 +362,29 @@ private fun Stepper(
     onDecrease: () -> Unit,
     onIncrease: () -> Unit,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        IconButton(
-            onClick = onDecrease,
-            enabled = enabled && canDecrease,
-            modifier = Modifier
-                .size(48.dp)
-                .testTag(UiTags.CartStepperMinus),
-        ) {
-            Text(text = "−", style = MaterialTheme.typography.titleMedium)
-        }
-        Text(
-            text = quantity.toString(),
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.width(28.dp),
-            textAlign = TextAlign.Center,
-        )
-        IconButton(
-            onClick = onIncrease,
-            enabled = enabled && canIncrease,
-            modifier = Modifier
-                .size(48.dp)
-                .testTag(UiTags.CartStepperPlus),
-        ) {
-            Text(text = "+", style = MaterialTheme.typography.titleMedium)
-        }
-    }
-}
-
-@Composable
-private fun UnavailableBadge() {
-    Surface(
-        color = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        shape = RoundedCornerShape(4.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.cart_unavailable),
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-        )
-    }
+    StyloQtyStepper(
+        quantity = quantity,
+        onDecrease = onDecrease,
+        onIncrease = onIncrease,
+        enabled = enabled,
+        canDecrease = canDecrease,
+        canIncrease = canIncrease,
+        decreaseTestTag = UiTags.CartStepperMinus,
+        increaseTestTag = UiTags.CartStepperPlus,
+    )
 }
 
 @Composable
 private fun SubtotalCard(cart: Cart) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -462,6 +402,7 @@ private fun SubtotalCard(cart: Cart) {
                     modifier = Modifier.testTag(UiTags.CartSubtotal),
                 )
             }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Text(
                 text = stringResource(R.string.cart_shipping_note),
                 style = MaterialTheme.typography.bodySmall,
@@ -504,9 +445,9 @@ private fun EmptyCart(
         Spacer(Modifier.height(20.dp))
         Button(
             onClick = onShop,
-            shape = RoundedCornerShape(8.dp),
+            shape = CircleShape,
             modifier = Modifier
-                .height(48.dp)
+                .heightIn(min = 48.dp)
                 .testTag(UiTags.CartShop),
         ) {
             Text(stringResource(R.string.cart_shop))

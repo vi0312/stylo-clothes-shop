@@ -45,16 +45,18 @@ import com.stylo.shop.feature.admin.model.TopProductRow
 import com.stylo.shop.feature.admin.model.dashboardChartSeries
 import com.stylo.shop.feature.admin.ui.AdminDatePickerDialog
 import com.stylo.shop.feature.admin.ui.AdminErrorBanner
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
 import com.stylo.shop.feature.admin.ui.AdminRevenueChart
 import com.stylo.shop.feature.admin.ui.AdminScaffold
-import com.stylo.shop.feature.admin.ui.AdminSectionCard
 import com.stylo.shop.feature.admin.ui.AdminTab
 import com.stylo.shop.feature.orders.ui.OrderStatusBadge
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import com.stylo.shop.core.ui.components.StyloCard
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.theme.statusColors
+import androidx.compose.ui.platform.LocalDensity
 
 private enum class DashboardDateField { FROM, TO }
 
@@ -95,14 +97,14 @@ fun AdminDashboardScreen(
                 onPickTo = { dateField = DashboardDateField.TO },
             )
             when {
-                state.isLoading -> AdminListSkeleton(
+                state.isLoading -> StyloListSkeleton(
                     rows = 4,
                     thumbnail = false,
                     modifier = Modifier.padding(20.dp),
                 )
 
                 state.isFullyFailed -> state.firstError?.let { error ->
-                    AdminErrorState(error = error, onRetry = viewModel::load)
+                    StyloErrorState(error = error, onRetry = viewModel::load)
                 }
 
                 else -> DashboardBody(
@@ -192,37 +194,68 @@ private fun DashboardBody(
 @Composable
 private fun DashboardKpiGrid(kpis: DashboardKpis) {
     val missing = stringResource(R.string.admin_dashboard_missing_value)
+    // Two columns only while the numbers actually fit: at large font scales a card is too narrow
+    // to hold "36.368.000 ₫", and wrapping inside the digits reads as a wrong number.
+    val singleColumn = LocalDensity.current.fontScale >= 1.3f
+    val cards = listOf(
+        KpiSpec(
+            title = stringResource(R.string.admin_dashboard_kpi_revenue),
+            value = kpis.revenue?.let { Formatters.money(it) } ?: missing,
+            tag = UiTags.AdminDashboardKpiRevenue,
+            deltaPercent = kpis.revenueDeltaPercent,
+        ),
+        KpiSpec(
+            title = stringResource(R.string.admin_dashboard_kpi_orders),
+            value = kpis.orders?.toString() ?: missing,
+            tag = UiTags.AdminDashboardKpiOrders,
+            deltaPercent = kpis.ordersDeltaPercent,
+        ),
+        KpiSpec(
+            title = stringResource(R.string.admin_dashboard_kpi_average),
+            value = kpis.averageOrderValue?.let { Formatters.money(it) } ?: missing,
+            tag = UiTags.AdminDashboardKpiAverage,
+        ),
+        KpiSpec(
+            title = stringResource(R.string.admin_dashboard_kpi_low_stock),
+            value = kpis.lowStockVariants?.toString() ?: missing,
+            tag = UiTags.AdminDashboardKpiLowStock,
+        ),
+    )
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            KpiCard(
-                title = stringResource(R.string.admin_dashboard_kpi_revenue),
-                value = kpis.revenue?.let { Formatters.money(it) } ?: missing,
-                tag = UiTags.AdminDashboardKpiRevenue,
-                modifier = Modifier.weight(1f),
-            )
-            KpiCard(
-                title = stringResource(R.string.admin_dashboard_kpi_orders),
-                value = kpis.orders?.toString() ?: missing,
-                tag = UiTags.AdminDashboardKpiOrders,
-                modifier = Modifier.weight(1f),
-            )
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            KpiCard(
-                title = stringResource(R.string.admin_dashboard_kpi_average),
-                value = kpis.averageOrderValue?.let { Formatters.money(it) } ?: missing,
-                tag = UiTags.AdminDashboardKpiAverage,
-                modifier = Modifier.weight(1f),
-            )
-            KpiCard(
-                title = stringResource(R.string.admin_dashboard_kpi_low_stock),
-                value = kpis.lowStockVariants?.toString() ?: missing,
-                tag = UiTags.AdminDashboardKpiLowStock,
-                modifier = Modifier.weight(1f),
-            )
+        if (singleColumn) {
+            cards.forEach { card ->
+                KpiCard(
+                    title = card.title,
+                    value = card.value,
+                    tag = card.tag,
+                    deltaPercent = card.deltaPercent,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        } else {
+            cards.chunked(2).forEach { rowCards ->
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    rowCards.forEach { card ->
+                        KpiCard(
+                            title = card.title,
+                            value = card.value,
+                            tag = card.tag,
+                            deltaPercent = card.deltaPercent,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+            }
         }
     }
 }
+
+private data class KpiSpec(
+    val title: String,
+    val value: String,
+    val tag: String,
+    val deltaPercent: Int? = null,
+)
 
 @Composable
 private fun KpiCard(
@@ -230,10 +263,11 @@ private fun KpiCard(
     value: String,
     tag: String,
     modifier: Modifier = Modifier,
+    deltaPercent: Int? = null,
 ) {
     Surface(
         modifier = modifier.testTag(tag),
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         shape = MaterialTheme.shapes.medium,
     ) {
         Column(Modifier.padding(16.dp)) {
@@ -247,10 +281,32 @@ private fun KpiCard(
             Spacer(Modifier.height(6.dp))
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            // A flat period is not news: no arrow, no "0%".
+            if (deltaPercent != null && deltaPercent != 0) {
+                Spacer(Modifier.height(4.dp))
+                val positive = deltaPercent >= 0
+                Text(
+                    text = stringResource(
+                        if (positive) {
+                            R.string.admin_dashboard_delta_up
+                        } else {
+                            R.string.admin_dashboard_delta_down
+                        },
+                        kotlin.math.abs(deltaPercent),
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (positive) {
+                        MaterialTheme.statusColors.success
+                    } else {
+                        MaterialTheme.statusColors.warning
+                    },
+                    maxLines = 1,
+                )
+            }
         }
     }
 }
@@ -260,7 +316,7 @@ private fun RevenueBlock(
     block: DashboardBlock<RevenueReport>,
     onRetry: () -> Unit,
 ) {
-    AdminSectionCard(title = stringResource(R.string.admin_dashboard_chart_title)) {
+    StyloCard(title = stringResource(R.string.admin_dashboard_chart_title)) {
         when (block) {
             DashboardBlock.Loading -> BlockLoading()
             is DashboardBlock.Failed -> BlockError(error = block.error, onRetry = onRetry)
@@ -288,7 +344,7 @@ private fun TopProductsBlock(
     block: DashboardBlock<List<TopProductRow>>,
     onRetry: () -> Unit,
 ) {
-    AdminSectionCard(title = stringResource(R.string.admin_dashboard_top_products_title)) {
+    StyloCard(title = stringResource(R.string.admin_dashboard_top_products_title)) {
         when (block) {
             DashboardBlock.Loading -> BlockLoading()
             is DashboardBlock.Failed -> BlockError(error = block.error, onRetry = onRetry)
@@ -347,7 +403,7 @@ private fun RecentOrdersBlock(
     onOpenOrder: (Long) -> Unit,
     onRetry: () -> Unit,
 ) {
-    AdminSectionCard(title = stringResource(R.string.admin_dashboard_recent_orders_title)) {
+    StyloCard(title = stringResource(R.string.admin_dashboard_recent_orders_title)) {
         when (block) {
             DashboardBlock.Loading -> BlockLoading()
             is DashboardBlock.Failed -> BlockError(error = block.error, onRetry = onRetry)

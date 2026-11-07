@@ -46,6 +46,9 @@ import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.profile.model.Address
 import com.stylo.shop.feature.profile.ui.ProfileDetailScaffold
 import com.stylo.shop.feature.profile.ui.ProfileErrorContent
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloStatusBadge
+import com.stylo.shop.core.ui.components.StyloTone
 
 @Composable
 fun AddressListScreen(
@@ -84,14 +87,13 @@ fun AddressListScreen(
         },
     ) { padding ->
         when (val itemsState = state.itemsState) {
-            is UiState.Loading -> Box(
+            is UiState.Loading -> StyloListSkeleton(
+                rows = 3,
+                thumbnail = false,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
+            )
             is UiState.Error -> Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -180,8 +182,7 @@ private fun AddressCard(
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier
             .fillMaxWidth()
             .testTag(UiTags.AddressCard),
@@ -262,17 +263,10 @@ private fun AddressCard(
 
 @Composable
 private fun DefaultBadge() {
-    Surface(
-        color = MaterialTheme.colorScheme.secondaryContainer,
-        shape = MaterialTheme.shapes.small,
-    ) {
-        Text(
-            text = stringResource(R.string.address_default_badge),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-        )
-    }
+    StyloStatusBadge(
+        text = stringResource(R.string.address_default_badge),
+        tone = StyloTone.Info,
+    )
 }
 
 @Composable

@@ -41,11 +41,11 @@ import com.stylo.shop.core.ui.Formatters
 import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.admin.model.AdminReceiptSummary
-import com.stylo.shop.feature.admin.ui.AdminEmptyState
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
 import com.stylo.shop.feature.admin.ui.AdminScaffold
 import com.stylo.shop.feature.admin.ui.AdminTab
+import com.stylo.shop.core.ui.components.StyloEmptyState
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
 
 @Composable
 fun AdminReceiptListScreen(
@@ -107,13 +107,13 @@ fun AdminReceiptListScreen(
             }
 
             when (val receiptsState = state.receiptsState) {
-                is UiState.Loading -> AdminListSkeleton(rows = 6, thumbnail = false)
-                is UiState.Error -> AdminErrorState(
+                is UiState.Loading -> StyloListSkeleton(rows = 6, thumbnail = false)
+                is UiState.Error -> StyloErrorState(
                     error = receiptsState.error,
                     onRetry = viewModel::onRetry,
                 )
                 is UiState.Content -> if (receiptsState.data.isEmpty()) {
-                    AdminEmptyState(
+                    StyloEmptyState(
                         icon = Icons.AutoMirrored.Filled.List,
                         title = stringResource(R.string.admin_receipts_empty),
                         body = stringResource(R.string.admin_receipts_empty_hint),
@@ -207,7 +207,7 @@ private fun ReceiptRow(receipt: AdminReceiptSummary, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier
             .fillMaxWidth()
             .testTag(UiTags.AdminReceiptRow),

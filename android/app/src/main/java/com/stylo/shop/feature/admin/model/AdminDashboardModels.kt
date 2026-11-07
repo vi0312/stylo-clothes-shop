@@ -25,12 +25,24 @@ data class DashboardKpis(
     val orders: Int?,
     val averageOrderValue: Long?,
     val lowStockVariants: Int?,
+    val revenueDeltaPercent: Int? = null,
+    val ordersDeltaPercent: Int? = null,
 )
+
+/**
+ * Percent change against the previous window, rounded. Null when the baseline is missing or zero,
+ * because "up 100%" from nothing is noise, not information.
+ */
+internal fun percentChange(previous: Long?, current: Long?): Int? {
+    if (previous == null || current == null || previous <= 0L) return null
+    return (((current - previous) * 100.0) / previous).toInt()
+}
 
 data class AdminDashboardUiState(
     val from: String,
     val to: String,
     val revenue: DashboardBlock<RevenueReport> = DashboardBlock.Loading,
+    val previousRevenue: DashboardBlock<RevenueReport> = DashboardBlock.Loading,
     val topProducts: DashboardBlock<List<TopProductRow>> = DashboardBlock.Loading,
     val lowStock: DashboardBlock<List<LowStockRow>> = DashboardBlock.Loading,
     val recentOrders: DashboardBlock<List<AdminOrderSummary>> = DashboardBlock.Loading,
@@ -38,6 +50,7 @@ data class AdminDashboardUiState(
     val kpis: DashboardKpis
         get() {
             val report = revenue.valueOrNull
+            val previous = previousRevenue.valueOrNull
             return DashboardKpis(
                 revenue = report?.totalRevenue,
                 orders = report?.totalOrders,
@@ -45,6 +58,11 @@ data class AdminDashboardUiState(
                     if (it.totalOrders == 0) 0L else it.totalRevenue / it.totalOrders
                 },
                 lowStockVariants = lowStock.valueOrNull?.size,
+                revenueDeltaPercent = percentChange(previous?.totalRevenue, report?.totalRevenue),
+                ordersDeltaPercent = percentChange(
+                    previous?.totalOrders?.toLong(),
+                    report?.totalOrders?.toLong(),
+                ),
             )
         }
 

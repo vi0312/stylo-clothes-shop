@@ -67,6 +67,7 @@ import com.stylo.shop.feature.orders.model.OrderItem
 import com.stylo.shop.feature.orders.model.OrderPaymentMethod
 import com.stylo.shop.feature.orders.model.OrderStatus
 import com.stylo.shop.feature.orders.model.PaymentStatus
+import com.stylo.shop.core.ui.components.StyloErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -315,7 +316,7 @@ private fun PaymentBanner(
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = MaterialTheme.shapes.medium,
         color = container,
         contentColor = content,
     ) {
@@ -535,9 +536,8 @@ private fun SectionTitle(text: String) {
 private fun SectionCard(content: @Composable () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
     ) {
         Column(modifier = Modifier.padding(16.dp)) { content() }
     }

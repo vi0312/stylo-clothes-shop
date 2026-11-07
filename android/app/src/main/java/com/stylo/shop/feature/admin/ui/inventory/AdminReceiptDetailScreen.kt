@@ -31,8 +31,8 @@ import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.admin.model.AdminReceiptDetail
 import com.stylo.shop.feature.admin.model.AdminReceiptItem
 import com.stylo.shop.feature.admin.ui.AdminDetailScaffold
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminSectionCard
+import com.stylo.shop.core.ui.components.StyloCard
+import com.stylo.shop.core.ui.components.StyloErrorState
 
 @Composable
 fun AdminReceiptDetailScreen(
@@ -54,7 +54,7 @@ fun AdminReceiptDetailScreen(
             ) {
                 CircularProgressIndicator()
             }
-            is UiState.Error -> AdminErrorState(
+            is UiState.Error -> StyloErrorState(
                 error = receiptState.error,
                 onRetry = viewModel::load,
                 modifier = Modifier.padding(padding),
@@ -81,7 +81,7 @@ private fun ReceiptDetailContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            AdminSectionCard(title = stringResource(R.string.admin_receipt_section_info)) {
+            StyloCard(title = stringResource(R.string.admin_receipt_section_info)) {
                 InfoRow(
                     label = stringResource(R.string.admin_receipt_code_label),
                     value = receipt.code,
@@ -108,7 +108,7 @@ private fun ReceiptDetailContent(
         }
 
         item {
-            AdminSectionCard(title = stringResource(R.string.admin_receipt_section_lines)) {
+            StyloCard(title = stringResource(R.string.admin_receipt_section_lines)) {
                 receipt.items.forEachIndexed { index, item ->
                     if (index > 0) {
                         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))

@@ -63,7 +63,8 @@ class ProductDetailViewModelTest {
         assertEquals("S", state.selectedSize)
         assertEquals(1L, state.selectedVariant?.id)
         assertTrue(state.isCtaEnabled)
-        assertEquals("Thêm vào giỏ", state.ctaButtonText)
+        assertFalse(state.isOutOfStock)
+        assertEquals(10, state.stock)
         assertEquals(199_000L, state.currentPrice)
     }
 
@@ -102,9 +103,9 @@ class ProductDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isCtaEnabled)
+        assertTrue(state.isOutOfStock)
         assertFalse(state.availableSizes[0].isAvailable)
-        assertEquals("Hết hàng", state.ctaButtonText)
-        assertEquals("Hết hàng", state.stockText)
+        assertEquals(0, state.stock)
     }
 
     @Test
@@ -124,7 +125,7 @@ class ProductDetailViewModelTest {
         assertEquals("Trắng", state.selectedColor)
         assertEquals("L", state.selectedSize)
         assertTrue(state.isLowStock)
-        assertTrue(state.stockText.contains("Tồn thấp"))
+        assertEquals(2, state.stock)
         assertTrue(state.isCtaEnabled)
     }
 

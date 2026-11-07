@@ -49,7 +49,7 @@
     <string name="error_not_found">Không tìm thấy dữ liệu.</string>
     <string name="error_email_taken">Email này đã được sử dụng.</string>
     <string name="error_sku_taken">Mã SKU đã tồn tại.</string>
-    <string name="error_variant_exists">Size và màu này đã có trong sản phẩm.</string>
+    <string name="error_variant_exists">Kích cỡ và màu này đã có trong sản phẩm.</string>
     <string name="error_name_taken">Tên này đã được sử dụng.</string>
     <string name="error_in_use">Không thể xoá vì dữ liệu đang được tham chiếu.</string>
     <string name="error_out_of_stock">Không đủ hàng trong kho cho số lượng yêu cầu.</string>
@@ -62,7 +62,7 @@
     <string name="error_file_too_large">Tệp vượt quá 5 MB.</string>
     <string name="error_internal">Máy chủ gặp sự cố. Vui lòng thử lại sau.</string>
 
-    <string name="catalog_search_hint">Tìm áo, quần, thương hiệu…</string>
+    <string name="catalog_search_hint">Tìm sản phẩm, thương hiệu</string>
     <string name="catalog_filter_title">Bộ lọc</string>
     <string name="catalog_filter_apply">Áp dụng</string>
     <string name="catalog_filter_clear">Xoá lọc</string>
@@ -81,10 +81,17 @@
     <string name="catalog_all_categories">Tất cả</string>
     <string name="catalog_stock_remaining">Còn %1$d sản phẩm</string>
     <string name="catalog_stock_low">Tồn thấp</string>
+    <string name="catalog_stock_remaining_low">Còn %1$d sản phẩm (tồn thấp)</string>
+    <string name="product_detail_title">Sản phẩm</string>
+    <string name="product_detail_price_label">Giá</string>
+    <string name="product_detail_color">Màu sắc</string>
+    <string name="product_detail_size">Kích cỡ</string>
+    <string name="auth_show_password">Hiện</string>
+    <string name="auth_hide_password">Ẩn</string>
     <string name="catalog_out_of_stock">Hết hàng</string>
     <string name="catalog_in_stock">Còn hàng</string>
     <string name="catalog_detail_select_color">Chọn màu</string>
-    <string name="catalog_detail_select_size">Chọn size</string>
+    <string name="catalog_detail_select_size">Chọn kích cỡ</string>
     <string name="catalog_detail_select_options">Chọn màu &amp; kích cỡ</string>
     <string name="catalog_detail_add_to_cart">Thêm vào giỏ</string>
     <string name="catalog_detail_product_not_found">Sản phẩm không còn bán hoặc không tồn tại.</string>
@@ -108,13 +115,17 @@
     <string name="admin_dashboard_kpi_revenue">Doanh thu</string>
     <string name="admin_dashboard_kpi_orders">Số đơn</string>
     <string name="admin_dashboard_kpi_average">Giá trị đơn TB</string>
-    <string name="admin_dashboard_kpi_low_stock">Variant tồn thấp</string>
+    <string name="admin_dashboard_kpi_low_stock">Biến thể tồn thấp</string>
+    <string name="admin_dashboard_delta_up">▲ %1$d%% so với kỳ trước</string>
+    <string name="admin_dashboard_delta_down">▼ %1$d%% so với kỳ trước</string>
+    <string name="admin_orders_range_all">Mọi lúc</string>
+    <string name="admin_reports_chart_capped">Biểu đồ hiển thị %1$d kỳ gần nhất.</string>
     <string name="admin_dashboard_missing_value">—</string>
     <string name="admin_dashboard_chart_title">Doanh thu 7 ngày</string>
     <string name="admin_dashboard_chart_empty">Chưa có doanh thu trong khoảng</string>
     <string name="admin_dashboard_top_products_title">Top 3 sản phẩm</string>
     <string name="admin_dashboard_top_products_empty">Chưa có sản phẩm bán ra trong khoảng</string>
-    <string name="admin_dashboard_product_sold">%1$d bán</string>
+    <string name="admin_dashboard_product_sold">Đã bán %1$d</string>
     <string name="admin_dashboard_recent_orders_title">Đơn gần đây</string>
 
     <string name="admin_users_title">Người dùng</string>
@@ -138,7 +149,7 @@
     <string name="admin_products_search_hint">Tìm theo tên sản phẩm</string>
     <string name="admin_products_empty_title">Chưa có sản phẩm</string>
     <string name="admin_products_empty_body">Tạo sản phẩm đầu tiên để bắt đầu bán hàng.</string>
-    <string name="admin_products_variant_count">%1$d variant</string>
+    <string name="admin_products_variant_count">%1$d biến thể</string>
     <string name="admin_products_stock">Tồn %1$d</string>
     <string name="admin_filter_all">Tất cả</string>
     <string name="admin_filter_active">Đang bán</string>
@@ -162,10 +173,10 @@
     <string name="admin_product_save">Lưu sản phẩm</string>
     <string name="admin_product_created">Đã tạo sản phẩm.</string>
     <string name="admin_product_saved">Đã lưu sản phẩm.</string>
-    <string name="admin_product_created_hint">Sản phẩm đã được tạo. Thêm variant và ảnh bên dưới.</string>
-    <string name="admin_product_save_hint">Lưu thông tin sản phẩm trước khi thêm variant và ảnh.</string>
+    <string name="admin_product_created_hint">Sản phẩm đã được tạo. Thêm biến thể và ảnh bên dưới.</string>
+    <string name="admin_product_save_hint">Lưu thông tin sản phẩm trước khi thêm biến thể và ảnh.</string>
     <string name="admin_product_section_images">Ảnh sản phẩm</string>
-    <string name="admin_product_section_variants">Variant</string>
+    <string name="admin_product_section_variants">Biến thể</string>
     <string name="admin_product_stock_note">Tồn kho chỉ thay đổi qua phiếu nhập kho, không sửa ở đây.</string>
     <string name="admin_product_delete">Xoá sản phẩm</string>
     <string name="admin_product_delete_title">Xoá sản phẩm?</string>
@@ -179,6 +190,9 @@
     <string name="admin_field_invalid_price">Giá phải lớn hơn 0.</string>
 
     <string name="admin_image_add">Thêm ảnh</string>
+    <string name="admin_drawer_title">Quản trị</string>
+    <string name="admin_menu_open">Mở menu quản trị</string>
+    <string name="admin_image_delete_position">Xoá ảnh %1$d</string>
     <string name="admin_image_cover">Ảnh bìa</string>
     <string name="admin_image_delete_title">Xoá ảnh?</string>
     <string name="admin_image_delete_body">Ảnh sẽ bị xoá khỏi sản phẩm.</string>
@@ -190,23 +204,23 @@
     <string name="admin_image_dismiss">Bỏ qua</string>
     <string name="admin_image_order_hint">Ảnh ở vị trí đầu tiên là ảnh bìa. Xoá rồi tải lại để đổi thứ tự ảnh.</string>
 
-    <string name="admin_variant_add">Thêm variant</string>
-    <string name="admin_variant_empty">Chưa có variant. Thêm variant để sản phẩm có thể bán.</string>
-    <string name="admin_variant_title_new">Variant mới</string>
-    <string name="admin_variant_title_edit">Sửa variant</string>
+    <string name="admin_variant_add">Thêm biến thể</string>
+    <string name="admin_variant_empty">Chưa có biến thể. Thêm biến thể để sản phẩm có thể bán.</string>
+    <string name="admin_variant_title_new">Biến thể mới</string>
+    <string name="admin_variant_title_edit">Sửa biến thể</string>
     <string name="admin_variant_sku">SKU</string>
-    <string name="admin_variant_size">Size</string>
+    <string name="admin_variant_size">Kích cỡ</string>
     <string name="admin_variant_color">Màu</string>
     <string name="admin_variant_price">Giá bán</string>
     <string name="admin_variant_stock">Tồn: %1$d</string>
-    <string name="admin_variant_duplicate">Size và màu này đã có trong sản phẩm.</string>
+    <string name="admin_variant_duplicate">Kích cỡ và màu này đã có trong sản phẩm.</string>
     <string name="admin_variant_sku_taken">Mã SKU đã tồn tại.</string>
-    <string name="admin_variant_delete_title">Xoá variant?</string>
-    <string name="admin_variant_delete_body">Chỉ xoá được khi variant chưa phát sinh đơn hoặc phiếu nhập.</string>
-    <string name="admin_variant_delete_in_use">Variant đã phát sinh đơn hoặc phiếu nhập nên không thể xoá.</string>
-    <string name="admin_variant_added">Đã thêm variant.</string>
-    <string name="admin_variant_saved">Đã lưu variant.</string>
-    <string name="admin_variant_deleted">Đã xoá variant.</string>
+    <string name="admin_variant_delete_title">Xoá biến thể?</string>
+    <string name="admin_variant_delete_body">Chỉ xoá được khi biến thể chưa phát sinh đơn hoặc phiếu nhập.</string>
+    <string name="admin_variant_delete_in_use">Biến thể đã phát sinh đơn hoặc phiếu nhập nên không thể xoá.</string>
+    <string name="admin_variant_added">Đã thêm biến thể.</string>
+    <string name="admin_variant_saved">Đã lưu biến thể.</string>
+    <string name="admin_variant_deleted">Đã xoá biến thể.</string>
 
     <string name="admin_taxonomy_title">Danh mục &amp; thương hiệu</string>
     <string name="admin_taxonomy_tab_categories">Danh mục</string>
@@ -273,7 +287,7 @@
     <string name="cart_empty_body">Thêm sản phẩm để bắt đầu mua sắm.</string>
     <string name="cart_shop">Mua sắm</string>
     <string name="cart_summary_count">%1$d sản phẩm</string>
-    <string name="cart_color_size">Màu %1$s · Size %2$s</string>
+    <string name="cart_color_size">Màu %1$s · Kích cỡ %2$s</string>
     <string name="cart_unavailable">Ngừng bán</string>
     <string name="cart_quantity_locked">Không thể chỉnh sửa</string>
     <string name="cart_stock_limit">Tối đa</string>
@@ -304,7 +318,7 @@
     <string name="checkout_note_placeholder">Ví dụ: giao giờ hành chính</string>
     <string name="checkout_note_counter">%1$d/%2$d</string>
     <string name="checkout_items_title">Sản phẩm</string>
-    <string name="variant_color_size">Màu %1$s · Size %2$s</string>
+    <string name="variant_color_size">Màu %1$s · Kích cỡ %2$s</string>
     <string name="item_quantity">SL %1$d</string>
     <string name="checkout_subtotal">Tạm tính</string>
     <string name="checkout_shipping_pending">Phí vận chuyển được xác nhận khi đặt hàng.</string>
@@ -419,10 +433,10 @@
     <string name="admin_receipt_code_label">Mã phiếu</string>
     <string name="admin_receipt_created_at">Ngày tạo</string>
     <string name="admin_receipt_created_by">Người tạo</string>
-    <string name="admin_receipt_picker_title">Chọn variant</string>
+    <string name="admin_receipt_picker_title">Chọn biến thể</string>
     <string name="admin_receipt_picker_search">Tìm theo SKU hoặc tên sản phẩm</string>
     <string name="admin_receipt_picker_hint">Nhập SKU hoặc tên sản phẩm để tìm.</string>
-    <string name="admin_receipt_picker_empty">Không tìm thấy variant phù hợp</string>
+    <string name="admin_receipt_picker_empty">Không tìm thấy biến thể phù hợp</string>
 
     <string name="admin_reports_title">Báo cáo</string>
     <string name="admin_reports_kind_revenue">Doanh thu</string>
@@ -456,6 +470,17 @@
     <string name="admin_reports_col_stock">Tồn</string>
     <string name="admin_reports_empty_title">Không có dữ liệu trong khoảng</string>
     <string name="admin_reports_empty_body">Thử chọn khoảng ngày khác để xem báo cáo.</string>
-    <string name="admin_reports_low_stock_empty_title">Không có variant tồn thấp</string>
-    <string name="admin_reports_low_stock_empty_body">Mọi variant đang bán đều có tồn trên %1$d.</string>
+    <string name="admin_reports_low_stock_empty_title">Không có biến thể tồn thấp</string>
+    <string name="admin_reports_low_stock_empty_body">Mọi biến thể đang bán đều có tồn trên %1$d.</string>
+    <!-- Shared control labels (ADR 0016) -->
+    <string name="size_unavailable">Hết hàng</string>
+    <string name="qty_value">Số lượng</string>
+    <string name="qty_decrease">Giảm số lượng</string>
+    <string name="qty_increase">Tăng số lượng</string>
+    <string name="price_range">%1$s – %2$s</string>
+    <string name="product_detail_add_size">Thêm %1$s vào giỏ</string>
+    <string name="product_detail_color_count">%1$d màu</string>
+    <string name="filter_price_under">Dưới %1$s</string>
+    <string name="filter_price_between">%1$s – %2$s</string>
+    <string name="filter_price_over">Trên %1$s</string>
 </resources>

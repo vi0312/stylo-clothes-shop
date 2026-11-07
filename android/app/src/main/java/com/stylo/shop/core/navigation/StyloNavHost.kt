@@ -276,9 +276,11 @@ private fun SessionNavHost(
                     )
                 }
             }
-            navigation<AdminGraph>(startDestination = AdminDashboardRoute) {
-                composable<AdminDashboardRoute> {
-                    if (currentUser != null) {
+            // The admin graph only exists for an admin session: no destination can render a
+            // blank page while the session is being torn down.
+            if (currentUser?.role == UserRole.ADMIN) {
+                navigation<AdminGraph>(startDestination = AdminDashboardRoute) {
+                    composable<AdminDashboardRoute> {
                         AdminDashboardScreen(
                             onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                             onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
@@ -290,82 +292,82 @@ private fun SessionNavHost(
                             onLogout = onLogout,
                         )
                     }
-                }
-                composable<AdminProductsRoute> {
-                    AdminProductListScreen(
-                        onAdd = { navController.navigate(AdminProductCreateRoute) },
-                        onEdit = { productId ->
-                            navController.navigate(AdminProductEditRoute(productId))
-                        },
-                        onSelectTab = { tab -> navController.navigateAdminTab(tab) },
-                        onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
-                        onOpenUsers = { navController.navigate(AdminUsersRoute) },
-                        onOpenReports = { navController.navigate(AdminReportsRoute) },
-                        onLogout = onLogout,
-                    )
-                }
-                composable<AdminProductCreateRoute> {
-                    AdminProductFormScreen(
-                        productId = null,
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-                composable<AdminProductEditRoute> { backStackEntry ->
-                    val route = backStackEntry.toRoute<AdminProductEditRoute>()
-                    AdminProductFormScreen(
-                        productId = route.productId,
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-                composable<AdminOrdersRoute> {
-                    AdminOrderListScreen(
-                        onOpenOrder = { orderId ->
-                            navController.navigate(AdminOrderDetailRoute(orderId))
-                        },
-                        onSelectTab = { tab -> navController.navigateAdminTab(tab) },
-                        onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
-                        onOpenUsers = { navController.navigate(AdminUsersRoute) },
-                        onOpenReports = { navController.navigate(AdminReportsRoute) },
-                        onLogout = onLogout,
-                    )
-                }
-                composable<AdminOrderDetailRoute> {
-                    AdminOrderDetailScreen(onBack = { navController.popBackStack() })
-                }
-                composable<AdminInventoryRoute> {
-                    AdminReceiptListScreen(
-                        onSelectTab = { tab -> navController.navigateAdminTab(tab) },
-                        onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
-                        onOpenUsers = { navController.navigate(AdminUsersRoute) },
-                        onOpenReports = { navController.navigate(AdminReportsRoute) },
-                        onLogout = onLogout,
-                        onAdd = { navController.navigate(AdminReceiptCreateRoute) },
-                        onOpenReceipt = { receiptId ->
-                            navController.navigate(AdminReceiptDetailRoute(receiptId))
-                        },
-                    )
-                }
-                composable<AdminReceiptCreateRoute> {
-                    AdminReceiptCreateScreen(
-                        onBack = { navController.popBackStack() },
-                        onCreated = { receiptId ->
-                            navController.navigate(AdminReceiptDetailRoute(receiptId)) {
-                                popUpTo<AdminReceiptCreateRoute> { inclusive = true }
-                            }
-                        },
-                    )
-                }
-                composable<AdminReceiptDetailRoute> {
-                    AdminReceiptDetailScreen(onBack = { navController.popBackStack() })
-                }
-                composable<AdminUsersRoute> {
-                    AdminUserListScreen(onBack = { navController.popBackStack() })
-                }
-                composable<AdminReportsRoute> {
-                    AdminReportsScreen(onBack = { navController.popBackStack() })
-                }
-                composable<AdminTaxonomyRoute> {
-                    AdminTaxonomyScreen(onBack = { navController.popBackStack() })
+                    composable<AdminProductsRoute> {
+                        AdminProductListScreen(
+                            onAdd = { navController.navigate(AdminProductCreateRoute) },
+                            onEdit = { productId ->
+                                navController.navigate(AdminProductEditRoute(productId))
+                            },
+                            onSelectTab = { tab -> navController.navigateAdminTab(tab) },
+                            onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                            onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                            onOpenReports = { navController.navigate(AdminReportsRoute) },
+                            onLogout = onLogout,
+                        )
+                    }
+                    composable<AdminProductCreateRoute> {
+                        AdminProductFormScreen(
+                            productId = null,
+                            onBack = { navController.popBackStack() },
+                        )
+                    }
+                    composable<AdminProductEditRoute> { backStackEntry ->
+                        val route = backStackEntry.toRoute<AdminProductEditRoute>()
+                        AdminProductFormScreen(
+                            productId = route.productId,
+                            onBack = { navController.popBackStack() },
+                        )
+                    }
+                    composable<AdminOrdersRoute> {
+                        AdminOrderListScreen(
+                            onOpenOrder = { orderId ->
+                                navController.navigate(AdminOrderDetailRoute(orderId))
+                            },
+                            onSelectTab = { tab -> navController.navigateAdminTab(tab) },
+                            onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                            onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                            onOpenReports = { navController.navigate(AdminReportsRoute) },
+                            onLogout = onLogout,
+                        )
+                    }
+                    composable<AdminOrderDetailRoute> {
+                        AdminOrderDetailScreen(onBack = { navController.popBackStack() })
+                    }
+                    composable<AdminInventoryRoute> {
+                        AdminReceiptListScreen(
+                            onSelectTab = { tab -> navController.navigateAdminTab(tab) },
+                            onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
+                            onOpenUsers = { navController.navigate(AdminUsersRoute) },
+                            onOpenReports = { navController.navigate(AdminReportsRoute) },
+                            onLogout = onLogout,
+                            onAdd = { navController.navigate(AdminReceiptCreateRoute) },
+                            onOpenReceipt = { receiptId ->
+                                navController.navigate(AdminReceiptDetailRoute(receiptId))
+                            },
+                        )
+                    }
+                    composable<AdminReceiptCreateRoute> {
+                        AdminReceiptCreateScreen(
+                            onBack = { navController.popBackStack() },
+                            onCreated = { receiptId ->
+                                navController.navigate(AdminReceiptDetailRoute(receiptId)) {
+                                    popUpTo<AdminReceiptCreateRoute> { inclusive = true }
+                                }
+                            },
+                        )
+                    }
+                    composable<AdminReceiptDetailRoute> {
+                        AdminReceiptDetailScreen(onBack = { navController.popBackStack() })
+                    }
+                    composable<AdminUsersRoute> {
+                        AdminUserListScreen(onBack = { navController.popBackStack() })
+                    }
+                    composable<AdminReportsRoute> {
+                        AdminReportsScreen(onBack = { navController.popBackStack() })
+                    }
+                    composable<AdminTaxonomyRoute> {
+                        AdminTaxonomyScreen(onBack = { navController.popBackStack() })
+                    }
                 }
             }
         }
@@ -417,8 +419,13 @@ private fun NavHostController.navigateAdminTab(tab: AdminTab) {
         AdminTab.INVENTORY -> AdminInventoryRoute
     }
     navigate(destination) {
-        popUpTo<AdminDashboardRoute> { inclusive = false }
+        // Same save/restore contract as the customer tabs: filters and scroll survive a tab switch.
+        popUpTo<AdminDashboardRoute> {
+            inclusive = false
+            saveState = true
+        }
         launchSingleTop = true
+        restoreState = true
     }
 }
 

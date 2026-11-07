@@ -54,8 +54,9 @@ import com.stylo.shop.feature.admin.model.RECEIPT_NOTE_MAX
 import com.stylo.shop.feature.admin.model.RECEIPT_SUPPLIER_MAX
 import com.stylo.shop.feature.admin.ui.AdminDetailScaffold
 import com.stylo.shop.feature.admin.ui.AdminErrorBanner
-import com.stylo.shop.feature.admin.ui.AdminSectionCard
 import com.stylo.shop.feature.admin.ui.adminFieldErrorText
+import com.stylo.shop.core.ui.components.StyloCard
+import androidx.compose.foundation.layout.imePadding
 
 @Composable
 fun AdminReceiptCreateScreen(
@@ -78,6 +79,7 @@ fun AdminReceiptCreateScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
+                .imePadding()
                 .padding(horizontal = 20.dp, vertical = 8.dp),
         ) {
             if (state.formError != null) {
@@ -85,7 +87,7 @@ fun AdminReceiptCreateScreen(
                 Spacer(Modifier.height(12.dp))
             }
 
-            AdminSectionCard(title = stringResource(R.string.admin_receipt_section_info)) {
+            StyloCard(title = stringResource(R.string.admin_receipt_section_info)) {
                 OutlinedTextField(
                     value = state.supplier,
                     onValueChange = viewModel::onSupplierChange,
@@ -118,7 +120,7 @@ fun AdminReceiptCreateScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            AdminSectionCard(title = stringResource(R.string.admin_receipt_section_lines)) {
+            StyloCard(title = stringResource(R.string.admin_receipt_section_lines)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(R.string.admin_receipt_lines_count, state.lines.size),

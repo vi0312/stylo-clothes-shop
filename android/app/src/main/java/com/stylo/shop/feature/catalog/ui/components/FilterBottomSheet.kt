@@ -43,6 +43,8 @@ import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CatalogFilters
+import com.stylo.shop.core.ui.components.StyloFilterChip
+import com.stylo.shop.core.ui.Formatters
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -115,19 +117,11 @@ fun FilterBottomSheet(
                 ) {
                     filters.categories.forEach { category ->
                         val isSelected = category.id == selectedCategoryId
-                        FilterChip(
+                        StyloFilterChip(
+                            label = category.name,
                             selected = isSelected,
                             onClick = { onCategorySelected(if (isSelected) null else category.id) },
-                            label = { Text(category.name) },
                             modifier = Modifier.testTag(UiTags.FilterCategory),
-                            leadingIcon = if (isSelected) {
-                                { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                            } else null,
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
                         )
                     }
                 }
@@ -150,19 +144,11 @@ fun FilterBottomSheet(
                 ) {
                     filters.brands.forEach { brand ->
                         val isSelected = brand.id == selectedBrandId
-                        FilterChip(
+                        StyloFilterChip(
+                            label = brand.name,
                             selected = isSelected,
                             onClick = { onBrandSelected(if (isSelected) null else brand.id) },
-                            label = { Text(brand.name) },
                             modifier = Modifier.testTag(UiTags.FilterBrand),
-                            leadingIcon = if (isSelected) {
-                                { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                            } else null,
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
                         )
                     }
                 }
@@ -185,19 +171,11 @@ fun FilterBottomSheet(
                 ) {
                     filters.colors.forEach { color ->
                         val isSelected = color == selectedColor
-                        FilterChip(
+                        StyloFilterChip(
+                            label = color,
                             selected = isSelected,
                             onClick = { onColorSelected(if (isSelected) null else color) },
-                            label = { Text(color) },
                             modifier = Modifier.testTag(UiTags.FilterColor),
-                            leadingIcon = if (isSelected) {
-                                { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                            } else null,
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
                         )
                     }
                 }
@@ -220,19 +198,11 @@ fun FilterBottomSheet(
                 ) {
                     filters.sizes.forEach { size ->
                         val isSelected = size == selectedSize
-                        FilterChip(
+                        StyloFilterChip(
+                            label = size,
                             selected = isSelected,
                             onClick = { onSizeSelected(if (isSelected) null else size) },
-                            label = { Text(size) },
                             modifier = Modifier.testTag(UiTags.FilterSize),
-                            leadingIcon = if (isSelected) {
-                                { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                            } else null,
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
                         )
                     }
                 }
@@ -253,14 +223,31 @@ fun FilterBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 val presets = listOf(
-                    Triple("Dưới 200k", null, 200_000L),
-                    Triple("200k - 400k", 200_000L, 400_000L),
-                    Triple("Trên 400k", 400_000L, null),
+                    Triple(
+                        stringResource(R.string.filter_price_under, Formatters.money(200_000)),
+                        null,
+                        200_000L,
+                    ),
+                    Triple(
+                        stringResource(
+                            R.string.filter_price_between,
+                            Formatters.money(200_000),
+                            Formatters.money(400_000),
+                        ),
+                        200_000L,
+                        400_000L,
+                    ),
+                    Triple(
+                        stringResource(R.string.filter_price_over, Formatters.money(400_000)),
+                        400_000L,
+                        null,
+                    ),
                 )
 
                 presets.forEach { (label, min, max) ->
                     val isSelected = selectedMinPrice == min && selectedMaxPrice == max
-                    FilterChip(
+                    StyloFilterChip(
+                        label = label,
                         selected = isSelected,
                         onClick = {
                             if (isSelected) {
@@ -269,16 +256,7 @@ fun FilterBottomSheet(
                                 onPriceSelected(min, max)
                             }
                         },
-                        label = { Text(label) },
                         modifier = Modifier.testTag(UiTags.FilterPrice),
-                        leadingIcon = if (isSelected) {
-                            { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                        } else null,
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
                     )
                 }
             }
@@ -292,7 +270,7 @@ fun FilterBottomSheet(
                     .fillMaxWidth()
                     .height(48.dp)
                     .testTag(UiTags.FilterApply),
-                shape = RoundedCornerShape(8.dp),
+                shape = MaterialTheme.shapes.small,
             ) {
                 Text(
                     text = stringResource(R.string.catalog_filter_apply),

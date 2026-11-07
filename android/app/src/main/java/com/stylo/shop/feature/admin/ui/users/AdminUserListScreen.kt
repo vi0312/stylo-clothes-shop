@@ -50,13 +50,15 @@ import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.admin.model.AdminUser
 import com.stylo.shop.feature.admin.model.AdminUserStatus
-import com.stylo.shop.feature.admin.ui.AdminConfirmDialog
 import com.stylo.shop.feature.admin.ui.AdminDetailScaffold
-import com.stylo.shop.feature.admin.ui.AdminEmptyState
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminListSkeleton
-import com.stylo.shop.feature.admin.ui.AdminSearchField
-import com.stylo.shop.feature.admin.ui.AdminStatusBadge
+import com.stylo.shop.core.ui.components.StyloConfirmDialog
+import com.stylo.shop.core.ui.components.StyloEmptyState
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloListSkeleton
+import com.stylo.shop.core.ui.components.StyloSearchField
+import com.stylo.shop.core.ui.components.StyloStatusBadge
+import com.stylo.shop.core.ui.components.StyloTone
+import com.stylo.shop.core.ui.components.StyloFilterChip
 
 @Composable
 fun AdminUserListScreen(
@@ -97,9 +99,9 @@ fun AdminUserListScreen(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 4.dp),
             )
 
-            AdminSearchField(
+            StyloSearchField(
                 query = state.searchQuery,
-                placeholder = stringResource(R.string.admin_users_search_hint),
+                hint = stringResource(R.string.admin_users_search_hint),
                 onQueryChange = viewModel::onSearchQueryChange,
                 onSubmit = viewModel::onSearch,
                 onClear = {
@@ -118,23 +120,23 @@ fun AdminUserListScreen(
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
             ) {
                 items(AdminUserStatusFilter.entries) { filter ->
-                    FilterChip(
+                    StyloFilterChip(
+                        label = statusFilterLabel(filter),
                         selected = state.statusFilter == filter,
                         onClick = { viewModel.onStatusFilterSelected(filter) },
-                        label = { Text(statusFilterLabel(filter)) },
                         modifier = Modifier.testTag(UiTags.AdminUserStatusChip),
                     )
                 }
             }
 
             when (val usersState = state.usersState) {
-                is UiState.Loading -> AdminListSkeleton(rows = 6, thumbnail = false)
-                is UiState.Error -> AdminErrorState(
+                is UiState.Loading -> StyloListSkeleton(rows = 6, thumbnail = false)
+                is UiState.Error -> StyloErrorState(
                     error = usersState.error,
                     onRetry = viewModel::onRetry,
                 )
                 is UiState.Content -> if (usersState.data.isEmpty()) {
-                    AdminEmptyState(
+                    StyloEmptyState(
                         icon = Icons.Filled.Person,
                         title = stringResource(R.string.admin_users_empty_title),
                         body = stringResource(R.string.admin_users_empty_body),
@@ -155,7 +157,7 @@ fun AdminUserListScreen(
     }
 
     pendingDisable?.let { user ->
-        AdminConfirmDialog(
+        StyloConfirmDialog(
             title = stringResource(R.string.admin_user_disable_title),
             body = stringResource(R.string.admin_user_disable_body, user.fullName),
             confirmLabel = stringResource(R.string.admin_user_disable),
@@ -212,6 +214,7 @@ private fun UserRows(
             UserRow(
                 user = user,
                 updating = state.updatingUserId == user.id,
+                actionsEnabled = state.updatingUserId == null,
                 onDisable = { onDisable(user) },
                 onEnable = { onEnable(user) },
             )
@@ -257,6 +260,7 @@ private fun UserRows(
 private fun UserRow(
     user: AdminUser,
     updating: Boolean,
+    actionsEnabled: Boolean,
     onDisable: () -> Unit,
     onEnable: () -> Unit,
 ) {
@@ -264,7 +268,7 @@ private fun UserRow(
         modifier = Modifier
             .fillMaxWidth()
             .testTag(UiTags.AdminUserRow),
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -315,7 +319,7 @@ private fun UserRow(
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                AdminStatusBadge(
+                StyloStatusBadge(
                     text = stringResource(
                         if (user.status == AdminUserStatus.ACTIVE) {
                             R.string.admin_user_status_active
@@ -323,26 +327,30 @@ private fun UserRow(
                             R.string.admin_user_status_disabled
                         },
                     ),
-                    active = user.status == AdminUserStatus.ACTIVE,
+                    tone = if (user.status == AdminUserStatus.ACTIVE) {
+                        StyloTone.Success
+                    } else {
+                        StyloTone.Neutral
+                    },
                 )
                 TextButton(
                     onClick = if (user.status == AdminUserStatus.ACTIVE) onDisable else onEnable,
-                    enabled = !updating,
+                    enabled = actionsEnabled,
                 ) {
+                    Text(
+                        stringResource(
+                            if (user.status == AdminUserStatus.ACTIVE) {
+                                R.string.admin_user_disable
+                            } else {
+                                R.string.admin_user_enable
+                            },
+                        ),
+                    )
                     if (updating) {
+                        Spacer(Modifier.width(8.dp))
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
                             strokeWidth = 2.dp,
-                        )
-                    } else {
-                        Text(
-                            stringResource(
-                                if (user.status == AdminUserStatus.ACTIVE) {
-                                    R.string.admin_user_disable
-                                } else {
-                                    R.string.admin_user_enable
-                                },
-                            ),
                         )
                     }
                 }

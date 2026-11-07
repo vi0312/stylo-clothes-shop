@@ -34,8 +34,8 @@ data class ProductDetailUiState(
     val selectedVariant: ProductVariant? = null,
     val availableColors: List<String> = emptyList(),
     val availableSizes: List<SizeItemState> = emptyList(),
-    val stockText: String = "",
-    val ctaButtonText: String = "Chọn kích cỡ",
+    val stock: Int = 0,
+    val isOutOfStock: Boolean = false,
     val isCtaEnabled: Boolean = false,
     val currentPrice: Long = 0L,
     val isLowStock: Boolean = false,
@@ -198,24 +198,9 @@ class ProductDetailViewModel @Inject constructor(
         val isLowStock = selectedVariant != null && stock in 1..5
         val allSizesOutOfStock = availableSizes.isNotEmpty() && availableSizes.none { it.isAvailable }
 
-        val stockText = when {
-            allSizesOutOfStock || (selectedVariant != null && stock <= 0) -> "Hết hàng"
-            selectedColor == null -> "Vui lòng chọn màu"
-            selectedSize == null -> "Vui lòng chọn kích cỡ"
-            selectedVariant == null -> "Không có sẵn"
-            isLowStock -> "Còn $stock sản phẩm (Tồn thấp)"
-            else -> "Còn $stock sản phẩm"
-        }
-
-        val ctaText = when {
-            allSizesOutOfStock || (selectedVariant != null && stock <= 0) -> "Hết hàng"
-            selectedColor == null -> "Chọn màu"
-            selectedSize == null -> "Chọn kích cỡ"
-            selectedVariant == null -> "Hết hàng"
-            else -> "Thêm vào giỏ"
-        }
-
-        val isCtaEnabled = !allSizesOutOfStock && selectedVariant != null && stock > 0
+        // Copy lives in the screen: the ViewModel only decides the facts.
+        val isOutOfStock = allSizesOutOfStock || (selectedVariant != null && stock <= 0)
+        val isCtaEnabled = !isOutOfStock && selectedVariant != null && stock > 0
         val price = selectedVariant?.price ?: product.minPrice ?: 0L
 
         return ProductDetailUiState(
@@ -225,8 +210,8 @@ class ProductDetailViewModel @Inject constructor(
             selectedVariant = selectedVariant,
             availableColors = availableColors,
             availableSizes = availableSizes,
-            stockText = stockText,
-            ctaButtonText = ctaText,
+            stock = stock,
+            isOutOfStock = isOutOfStock,
             isCtaEnabled = isCtaEnabled,
             currentPrice = price,
             isLowStock = isLowStock,

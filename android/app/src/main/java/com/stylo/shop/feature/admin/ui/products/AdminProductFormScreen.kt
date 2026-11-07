@@ -88,15 +88,17 @@ import com.stylo.shop.feature.admin.model.AdminVariant
 import com.stylo.shop.feature.admin.model.CatalogStatus
 import com.stylo.shop.feature.admin.model.ImageUpload
 import com.stylo.shop.feature.admin.model.MAX_PRODUCT_IMAGES
-import com.stylo.shop.feature.admin.ui.AdminConfirmDialog
 import com.stylo.shop.feature.admin.ui.AdminDetailScaffold
 import com.stylo.shop.feature.admin.ui.AdminErrorBanner
-import com.stylo.shop.feature.admin.ui.AdminErrorState
-import com.stylo.shop.feature.admin.ui.AdminSectionCard
 import com.stylo.shop.feature.admin.ui.adminFieldErrorText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.stylo.shop.core.ui.components.StyloCard
+import com.stylo.shop.core.ui.components.StyloConfirmDialog
+import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloBusyButton
+import androidx.compose.foundation.layout.heightIn
 
 @Composable
 fun AdminProductFormScreen(
@@ -149,7 +151,7 @@ fun AdminProductFormScreen(
                 }
             }
             state.loadError != null -> {
-                AdminErrorState(
+                StyloErrorState(
                     error = state.loadError!!,
                     onRetry = viewModel::load,
                     modifier = Modifier.padding(padding),
@@ -195,7 +197,7 @@ fun AdminProductFormScreen(
     }
 
     state.confirmDeleteVariant?.let { variant ->
-        AdminConfirmDialog(
+        StyloConfirmDialog(
             title = stringResource(R.string.admin_variant_delete_title),
             body = stringResource(R.string.admin_variant_delete_body),
             confirmLabel = stringResource(R.string.action_delete),
@@ -206,7 +208,7 @@ fun AdminProductFormScreen(
     }
 
     state.confirmDeleteImage?.let {
-        AdminConfirmDialog(
+        StyloConfirmDialog(
             title = stringResource(R.string.admin_image_delete_title),
             body = stringResource(R.string.admin_image_delete_body),
             confirmLabel = stringResource(R.string.action_delete),
@@ -217,7 +219,7 @@ fun AdminProductFormScreen(
     }
 
     if (state.showDeleteProduct) {
-        AdminConfirmDialog(
+        StyloConfirmDialog(
             title = stringResource(R.string.admin_product_delete_title),
             body = stringResource(R.string.admin_product_delete_body),
             confirmLabel = stringResource(R.string.action_delete),
@@ -256,7 +258,7 @@ private fun ProductFormContent(
             .padding(horizontal = 20.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        AdminSectionCard(title = stringResource(R.string.admin_product_section_info)) {
+        StyloCard(title = stringResource(R.string.admin_product_section_info)) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = state.name,
@@ -329,24 +331,6 @@ private fun ProductFormContent(
                 }
 
                 state.formError?.let { AdminErrorBanner(it) }
-
-                Button(
-                    onClick = onSave,
-                    enabled = !state.saving,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                ) {
-                    if (state.saving) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    } else {
-                        Text(stringResource(R.string.admin_product_save))
-                    }
-                }
             }
         }
 
@@ -381,6 +365,17 @@ private fun ProductFormContent(
                 onEditVariant = onEditVariant,
                 onRequestDeleteVariant = onRequestDeleteVariant,
             )
+
+            Spacer(Modifier.height(4.dp))
+            StyloBusyButton(
+                text = stringResource(R.string.admin_product_save),
+                busy = state.saving,
+                onClick = onSave,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp),
+            )
+            Spacer(Modifier.height(16.dp))
 
             OutlinedButton(
                 onClick = onRequestDeleteProduct,
@@ -464,7 +459,7 @@ private fun ImagesSection(
     onDismissFailed: () -> Unit,
     onRequestDeleteImage: (AdminProductImage) -> Unit,
 ) {
-    AdminSectionCard(title = stringResource(R.string.admin_product_section_images)) {
+    StyloCard(title = stringResource(R.string.admin_product_section_images)) {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             items(images, key = { it.id }) { image ->
                 Box(
@@ -505,12 +500,15 @@ private fun ImagesSection(
                     ) {
                         IconButton(
                             onClick = { onRequestDeleteImage(image) },
-                            modifier = Modifier.size(36.dp),
+                            modifier = Modifier.size(48.dp),
                         ) {
                             Icon(
                                 Icons.Filled.Delete,
-                                contentDescription = stringResource(R.string.action_delete),
-                                modifier = Modifier.size(16.dp),
+                                contentDescription = stringResource(
+                                    R.string.admin_image_delete_position,
+                                    image.position + 1,
+                                ),
+                                modifier = Modifier.size(18.dp),
                             )
                         }
                     }
@@ -601,7 +599,7 @@ private fun VariantsSection(
     onEditVariant: (AdminVariant) -> Unit,
     onRequestDeleteVariant: (AdminVariant) -> Unit,
 ) {
-    AdminSectionCard(title = stringResource(R.string.admin_product_section_variants)) {
+    StyloCard(title = stringResource(R.string.admin_product_section_variants)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = stringResource(R.string.admin_product_stock_note),

@@ -29,6 +29,8 @@ import com.stylo.shop.core.network.ApiClient
 import com.stylo.shop.core.ui.Formatters
 import com.stylo.shop.core.ui.theme.statusColors
 import com.stylo.shop.feature.catalog.model.ProductCard
+import androidx.compose.ui.res.stringResource
+import com.stylo.shop.R
 
 @Composable
 fun ProductCardView(
@@ -126,7 +128,7 @@ fun ProductCardView(
         // Price
         val priceText = when {
             product.minPrice != null && product.maxPrice != null && product.minPrice != product.maxPrice ->
-                "${Formatters.money(product.minPrice)} - ${Formatters.money(product.maxPrice)}"
+                stringResource(R.string.price_range, Formatters.money(product.minPrice), Formatters.money(product.maxPrice))
             product.minPrice != null -> Formatters.money(product.minPrice)
             product.maxPrice != null -> Formatters.money(product.maxPrice)
             else -> "Liên hệ"

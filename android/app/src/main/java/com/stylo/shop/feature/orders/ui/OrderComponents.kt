@@ -13,6 +13,8 @@ import com.stylo.shop.R
 import com.stylo.shop.core.ui.theme.statusColors
 import com.stylo.shop.feature.orders.model.OrderPaymentMethod
 import com.stylo.shop.feature.orders.model.OrderStatus
+import com.stylo.shop.core.ui.components.StyloStatusBadge
+import com.stylo.shop.core.ui.components.StyloTone
 
 @Composable
 fun orderStatusLabel(status: OrderStatus): String = stringResource(
@@ -25,24 +27,19 @@ fun orderStatusLabel(status: OrderStatus): String = stringResource(
     },
 )
 
-/** Status colours live in the theme pair table, not as ad-hoc reds and greens. */
+/** Status colours come from the shared tone table, never as ad-hoc reds and greens. */
 @Composable
 fun OrderStatusBadge(status: OrderStatus) {
-    val colors = MaterialTheme.statusColors
-    val pair = when (status) {
-        OrderStatus.PENDING -> colors.warning to colors.warningContainer
-        OrderStatus.CONFIRMED -> colors.info to colors.infoContainer
-        OrderStatus.SHIPPING -> colors.indigo to colors.indigoContainer
-        OrderStatus.DELIVERED -> colors.success to colors.successContainer
-        OrderStatus.CANCELLED -> colors.neutral to colors.neutralContainer
-    }
-    Surface(color = pair.second, contentColor = pair.first, shape = CircleShape) {
-        Text(
-            text = orderStatusLabel(status),
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.labelMedium,
-        )
-    }
+    StyloStatusBadge(
+        text = orderStatusLabel(status),
+        tone = when (status) {
+            OrderStatus.PENDING -> StyloTone.Warning
+            OrderStatus.CONFIRMED -> StyloTone.Info
+            OrderStatus.SHIPPING -> StyloTone.Indigo
+            OrderStatus.DELIVERED -> StyloTone.Success
+            OrderStatus.CANCELLED -> StyloTone.Neutral
+        },
+    )
 }
 
 @Composable
