@@ -1,5 +1,7 @@
-import { Prisma, type CatalogStatus } from '../../generated/prisma/client.js'
+import { Prisma, type CatalogStatus, type OrderStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
+import { businessDayWindow } from './orders.logic.js'
+import type { ListAdminOrdersQuery, ListOrdersQuery } from './orders.schema.js'
 
 export const orderInclude = {
   items: { orderBy: { id: 'asc' } },
@@ -203,4 +205,160 @@ export function decrementStock(
 
 export function deleteCartItems(tx: Prisma.TransactionClient, cartId: number): Promise<unknown> {
   return tx.cartItem.deleteMany({ where: { cartId } })
+}
+
+const orderSummaryInclude = {
+  items: { select: { quantity: true } },
+  payments: {
+    orderBy: [{ createdAt: 'desc' as const }, { id: 'desc' as const }],
+    take: 1,
+    select: { status: true },
+  },
+} satisfies Prisma.OrderInclude
+
+export type OrderSummaryRow = Prisma.OrderGetPayload<{ include: typeof orderSummaryInclude }>
+
+const adminOrderSummaryInclude = {
+  ...orderSummaryInclude,
+  user: { select: { fullName: true } },
+} satisfies Prisma.OrderInclude
+
+export type AdminOrderSummaryRow = Prisma.OrderGetPayload<{
+  include: typeof adminOrderSummaryInclude
+}>
+
+const adminOrderDetailInclude = {
+  items: { orderBy: { id: 'asc' as const } },
+  payments: { orderBy: [{ createdAt: 'desc' as const }, { id: 'desc' as const }] },
+  user: { select: { id: true, email: true, fullName: true, phone: true } },
+} satisfies Prisma.OrderInclude
+
+export type AdminOrderDetailRow = Prisma.OrderGetPayload<{ include: typeof adminOrderDetailInclude }>
+
+function listOrderBy(sort: ListOrdersQuery['sort']) {
+  return sort === 'oldest'
+    ? [{ createdAt: 'asc' as const }, { id: 'asc' as const }]
+    : [{ createdAt: 'desc' as const }, { id: 'desc' as const }]
+}
+
+function pageArgs(page: number, limit: number) {
+  return { skip: (page - 1) * limit, take: limit }
+}
+
+export function listOrdersForUser(
+  userId: number,
+  query: ListOrdersQuery,
+): Promise<{ orders: OrderSummaryRow[]; total: number }> {
+  const where: Prisma.OrderWhereInput = {
+    userId,
+    ...(query.status ? { status: query.status } : {}),
+  }
+
+  return Promise.all([
+    prisma.order.count({ where }),
+    prisma.order.findMany({
+      where,
+      include: orderSummaryInclude,
+      orderBy: listOrderBy(query.sort),
+      ...pageArgs(query.page, query.limit),
+    }),
+  ]).then(([total, orders]) => ({ orders, total }))
+}
+
+export function findOrderForUser(userId: number, orderId: number): Promise<OrderRow | null> {
+  return prisma.order.findFirst({ where: { id: orderId, userId }, include: orderInclude })
+}
+
+export function listAdminOrders(
+  query: ListAdminOrdersQuery,
+): Promise<{ orders: AdminOrderSummaryRow[]; total: number }> {
+  const dayWindow = businessDayWindow(query.from, query.to)
+  const where: Prisma.OrderWhereInput = {
+    ...(query.status ? { status: query.status } : {}),
+    ...(query.q
+      ? {
+          OR: [
+            { code: { contains: query.q } },
+            { recipientName: { contains: query.q } },
+            { recipientPhone: { contains: query.q } },
+          ],
+        }
+      : {}),
+    ...(dayWindow.gte || dayWindow.lt
+      ? {
+          createdAt: {
+            ...(dayWindow.gte ? { gte: dayWindow.gte } : {}),
+            ...(dayWindow.lt ? { lt: dayWindow.lt } : {}),
+          },
+        }
+      : {}),
+  }
+
+  return Promise.all([
+    prisma.order.count({ where }),
+    prisma.order.findMany({
+      where,
+      include: adminOrderSummaryInclude,
+      orderBy: listOrderBy(query.sort),
+      ...pageArgs(query.page, query.limit),
+    }),
+  ]).then(([total, orders]) => ({ orders, total }))
+}
+
+export function findAdminOrder(orderId: number): Promise<AdminOrderDetailRow | null> {
+  return prisma.order.findUnique({ where: { id: orderId }, include: adminOrderDetailInclude })
+}
+
+export interface RestockLine {
+  variantId: number
+  quantity: number
+}
+
+/**
+ * Ascending `variantId` mirrors checkout's lock order, so a cancel and a checkout sharing
+ * variants queue instead of deadlocking.
+ */
+export async function restock(
+  tx: Prisma.TransactionClient,
+  orderId: number,
+  lines: readonly RestockLine[],
+): Promise<void> {
+  const ordered = [...lines].sort((left, right) => left.variantId - right.variantId)
+
+  for (const line of ordered) {
+    await tx.productVariant.update({
+      where: { id: line.variantId },
+      data: { stock: { increment: line.quantity } },
+    })
+  }
+
+  await tx.stockMovement.createMany({
+    data: ordered.map((line) => ({
+      variantId: line.variantId,
+      delta: line.quantity,
+      reason: 'CANCEL_RESTOCK',
+      refType: 'ORDER',
+      refId: orderId,
+      unitCost: null,
+    })),
+  })
+}
+
+export function orderItemsForRestock(
+  tx: Prisma.TransactionClient,
+  orderId: number,
+): Promise<RestockLine[]> {
+  return tx.orderItem.findMany({
+    where: { orderId },
+    select: { variantId: true, quantity: true },
+    orderBy: { variantId: 'asc' },
+  })
+}
+
+export function setOrderStatus(
+  tx: Prisma.TransactionClient,
+  orderId: number,
+  data: { status: OrderStatus; paidAt?: Date },
+): Promise<unknown> {
+  return tx.order.update({ where: { id: orderId }, data })
 }

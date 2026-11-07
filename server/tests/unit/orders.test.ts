@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
+  businessDayWindow,
+  canTransition,
   collectCheckoutFailures,
   computeTotals,
   derivePaymentStatus,
+  ORDER_STATUSES,
   orderCode,
   type LockedVariant,
 } from '../../src/modules/orders/orders.logic.js'
@@ -130,5 +133,50 @@ describe('derived payment status', () => {
     expect(derivePaymentStatus(null, undefined)).toBe('UNPAID')
     expect(derivePaymentStatus(null, { status: 'PENDING' })).toBe('UNPAID')
     expect(derivePaymentStatus(null, { status: 'SUCCEEDED' })).toBe('UNPAID')
+  })
+})
+
+describe('order state machine', () => {
+  // The documented matrix from docs/api.md, written out once so a drift fails here.
+  const documented: Record<string, readonly string[]> = {
+    PENDING: ['CONFIRMED', 'CANCELLED'],
+    CONFIRMED: ['SHIPPING', 'CANCELLED'],
+    SHIPPING: ['DELIVERED'],
+    DELIVERED: [],
+    CANCELLED: [],
+  }
+
+  it('allows exactly the five documented transitions and rejects everything else', () => {
+    for (const from of ORDER_STATUSES) {
+      for (const to of ORDER_STATUSES) {
+        expect(canTransition(from, to), `${from} → ${to}`).toBe(documented[from].includes(to))
+      }
+    }
+  })
+
+  it('treats the current status as invalid, including the terminal ones', () => {
+    expect(canTransition('PENDING', 'PENDING')).toBe(false)
+    expect(canTransition('DELIVERED', 'DELIVERED')).toBe(false)
+    expect(canTransition('DELIVERED', 'CANCELLED')).toBe(false)
+    expect(canTransition('CANCELLED', 'CONFIRMED')).toBe(false)
+  })
+})
+
+describe('business day window', () => {
+  it('maps a Vietnam calendar day to the UTC half-open window', () => {
+    expect(businessDayWindow('2026-11-04', '2026-11-04')).toEqual({
+      gte: new Date('2026-11-03T17:00:00.000Z'),
+      lt: new Date('2026-11-04T17:00:00.000Z'),
+    })
+  })
+
+  it('keeps an omitted end open instead of defaulting it to today', () => {
+    expect(businessDayWindow(undefined, '2026-11-04')).toEqual({
+      lt: new Date('2026-11-04T17:00:00.000Z'),
+    })
+    expect(businessDayWindow('2026-11-04')).toEqual({
+      gte: new Date('2026-11-03T17:00:00.000Z'),
+    })
+    expect(businessDayWindow()).toEqual({})
   })
 })

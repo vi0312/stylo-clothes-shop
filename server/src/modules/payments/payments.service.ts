@@ -3,7 +3,7 @@ import { Prisma, type Payment, type PaymentStatus } from '../../generated/prisma
 import { prisma } from '../../lib/prisma.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import type { PublicUser } from '../users/user.dto.js'
-import type { PaymentAttemptDto, PaymentDetailDto } from './payments.dto.js'
+import type { PaymentAttemptDto, PaymentDetailDto, PaymentDto } from './payments.dto.js'
 import { gatewayFor, paymentGateway } from './gateway/PaymentGateway.js'
 import { isAttemptExpired, txnRef } from './payments.logic.js'
 import * as repository from './payments.repository.js'
@@ -37,6 +37,19 @@ export function toPaymentAttempt(row: Payment, orderCode: string): PaymentAttemp
       orderCode,
       createdAt: row.createdAt,
     }),
+    failureReason: row.failureReason,
+    createdAt: row.createdAt.toISOString(),
+  }
+}
+
+/** Admin order detail lists every attempt; the URL is only rebuilt for the payment endpoints. */
+export function toPayment(row: Payment): PaymentDto {
+  return {
+    id: row.id,
+    txnRef: row.txnRef,
+    provider: row.provider,
+    status: row.status,
+    amount: row.amount,
     failureReason: row.failureReason,
     createdAt: row.createdAt.toISOString(),
   }

@@ -24,3 +24,6 @@ export interface PaymentDetailDto {
   createdAt: string
   updatedAt: string
 }
+
+/** `Payment` from `api.md`: the attempt without the rebuildable payment URL. */
+export type PaymentDto = Omit<PaymentAttemptDto, 'paymentUrl'>

@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import request from 'supertest'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { createApp } from '../../src/app.js'
@@ -16,18 +17,27 @@ const DEFAULT_LINE = '12 Nguyễn Trãi, P. Bến Thành, Q.1, TP.HCM'
 
 let customerId: number
 let otherId: number
+let adminId: number
 let customerToken: string
 let otherToken: string
+let adminToken: string
 let receiptSequence = 0
 
 beforeEach(async () => {
   await resetDb()
-  const customer = await createUser({ email: 'an@example.com' })
-  const other = await createUser({ email: 'binh@example.com' })
+  const customer = await createUser({ email: 'an@example.com', fullName: 'Nguyễn Văn An' })
+  const other = await createUser({ email: 'binh@example.com', fullName: 'Trần Bình' })
+  const admin = await createUser({
+    email: 'admin@example.com',
+    fullName: 'Quản trị viên',
+    role: 'ADMIN',
+  })
   customerId = customer.id
   otherId = other.id
+  adminId = admin.id
   customerToken = signAccessToken(customer.id, customer.role)
   otherToken = signAccessToken(other.id, other.role)
+  adminToken = signAccessToken(admin.id, admin.role)
 })
 
 function auth(token: string) {
@@ -466,5 +476,490 @@ describe('checkout', () => {
     expect(await prisma.stockMovement.count({ where: { refType: 'ORDER' } })).toBe(1)
     const stock = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
     expect(stock.stock).toBe(2)
+  })
+})
+
+function patchStatus(orderId: number, status: string) {
+  return request(app)
+    .patch(`/api/v1/admin/orders/${orderId}/status`)
+    .set(auth(adminToken))
+    .send({ status })
+}
+
+function cancelOrder(token: string, orderId: number) {
+  return request(app).post(`/api/v1/orders/${orderId}/cancel`).set(auth(token))
+}
+
+async function placeOrder(
+  token: string,
+  addressId: number,
+  variantId: number,
+  quantity = 1,
+  paymentMethod: 'COD' | 'ONLINE' = 'COD',
+) {
+  await addToCart(token, variantId, quantity)
+  const response = await checkout(token, {
+    clientOrderId: randomUUID(),
+    addressId,
+    paymentMethod,
+  })
+  expect(response.status).toBe(201)
+  return response.body.order as { id: number; code: string; status: string; total: number }
+}
+
+async function singleVariantProduct(price = 100_000, stock = 10) {
+  const product = await createProduct({
+    variants: [{ sku: 'AT-DEN-M', size: 'M', color: 'Đen', price, stock }],
+  })
+  return product.variants[0]
+}
+
+describe('customer order history', () => {
+  it('lists the caller orders with the derived status and the summed item count', async () => {
+    const product = await createProduct({
+      variants: [
+        { sku: 'AT-DEN-M', size: 'M', color: 'Đen', price: 100_000, stock: 10 },
+        { sku: 'AT-TRANG-L', size: 'L', color: 'Trắng', price: 120_000, stock: 10 },
+      ],
+    })
+    const address = await createAddress(customerId)
+    await addToCart(customerToken, variantBySku(product, 'AT-DEN-M').id, 2)
+    await addToCart(customerToken, variantBySku(product, 'AT-TRANG-L').id, 1)
+    const placed = await checkout(customerToken, {
+      clientOrderId: CLIENT_ORDER_ID,
+      addressId: address.id,
+      paymentMethod: 'COD',
+    })
+
+    const list = await request(app).get('/api/v1/orders').set(auth(customerToken))
+
+    expect(list.status).toBe(200)
+    expect(list.body).toEqual({
+      items: [
+        {
+          id: placed.body.order.id,
+          code: placed.body.order.code,
+          status: 'PENDING',
+          paymentMethod: 'COD',
+          paymentStatus: 'UNPAID',
+          total: 320_000 + SHIPPING_FEE,
+          itemCount: 3,
+          createdAt: expect.any(String),
+        },
+      ],
+      page: 1,
+      limit: 20,
+      total: 1,
+    })
+
+    const other = await request(app).get('/api/v1/orders').set(auth(otherToken))
+    expect(other.body).toEqual({ items: [], page: 1, limit: 20, total: 0 })
+
+    const delivered = await request(app)
+      .get('/api/v1/orders?status=DELIVERED')
+      .set(auth(customerToken))
+    expect(delivered.body.total).toBe(0)
+  })
+
+  it('sorts newest first by default, oldest on request and pages stably', async () => {
+    const variant = await singleVariantProduct(100_000, 10)
+    const address = await createAddress(customerId)
+    const first = await placeOrder(customerToken, address.id, variant.id)
+    const second = await placeOrder(customerToken, address.id, variant.id)
+
+    await prisma.order.update({
+      where: { id: first.id },
+      data: { createdAt: new Date('2026-10-01T00:00:00.000Z') },
+    })
+    await prisma.order.update({
+      where: { id: second.id },
+      data: { createdAt: new Date('2026-10-02T00:00:00.000Z') },
+    })
+
+    const newest = await request(app).get('/api/v1/orders').set(auth(customerToken))
+    expect(newest.body.items.map((item: { id: number }) => item.id)).toEqual([second.id, first.id])
+
+    const oldest = await request(app).get('/api/v1/orders?sort=oldest').set(auth(customerToken))
+    expect(oldest.body.items.map((item: { id: number }) => item.id)).toEqual([first.id, second.id])
+
+    const secondPage = await request(app)
+      .get('/api/v1/orders?limit=1&page=2')
+      .set(auth(customerToken))
+    expect(secondPage.body).toEqual({
+      items: [expect.objectContaining({ id: first.id })],
+      page: 2,
+      limit: 1,
+      total: 2,
+    })
+
+    const pastTheEnd = await request(app)
+      .get('/api/v1/orders?limit=1&page=9')
+      .set(auth(customerToken))
+    expect(pastTheEnd.body).toEqual({ items: [], page: 9, limit: 1, total: 2 })
+  })
+
+  it('returns the order detail with snapshots and hides another customer order', async () => {
+    const variant = await singleVariantProduct(199_000, 5)
+    const address = await createAddress(customerId)
+    const placed = await placeOrder(customerToken, address.id, variant.id, 2)
+
+    const own = await request(app)
+      .get(`/api/v1/orders/${placed.id}`)
+      .set(auth(customerToken))
+
+    expect(own.status).toBe(200)
+    expect(own.body).toEqual(
+      expect.objectContaining({
+        id: placed.id,
+        code: placed.code,
+        status: 'PENDING',
+        paymentMethod: 'COD',
+        paymentStatus: 'UNPAID',
+        subtotal: 398_000,
+        shippingFee: SHIPPING_FEE,
+        total: 428_000,
+        recipientName: 'Nguyễn Văn An',
+        items: [
+          expect.objectContaining({
+            variantId: variant.id,
+            sku: 'AT-DEN-M',
+            size: 'M',
+            color: 'Đen',
+            unitPrice: 199_000,
+            quantity: 2,
+            lineTotal: 398_000,
+          }),
+        ],
+      }),
+    )
+    expect(own.body.items[0]).not.toHaveProperty('unitCost')
+
+    const foreign = await request(app)
+      .get(`/api/v1/orders/${placed.id}`)
+      .set(auth(otherToken))
+    expect(foreign.status).toBe(404)
+    expect(foreign.body.error.code).toBe('NOT_FOUND')
+  })
+})
+
+describe('customer cancel', () => {
+  it('restocks every line, appends CANCEL_RESTOCK movements and is applied once', async () => {
+    const product = await createProduct({
+      variants: [
+        { sku: 'AT-DEN-M', size: 'M', color: 'Đen', price: 100_000, stock: 5 },
+        { sku: 'AT-TRANG-L', size: 'L', color: 'Trắng', price: 120_000, stock: 4 },
+      ],
+    })
+    const tee = variantBySku(product, 'AT-DEN-M')
+    const shirt = variantBySku(product, 'AT-TRANG-L')
+    const address = await createAddress(customerId)
+    await addToCart(customerToken, tee.id, 2)
+    await addToCart(customerToken, shirt.id, 1)
+    const placed = await checkout(customerToken, {
+      clientOrderId: CLIENT_ORDER_ID,
+      addressId: address.id,
+      paymentMethod: 'COD',
+    })
+    const orderId = placed.body.order.id
+
+    const response = await cancelOrder(customerToken, orderId)
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual(expect.objectContaining({ id: orderId, status: 'CANCELLED' }))
+
+    const stocks = await prisma.productVariant.findMany({
+      where: { id: { in: [tee.id, shirt.id] } },
+      orderBy: { id: 'asc' },
+      select: { id: true, stock: true },
+    })
+    expect(stocks).toEqual([
+      { id: tee.id, stock: 5 },
+      { id: shirt.id, stock: 4 },
+    ])
+
+    const restock = await prisma.stockMovement.findMany({
+      where: { refType: 'ORDER', refId: orderId, reason: 'CANCEL_RESTOCK' },
+      orderBy: { variantId: 'asc' },
+    })
+    expect(restock).toEqual([
+      expect.objectContaining({ variantId: tee.id, delta: 2, unitCost: null }),
+      expect.objectContaining({ variantId: shirt.id, delta: 1, unitCost: null }),
+    ])
+
+    const repeated = await cancelOrder(customerToken, orderId)
+    expect(repeated.status).toBe(409)
+    expect(repeated.body.error).toEqual({
+      code: 'INVALID_ORDER_STATE',
+      message: expect.any(String),
+      details: { current: 'CANCELLED', target: 'CANCELLED' },
+    })
+
+    const movements = await prisma.stockMovement.count({
+      where: { refType: 'ORDER', refId: orderId, reason: 'CANCEL_RESTOCK' },
+    })
+    expect(movements).toBe(2)
+  })
+
+  it('refuses a paid order and an order owned by somebody else', async () => {
+    const variant = await singleVariantProduct()
+    const address = await createAddress(customerId)
+    const paid = await placeOrder(customerToken, address.id, variant.id)
+    await prisma.order.update({ where: { id: paid.id }, data: { paidAt: new Date() } })
+
+    const paidCancel = await cancelOrder(customerToken, paid.id)
+    expect(paidCancel.status).toBe(409)
+    expect(paidCancel.body.error.code).toBe('ORDER_ALREADY_PAID')
+
+    const owned = await placeOrder(customerToken, address.id, variant.id)
+    const foreign = await cancelOrder(otherToken, owned.id)
+    expect(foreign.status).toBe(404)
+    expect(foreign.body.error.code).toBe('NOT_FOUND')
+
+    const stillPending = await prisma.order.findUniqueOrThrow({ where: { id: owned.id } })
+    expect(stillPending.status).toBe('PENDING')
+  })
+})
+
+describe('admin orders', () => {
+  it('requires the admin role', async () => {
+    const response = await request(app).get('/api/v1/admin/orders').set(auth(customerToken))
+    expect(response.status).toBe(403)
+    expect(response.body.error.code).toBe('FORBIDDEN')
+  })
+
+  it('filters summaries by status, code, recipient and Vietnam calendar day', async () => {
+    const variant = await singleVariantProduct(100_000, 10)
+    const anAddress = await createAddress(customerId, {
+      recipientName: 'Nguyễn Văn An',
+      phone: '0901234567',
+    })
+    const binhAddress = await createAddress(otherId, {
+      recipientName: 'Trần Bình',
+      phone: '0912345678',
+    })
+    const first = await placeOrder(customerToken, anAddress.id, variant.id)
+    const second = await placeOrder(otherToken, binhAddress.id, variant.id)
+    const third = await placeOrder(customerToken, anAddress.id, variant.id)
+    const fourth = await placeOrder(customerToken, anAddress.id, variant.id)
+
+    // Vietnam calendar day 2026-10-01 is [Sep 30 17:00Z, Oct 1 17:00Z): first and fourth
+    // sit one millisecond outside; second and third sit exactly on the inclusive ends.
+    await prisma.order.update({
+      where: { id: first.id },
+      data: { createdAt: new Date('2026-09-30T16:59:59.999Z') },
+    })
+    await prisma.order.update({
+      where: { id: second.id },
+      data: { createdAt: new Date('2026-09-30T17:00:00.000Z') },
+    })
+    await prisma.order.update({
+      where: { id: third.id },
+      data: { createdAt: new Date('2026-10-01T16:59:59.999Z') },
+    })
+    await prisma.order.update({
+      where: { id: fourth.id },
+      data: { createdAt: new Date('2026-10-01T17:00:00.000Z') },
+    })
+
+    const all = await request(app).get('/api/v1/admin/orders').set(auth(adminToken))
+    expect(all.body.total).toBe(4)
+    expect(all.body.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: third.id,
+          customerName: 'Nguyễn Văn An',
+          recipientName: 'Nguyễn Văn An',
+          recipientPhone: '0901234567',
+          itemCount: 1,
+        }),
+      ]),
+    )
+
+    const byCode = await request(app)
+      .get(`/api/v1/admin/orders?q=${encodeURIComponent(second.code)}`)
+      .set(auth(adminToken))
+    expect(byCode.body.items.map((item: { id: number }) => item.id)).toEqual([second.id])
+
+    const byPhone = await request(app)
+      .get('/api/v1/admin/orders?q=0912345678')
+      .set(auth(adminToken))
+    expect(byPhone.body.items.map((item: { id: number }) => item.id)).toEqual([second.id])
+
+    const byDay = await request(app)
+      .get('/api/v1/admin/orders?from=2026-10-01&to=2026-10-01')
+      .set(auth(adminToken))
+    expect(byDay.body.items.map((item: { id: number }) => item.id)).toEqual([third.id, second.id])
+
+    // Oct 2 in Vietnam starts at Oct 1 17:00Z, so only the fourth order lands there.
+    const nextDay = await request(app)
+      .get('/api/v1/admin/orders?from=2026-10-02&to=2026-10-02')
+      .set(auth(adminToken))
+    expect(nextDay.body.items.map((item: { id: number }) => item.id)).toEqual([fourth.id])
+
+    const invalidWindow = await request(app)
+      .get('/api/v1/admin/orders?from=2026-10-02&to=2026-10-01')
+      .set(auth(adminToken))
+    expect(invalidWindow.status).toBe(400)
+    expect(invalidWindow.body.error.code).toBe('VALIDATION_FAILED')
+
+    const confirmed = await patchStatus(third.id, 'CONFIRMED')
+    expect(confirmed.status).toBe(200)
+
+    const byStatus = await request(app)
+      .get('/api/v1/admin/orders?status=CONFIRMED')
+      .set(auth(adminToken))
+    expect(byStatus.body.items.map((item: { id: number }) => item.id)).toEqual([third.id])
+
+    const stillPending = await request(app)
+      .get('/api/v1/admin/orders?status=PENDING')
+      .set(auth(adminToken))
+    expect(stillPending.body.items.map((item: { id: number }) => item.id)).toEqual([
+      fourth.id,
+      second.id,
+      first.id,
+    ])
+  })
+
+  it('returns the admin detail with customer, unit cost and every attempt', async () => {
+    const product = await createProduct({
+      variants: [{ sku: 'AT-DEN-M', size: 'M', color: 'Đen', price: 199_000, stock: 5 }],
+    })
+    const variant = product.variants[0]
+    await bookReceipt(adminId, [{ variantId: variant.id, quantity: 10, unitCost: 110_000 }])
+    const address = await createAddress(customerId)
+    const placed = await placeOrder(customerToken, address.id, variant.id, 2, 'ONLINE')
+
+    const response = await request(app)
+      .get(`/api/v1/admin/orders/${placed.id}`)
+      .set(auth(adminToken))
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: placed.id,
+        customer: {
+          id: customerId,
+          email: 'an@example.com',
+          fullName: 'Nguyễn Văn An',
+          phone: null,
+        },
+        items: [
+          expect.objectContaining({
+            variantId: variant.id,
+            unitPrice: 199_000,
+            unitCost: 110_000,
+            quantity: 2,
+          }),
+        ],
+        paidAt: null,
+        paymentStatus: 'UNPAID',
+      }),
+    )
+    expect(response.body.payments).toEqual([
+      expect.objectContaining({ provider: 'MOCK', status: 'PENDING', amount: 428_000 }),
+    ])
+    expect(response.body.payments[0]).not.toHaveProperty('paymentUrl')
+
+    const missing = await request(app).get('/api/v1/admin/orders/999999').set(auth(adminToken))
+    expect(missing.status).toBe(404)
+  })
+
+  it('walks PENDING to DELIVERED, settling COD once at delivery and keeping DELIVERED terminal', async () => {
+    const variant = await singleVariantProduct()
+    const address = await createAddress(customerId)
+    const placed = await placeOrder(customerToken, address.id, variant.id)
+
+    const confirmed = await patchStatus(placed.id, 'CONFIRMED')
+    expect(confirmed.status).toBe(200)
+    expect(confirmed.body.status).toBe('CONFIRMED')
+    expect(confirmed.body.paidAt).toBeNull()
+
+    const shipping = await patchStatus(placed.id, 'SHIPPING')
+    expect(shipping.status).toBe(200)
+    expect(shipping.body.status).toBe('SHIPPING')
+
+    const delivered = await patchStatus(placed.id, 'DELIVERED')
+    expect(delivered.status).toBe(200)
+    expect(delivered.body.status).toBe('DELIVERED')
+    expect(delivered.body.paidAt).toEqual(expect.any(String))
+    expect(delivered.body.paymentStatus).toBe('PAID')
+
+    const terminal = await patchStatus(placed.id, 'CANCELLED')
+    expect(terminal.status).toBe(409)
+    expect(terminal.body.error).toEqual({
+      code: 'INVALID_ORDER_STATE',
+      message: expect.any(String),
+      details: { current: 'DELIVERED', target: 'CANCELLED' },
+    })
+  })
+
+  it('rejects an illegal transition and an unknown status', async () => {
+    const variant = await singleVariantProduct()
+    const address = await createAddress(customerId)
+    const placed = await placeOrder(customerToken, address.id, variant.id)
+
+    const skip = await patchStatus(placed.id, 'SHIPPING')
+    expect(skip.status).toBe(409)
+    expect(skip.body.error).toEqual({
+      code: 'INVALID_ORDER_STATE',
+      message: expect.any(String),
+      details: { current: 'PENDING', target: 'SHIPPING' },
+    })
+
+    const same = await patchStatus(placed.id, 'PENDING')
+    expect(same.status).toBe(409)
+
+    const bogus = await patchStatus(placed.id, 'REFUNDED')
+    expect(bogus.status).toBe(400)
+    expect(bogus.body.error.code).toBe('VALIDATION_FAILED')
+
+    const missing = await patchStatus(999999, 'CONFIRMED')
+    expect(missing.status).toBe(404)
+  })
+
+  it('cancels from PENDING and CONFIRMED with a once-only restock and refuses a paid order', async () => {
+    const variant = await singleVariantProduct(100_000, 5)
+    const address = await createAddress(customerId)
+
+    const fromPending = await placeOrder(customerToken, address.id, variant.id, 2)
+    const pendingCancel = await patchStatus(fromPending.id, 'CANCELLED')
+    expect(pendingCancel.status).toBe(200)
+    expect(pendingCancel.body.status).toBe('CANCELLED')
+
+    const fromConfirmed = await placeOrder(customerToken, address.id, variant.id, 1)
+    const confirmed = await patchStatus(fromConfirmed.id, 'CONFIRMED')
+    expect(confirmed.status).toBe(200)
+    const confirmedCancel = await patchStatus(fromConfirmed.id, 'CANCELLED')
+    expect(confirmedCancel.status).toBe(200)
+
+    const stock = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
+    expect(stock.stock).toBe(5)
+
+    const again = await patchStatus(fromConfirmed.id, 'CANCELLED')
+    expect(again.status).toBe(409)
+
+    const pendingMovements = await prisma.stockMovement.findMany({
+      where: { refType: 'ORDER', refId: fromPending.id, reason: 'CANCEL_RESTOCK' },
+    })
+    expect(pendingMovements).toEqual([
+      expect.objectContaining({ delta: 2, variantId: variant.id }),
+    ])
+    const confirmedMovements = await prisma.stockMovement.findMany({
+      where: { refType: 'ORDER', refId: fromConfirmed.id, reason: 'CANCEL_RESTOCK' },
+    })
+    expect(confirmedMovements).toEqual([
+      expect.objectContaining({ delta: 1, variantId: variant.id }),
+    ])
+
+    const paid = await placeOrder(customerToken, address.id, variant.id)
+    await prisma.order.update({ where: { id: paid.id }, data: { paidAt: new Date() } })
+    const paidCancel = await patchStatus(paid.id, 'CANCELLED')
+    expect(paidCancel.status).toBe(409)
+    expect(paidCancel.body.error.code).toBe('ORDER_ALREADY_PAID')
+
+    const afterReject = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
+    expect(afterReject.stock).toBe(4)
+    const untouched = await prisma.order.findUniqueOrThrow({ where: { id: paid.id } })
+    expect(untouched.status).toBe('PENDING')
   })
 })

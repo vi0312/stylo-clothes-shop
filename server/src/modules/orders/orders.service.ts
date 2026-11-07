@@ -1,12 +1,25 @@
 import { getEnv } from '../../config/env.js'
+import { Prisma, type OrderStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import { lockCart } from '../cart/cart.repository.js'
 import type { PaymentAttemptDto } from '../payments/payments.dto.js'
-import { createAttemptInTx, toPaymentAttempt } from '../payments/payments.service.js'
-import type { OrderDto } from './orders.dto.js'
-import type { CreateOrderInput } from './orders.schema.js'
+import { lockOrder, type LockedOrderRow } from '../payments/payments.repository.js'
+import { createAttemptInTx, toPayment, toPaymentAttempt } from '../payments/payments.service.js'
+import type {
+  AdminOrderDetailDto,
+  AdminOrderSummaryDto,
+  OrderDto,
+  OrderSummaryDto,
+  Paginated,
+} from './orders.dto.js'
+import type {
+  CreateOrderInput,
+  ListAdminOrdersQuery,
+  ListOrdersQuery,
+} from './orders.schema.js'
 import {
+  canTransition,
   collectCheckoutFailures,
   computeTotals,
   derivePaymentStatus,
@@ -203,4 +216,152 @@ export async function createOrder(
       throw error
     }
   }
+}
+
+function toOrderSummary(row: repository.OrderSummaryRow): OrderSummaryDto {
+  return {
+    id: row.id,
+    code: row.code,
+    status: row.status,
+    paymentMethod: row.paymentMethod,
+    paymentStatus: derivePaymentStatus(row.paidAt, row.payments[0]),
+    total: row.total,
+    itemCount: row.items.reduce((sum, item) => sum + item.quantity, 0),
+    createdAt: row.createdAt.toISOString(),
+  }
+}
+
+function toAdminOrderSummary(row: repository.AdminOrderSummaryRow): AdminOrderSummaryDto {
+  return {
+    ...toOrderSummary(row),
+    customerName: row.user.fullName,
+    recipientName: row.recipientName,
+    recipientPhone: row.recipientPhone,
+  }
+}
+
+function toAdminOrderDetail(row: repository.AdminOrderDetailRow): AdminOrderDetailDto {
+  return {
+    id: row.id,
+    code: row.code,
+    status: row.status,
+    paymentMethod: row.paymentMethod,
+    paymentStatus: derivePaymentStatus(row.paidAt, row.payments[0]),
+    customer: row.user,
+    subtotal: row.subtotal,
+    shippingFee: row.shippingFee,
+    total: row.total,
+    note: row.note,
+    recipientName: row.recipientName,
+    recipientPhone: row.recipientPhone,
+    shippingAddress: row.shippingAddress,
+    items: row.items.map((item) => ({
+      id: item.id,
+      productId: item.productId,
+      variantId: item.variantId,
+      productName: item.productName,
+      sku: item.variantSku,
+      size: item.size,
+      color: item.color,
+      unitPrice: item.unitPrice,
+      unitCost: item.unitCost,
+      quantity: item.quantity,
+      lineTotal: item.unitPrice * item.quantity,
+    })),
+    payments: row.payments.map(toPayment),
+    paidAt: row.paidAt?.toISOString() ?? null,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }
+}
+
+export async function listOrders(
+  userId: number,
+  query: ListOrdersQuery,
+): Promise<Paginated<OrderSummaryDto>> {
+  const { orders, total } = await repository.listOrdersForUser(userId, query)
+  return { items: orders.map(toOrderSummary), page: query.page, limit: query.limit, total }
+}
+
+export async function getOrder(userId: number, orderId: number): Promise<OrderDto> {
+  const row = await repository.findOrderForUser(userId, orderId)
+  if (!row) throw notFound('NOT_FOUND', 'Order not found')
+  return toOrderDto(row)
+}
+
+/** `DELIVERED` and `CANCELLED` are terminal, so a cancelled order can never restock twice. */
+function assertCancellable(row: LockedOrderRow): void {
+  if (!canTransition(row.status, 'CANCELLED')) {
+    throw conflict('INVALID_ORDER_STATE', `Cannot cancel an order in ${row.status}`, {
+      current: row.status,
+      target: 'CANCELLED',
+    })
+  }
+  if (row.paidAt !== null) {
+    throw conflict('ORDER_ALREADY_PAID', 'This order is already paid')
+  }
+}
+
+async function cancelLocked(tx: Prisma.TransactionClient, orderId: number): Promise<void> {
+  const items = await repository.orderItemsForRestock(tx, orderId)
+  await repository.restock(tx, orderId, items)
+  await repository.setOrderStatus(tx, orderId, { status: 'CANCELLED' })
+}
+
+/** Customer cancel: the order must be theirs, unpaid and still cancellable. */
+export async function cancelOrder(userId: number, orderId: number): Promise<OrderDto> {
+  await prisma.$transaction(async (tx) => {
+    const row = await lockOrder(tx, orderId)
+    if (!row || row.userId !== userId) throw notFound('NOT_FOUND', 'Order not found')
+    assertCancellable(row)
+    await cancelLocked(tx, orderId)
+  })
+
+  return getOrder(userId, orderId)
+}
+
+export async function listAdminOrders(
+  query: ListAdminOrdersQuery,
+): Promise<Paginated<AdminOrderSummaryDto>> {
+  const { orders, total } = await repository.listAdminOrders(query)
+  return { items: orders.map(toAdminOrderSummary), page: query.page, limit: query.limit, total }
+}
+
+export async function getAdminOrder(orderId: number): Promise<AdminOrderDetailDto> {
+  const row = await repository.findAdminOrder(orderId)
+  if (!row) throw notFound('NOT_FOUND', 'Order not found')
+  return toAdminOrderDetail(row)
+}
+
+export async function changeOrderStatus(
+  orderId: number,
+  target: OrderStatus,
+): Promise<AdminOrderDetailDto> {
+  await prisma.$transaction(async (tx) => {
+    const row = await lockOrder(tx, orderId)
+    if (!row) throw notFound('NOT_FOUND', 'Order not found')
+
+    if (!canTransition(row.status, target)) {
+      throw conflict(
+        'INVALID_ORDER_STATE',
+        `Cannot move an order from ${row.status} to ${target}`,
+        { current: row.status, target },
+      )
+    }
+
+    if (target === 'CANCELLED') {
+      assertCancellable(row)
+      await cancelLocked(tx, orderId)
+      return
+    }
+
+    // COD settles at delivery; an online order's `paid_at` comes from its payment attempt.
+    const paidAt =
+      target === 'DELIVERED' && row.paymentMethod === 'COD' && row.paidAt === null
+        ? new Date()
+        : undefined
+    await repository.setOrderStatus(tx, orderId, { status: target, ...(paidAt ? { paidAt } : {}) })
+  })
+
+  return getAdminOrder(orderId)
 }
