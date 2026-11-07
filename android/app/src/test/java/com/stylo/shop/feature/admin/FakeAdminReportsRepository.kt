@@ -23,6 +23,7 @@ class FakeAdminReportsRepository : AdminReportsRepository {
 
     val revenueCalls = mutableListOf<RevenueCall>()
     val topProductsCalls = mutableListOf<Pair<String, String>>()
+    val topProductsLimits = mutableListOf<Int>()
     val ordersByStatusCalls = mutableListOf<Pair<String, String>>()
     val lowStockCalls = mutableListOf<Int>()
     val inventoryCostCalls = mutableListOf<Pair<String, String>>()
@@ -39,8 +40,10 @@ class FakeAdminReportsRepository : AdminReportsRepository {
     override suspend fun topProducts(
         from: String,
         to: String,
+        limit: Int,
     ): ApiResult<List<TopProductRow>> {
         topProductsCalls += from to to
+        topProductsLimits += limit
         return topProductsResult
     }
 

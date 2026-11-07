@@ -77,6 +77,14 @@ object UiTags {
     const val OrderCancelConfirm = "order_cancel_confirm"
     const val OrderCancelDismiss = "order_cancel_dismiss"
 
+    const val AdminDashboardKpiRevenue = "admin_dashboard_kpi_revenue"
+    const val AdminDashboardKpiOrders = "admin_dashboard_kpi_orders"
+    const val AdminDashboardKpiAverage = "admin_dashboard_kpi_average"
+    const val AdminDashboardKpiLowStock = "admin_dashboard_kpi_low_stock"
+    const val AdminDashboardChart = "admin_dashboard_chart"
+    const val AdminDashboardTopProducts = "admin_dashboard_top_products"
+    const val AdminDashboardRecentOrders = "admin_dashboard_recent_orders"
+
     const val AdminOrdersTab = "admin_orders_tab"
     const val AdminOrderList = "admin_order_list"
     const val AdminOrderRow = "admin_order_row"

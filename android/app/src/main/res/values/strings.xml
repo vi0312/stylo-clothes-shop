@@ -93,7 +93,17 @@
     <string name="admin_menu_taxonomy">Danh mục &amp; thương hiệu</string>
     <string name="admin_menu_users">Người dùng</string>
     <string name="admin_menu_reports">Báo cáo</string>
-    <string name="admin_dashboard_hint">Chọn Sản phẩm hoặc Danh mục &amp; thương hiệu để quản lý cửa hàng.</string>
+    <string name="admin_dashboard_kpi_revenue">Doanh thu</string>
+    <string name="admin_dashboard_kpi_orders">Số đơn</string>
+    <string name="admin_dashboard_kpi_average">Giá trị đơn TB</string>
+    <string name="admin_dashboard_kpi_low_stock">Variant tồn thấp</string>
+    <string name="admin_dashboard_missing_value">—</string>
+    <string name="admin_dashboard_chart_title">Doanh thu 7 ngày</string>
+    <string name="admin_dashboard_chart_empty">Chưa có doanh thu trong khoảng</string>
+    <string name="admin_dashboard_top_products_title">Top 3 sản phẩm</string>
+    <string name="admin_dashboard_top_products_empty">Chưa có sản phẩm bán ra trong khoảng</string>
+    <string name="admin_dashboard_product_sold">%1$d bán</string>
+    <string name="admin_dashboard_recent_orders_title">Đơn gần đây</string>
 
     <string name="admin_users_title">Người dùng</string>
     <string name="admin_users_count">%1$d người dùng</string>

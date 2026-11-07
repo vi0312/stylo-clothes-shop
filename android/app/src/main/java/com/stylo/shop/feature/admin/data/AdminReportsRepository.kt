@@ -20,7 +20,11 @@ interface AdminReportsRepository {
         groupBy: ReportGroupBy,
     ): ApiResult<RevenueReport>
 
-    suspend fun topProducts(from: String, to: String): ApiResult<List<TopProductRow>>
+    suspend fun topProducts(
+        from: String,
+        to: String,
+        limit: Int = TOP_PRODUCTS_LIMIT,
+    ): ApiResult<List<TopProductRow>>
 
     suspend fun ordersByStatus(from: String, to: String): ApiResult<List<OrdersByStatusRow>>
 
@@ -44,8 +48,9 @@ class DefaultAdminReportsRepository @Inject constructor(
     override suspend fun topProducts(
         from: String,
         to: String,
+        limit: Int,
     ): ApiResult<List<TopProductRow>> = apiCall {
-        api.topProducts(from = from, to = to).items.map { it.toModel() }
+        api.topProducts(from = from, to = to, limit = limit).items.map { it.toModel() }
     }
 
     override suspend fun ordersByStatus(

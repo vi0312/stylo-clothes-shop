@@ -31,7 +31,7 @@ import com.stylo.shop.R
 import com.stylo.shop.core.model.User
 import com.stylo.shop.core.model.UserRole
 import com.stylo.shop.core.storage.SessionState
-import com.stylo.shop.feature.admin.ui.AdminDashboardScreen
+import com.stylo.shop.feature.admin.ui.dashboard.AdminDashboardScreen
 import com.stylo.shop.feature.admin.ui.AdminTab
 import com.stylo.shop.feature.admin.ui.products.AdminProductFormScreen
 import com.stylo.shop.feature.admin.ui.products.AdminProductListScreen
@@ -188,11 +188,13 @@ private fun SessionNavHost(
                 composable<AdminDashboardRoute> {
                     if (user != null) {
                         AdminDashboardScreen(
-                            user = user,
                             onSelectTab = { tab -> navController.navigateAdminTab(tab) },
                             onOpenTaxonomy = { navController.navigate(AdminTaxonomyRoute) },
                             onOpenUsers = { navController.navigate(AdminUsersRoute) },
-                        onOpenReports = { navController.navigate(AdminReportsRoute) },
+                            onOpenReports = { navController.navigate(AdminReportsRoute) },
+                            onOpenOrder = { orderId ->
+                                navController.navigate(AdminOrderDetailRoute(orderId))
+                            },
                             onLogout = onLogout,
                         )
                     }
