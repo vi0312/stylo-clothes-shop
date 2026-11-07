@@ -1,5 +1,5 @@
 import { getEnv } from '../../config/env.js'
-import { Prisma, type Payment, type PaymentStatus } from '../../generated/prisma/client.js'
+import { Prisma, type Payment, type PaymentProvider, type PaymentStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
 import { isUniqueViolation } from '../../lib/prismaErrors.js'
 import { conflict, notFound } from '../../utils/errors.js'
@@ -208,6 +208,42 @@ export async function findMockAttempt(txnRef: string): Promise<MockAttempt | nul
     orderCode: row.order.code,
     createdAt: row.createdAt,
   }
+}
+
+export interface GatewayAttempt {
+  txnRef: string
+  provider: PaymentProvider
+  status: PaymentStatus
+  amount: number
+  orderCode: string
+}
+
+/** A callback's own provider must match: a VNPay callback can never settle a mock attempt. */
+export async function findGatewayAttempt(
+  txnRef: string,
+  provider: PaymentProvider,
+): Promise<GatewayAttempt | null> {
+  const row = await repository.findByTxnRef(txnRef)
+  if (!row || row.provider !== provider) return null
+  return {
+    txnRef: row.txnRef,
+    provider: row.provider,
+    status: row.status,
+    amount: row.amount,
+    orderCode: row.order.code,
+  }
+}
+
+/**
+ * A gateway callback that reports a failed payment. `SUCCEEDED` stays terminal, so a late
+ * failure callback cannot un-pay an order.
+ */
+export async function failPayment(txnRef: string, reason: string): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const attempt = await repository.lockAttempt(tx, txnRef)
+    if (!attempt || attempt.status === 'SUCCEEDED') return
+    await repository.failAttempt(tx, attempt.id, reason)
+  })
 }
 
 export type MockResult = 'success' | 'failed'

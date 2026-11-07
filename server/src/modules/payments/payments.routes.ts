@@ -9,6 +9,8 @@ import {
   paymentParamsSchema,
 } from './payments.schema.js'
 import * as paymentsService from './payments.service.js'
+import { handleVnpayIpn, handleVnpayReturn } from './payments.vnpay.js'
+import { vnpayResultPage } from './payments.vnpay-page.js'
 
 export const paymentsRouter = Router()
 
@@ -16,6 +18,33 @@ paymentsRouter.post('/orders/:id/payments', requireAuth, async (request, respons
   const { id } = parseParams(orderPaymentParamsSchema, request)
   const result = await paymentsService.startPayment(currentUser(request).id, id)
   response.status(result.created ? 201 : 200).json(result.attempt)
+})
+
+// VNPay's browser redirect (`return`) and server-to-server callback (`ipn`): both verify
+// the signature before touching state, and both answer in the gateway's own format.
+paymentsRouter.get('/payments/vnpay/return', async (request, response) => {
+  try {
+    const page = await handleVnpayReturn(request.query)
+    response.status(page.status).type('html').send(page.html)
+  } catch (error) {
+    request.log?.error({ err: error }, 'vnpay return failed')
+    response.status(500).type('html').send(
+      vnpayResultPage({
+        ok: false,
+        title: 'Không xử lý được phản hồi',
+        message: 'Đã xảy ra lỗi khi xác nhận thanh toán. Vui lòng kiểm tra lại đơn hàng.',
+      }),
+    )
+  }
+})
+
+paymentsRouter.get('/payments/vnpay/ipn', async (request, response) => {
+  try {
+    response.json(await handleVnpayIpn(request.query))
+  } catch (error) {
+    request.log?.error({ err: error }, 'vnpay ipn failed')
+    response.json({ RspCode: '99', Message: 'Unknown error' })
+  }
 })
 
 // Browser-facing (no auth): the reference in the URL is the capability, and the app polls

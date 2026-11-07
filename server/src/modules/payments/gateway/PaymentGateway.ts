@@ -1,6 +1,7 @@
 import { getEnv } from '../../../config/env.js'
 import type { PaymentProvider } from '../../../generated/prisma/client.js'
 import { mockGateway } from './mock.js'
+import { vnpayGateway } from './vnpay.js'
 
 export interface PaymentUrlInput {
   txnRef: string
@@ -19,12 +20,12 @@ export interface PaymentGateway {
 }
 
 /**
- * Only the mock adapter exists (the VNPay one is its own ticket). Throwing beats minting a
- * mock URL for an attempt the configured gateway would never settle.
+ * Each provider is an adapter behind the same interface; an attempt row names the one that
+ * minted it, so rebuilding its URL never depends on the current `PAYMENT_PROVIDER`.
  */
 export function gatewayFor(provider: PaymentProvider): PaymentGateway {
   if (provider === 'MOCK') return mockGateway
-  throw new Error('PAYMENT_PROVIDER=VNPAY requires the VNPay adapter, which is not wired yet')
+  return vnpayGateway
 }
 
 export function paymentGateway(): PaymentGateway {

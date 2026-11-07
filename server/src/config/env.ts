@@ -20,6 +20,8 @@ const envSchema = z
     VNPAY_TMN_CODE: z.string().default(''),
     VNPAY_HASH_SECRET: z.string().default(''),
     VNPAY_URL: z.url().default('https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'),
+    // VNPay requires the customer IP in the request; the local demo has no public one.
+    VNPAY_IP_ADDR: z.string().min(1).default('127.0.0.1'),
   })
   .superRefine((value, ctx) => {
     if (value.PAYMENT_PROVIDER !== 'VNPAY') return
