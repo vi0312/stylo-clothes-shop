@@ -40,3 +40,7 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Refresh token | `RefreshToken` | Token dài hạn đã hash để cấp access token mới | Không lưu token thô; access 15 phút, refresh 30 ngày |
 | Seed catalog | `seed-assets/catalog/catalog.json` | 100 sản phẩm mẫu lấy từ dataset sản phẩm thật, đã chuẩn hoá sang schema Stylo | Seed chỉ đọc snapshot + ảnh commit, không gọi mạng; giá/size/tồn kho là dữ liệu demo |
 | Pinned product | `Áo thun basic` | Sản phẩm seed cố định cho catalog integration test và journey Kaspresso | Không đổi tên hoặc SKU `STY-AO-001-*` khi tái tạo snapshot; seed tạo nó cuối để đứng đầu sort `newest` |
+| Symbol | `ic_launcher_foreground` | Phần hình của logo, 5 polygon, không có chữ | Chỉ dùng cho icon launcher/themed icon; 58% canvas 108dp để nằm trong safe zone 66dp |
+| Wordmark | `stylo-wordmark-*` | Phần chữ "stylo" của logo (4 path) | Không đứng một mình trong app; luôn đi cùng symbol trong lockup |
+| Lockup | `ic_stylo_lockup_horizontal`, `ic_stylo_lockup_stacked` | Bố cục symbol + wordmark | Horizontal cho header, stacked cho màn đăng nhập; trong app luôn monochrome, tô bằng `MaterialTheme` |
+| Themed icon | `ic_launcher_monochrome` | Lớp alpha cho icon Material You (Android 13+) | Hệ thống tô màu theo wallpaper; không đặt màu thương hiệu ở đây |
