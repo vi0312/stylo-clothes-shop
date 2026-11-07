@@ -102,7 +102,12 @@ fun ProfileErrorContent(
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        TextButton(onClick = onRetry, modifier = Modifier.padding(top = 8.dp)) {
+        TextButton(
+            onClick = onRetry,
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .testTag(UiTags.ProfileRetry),
+        ) {
             Text(stringResource(R.string.action_retry))
         }
     }

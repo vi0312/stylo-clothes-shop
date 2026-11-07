@@ -25,8 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.ui.SizeItemState
 
 private fun parseColor(name: String): Color = when (name.trim().lowercase()) {
@@ -82,6 +84,7 @@ fun ColorSelector(
                 Box(
                     modifier = Modifier
                         .size(48.dp)
+                        .testTag(UiTags.ProductDetailColor)
                         .clip(CircleShape)
                         .clickable { onColorSelected(colorName) },
                     contentAlignment = Alignment.Center,
@@ -161,6 +164,7 @@ fun SizeSelector(
                     },
                     modifier = Modifier
                         .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                        .testTag(UiTags.ProductDetailSize)
                         .alpha(if (isAvailable) 1f else 0.4f)
                         .then(
                             if (!isSelected && isAvailable) {

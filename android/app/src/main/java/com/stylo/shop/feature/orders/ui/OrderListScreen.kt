@@ -80,7 +80,10 @@ fun OrderListScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.testTag(UiTags.OrdersBack),
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),
@@ -137,7 +140,8 @@ private fun StatusFilterChips(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .testTag(UiTags.OrdersFilters),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
     ) {
@@ -146,6 +150,7 @@ private fun StatusFilterChips(
                 selected = filter == selected,
                 onClick = { onSelect(filter) },
                 label = { Text(filterLabel(filter)) },
+                modifier = Modifier.testTag(UiTags.OrdersStatusFilter),
             )
         }
     }
@@ -210,7 +215,10 @@ private fun OrderList(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    TextButton(onClick = onLoadMore) {
+                    TextButton(
+                        onClick = onLoadMore,
+                        modifier = Modifier.testTag(UiTags.OrdersLoadMoreRetry),
+                    ) {
                         Text(stringResource(R.string.action_retry))
                     }
                 }
@@ -276,7 +284,10 @@ private fun ErrorState(messageRes: Int, onRetry: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(16.dp))
-        Button(onClick = onRetry) {
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.testTag(UiTags.OrdersRetry),
+        ) {
             Text(stringResource(R.string.action_retry))
         }
     }

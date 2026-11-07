@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.UiEffectHost
 import com.stylo.shop.core.ui.UiState
@@ -135,6 +136,7 @@ fun AddressListScreen(
     state.confirmDelete?.let { address ->
         AlertDialog(
             onDismissRequest = viewModel::dismissDelete,
+            modifier = Modifier.e2eTagsAsResourceId(),
             title = { Text(stringResource(R.string.address_delete_title)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -150,12 +152,16 @@ fun AddressListScreen(
                 TextButton(
                     onClick = viewModel::confirmDelete,
                     enabled = state.deletingId == null,
+                    modifier = Modifier.testTag(UiTags.AddressDeleteConfirm),
                 ) {
                     Text(stringResource(R.string.action_delete))
                 }
             },
             dismissButton = {
-                TextButton(onClick = viewModel::dismissDelete) {
+                TextButton(
+                    onClick = viewModel::dismissDelete,
+                    modifier = Modifier.testTag(UiTags.AddressDeleteCancel),
+                ) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },
@@ -217,7 +223,11 @@ private fun AddressCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (!address.isDefault) {
-                    TextButton(onClick = onSetDefault, enabled = actionsEnabled) {
+                    TextButton(
+                        onClick = onSetDefault,
+                        enabled = actionsEnabled,
+                        modifier = Modifier.testTag(UiTags.AddressSetDefault),
+                    ) {
                         if (isSettingDefault) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(16.dp),
@@ -228,10 +238,18 @@ private fun AddressCard(
                         }
                     }
                 }
-                TextButton(onClick = onEdit, enabled = actionsEnabled) {
+                TextButton(
+                    onClick = onEdit,
+                    enabled = actionsEnabled,
+                    modifier = Modifier.testTag(UiTags.AddressEdit),
+                ) {
                     Text(stringResource(R.string.address_edit))
                 }
-                TextButton(onClick = onDelete, enabled = actionsEnabled) {
+                TextButton(
+                    onClick = onDelete,
+                    enabled = actionsEnabled,
+                    modifier = Modifier.testTag(UiTags.AddressDelete),
+                ) {
                     Text(
                         text = stringResource(R.string.action_delete),
                         color = MaterialTheme.colorScheme.error,
@@ -276,7 +294,12 @@ private fun EmptyAddressState(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Button(onClick = onAdd, modifier = Modifier.padding(top = 20.dp)) {
+        Button(
+            onClick = onAdd,
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .testTag(UiTags.AddressEmptyAdd),
+        ) {
             Text(stringResource(R.string.address_add))
         }
     }

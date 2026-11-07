@@ -16,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.core.navigation.AppViewModel
@@ -54,6 +56,7 @@ private fun StyloAppRoot(viewModel: AppViewModel = hiltViewModel()) {
     }
 
     Scaffold(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),

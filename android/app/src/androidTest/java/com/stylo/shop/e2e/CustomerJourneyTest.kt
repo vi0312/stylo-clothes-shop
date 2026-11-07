@@ -52,31 +52,23 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
         }
 
         step("Register a new customer") {
-            waitForTag(UiTags.AuthRegisterTab)
-            auth.registerTab.performClick()
-            auth.fullName.performTextInput(fullName)
-            auth.phone.performTextInput(phone)
-            auth.email.performTextInput(email)
-            auth.password.performTextInput(password)
-            auth.submit.performScrollTo()
-            auth.submit.performClick()
-            waitForText("Xin chào, $fullName")
+            composeRule.registerCustomer(auth, fullName, phone, email, password)
             catalog.profile.assertIsDisplayed()
         }
 
         step("Search, filter and sort the catalog") {
             catalog.search.performTextInput("thun")
-            waitForCard("Áo thun basic")
+            composeRule.waitForCard("Áo thun basic")
             catalog.filter.performClick()
-            waitForTag(UiTags.FilterApply)
+            composeRule.waitForTag(UiTags.FilterApply)
             catalog.category("Áo").performClick()
             catalog.apply.performScrollTo()
             catalog.apply.performClick()
-            waitForCard("Áo thun basic")
+            composeRule.waitForCard("Áo thun basic")
             catalog.sort.performClick()
-            waitForText("Giá tăng dần")
+            composeRule.waitForText("Giá tăng dần")
             catalog.sortOption("Giá tăng dần").performClick()
-            waitForCard("Áo thun basic")
+            composeRule.waitForCard("Áo thun basic")
         }
 
         step("Open product detail") {
@@ -90,13 +82,13 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
 
         step("Create the first address") {
             catalog.profile.performClick()
-            waitForTag(UiTags.ProfileEmail)
+            composeRule.waitForTag(UiTags.ProfileEmail)
             profile.email.assertIsDisplayed()
             profile.addresses.performScrollTo()
             profile.addresses.performClick()
-            waitForTag(UiTags.AddressAdd)
+            composeRule.waitForTag(UiTags.AddressAdd)
             addresses.add.performClick()
-            waitForTag(UiTags.AddressRecipient)
+            composeRule.waitForTag(UiTags.AddressRecipient)
             addressForm.recipient.performTextInput(firstRecipient)
             addressForm.phone.performTextInput(phone)
             addressForm.line.performTextInput(firstLine)
@@ -109,17 +101,17 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
 
         step("Edit the first address") {
             addresses.edit.performClick()
-            waitForTag(UiTags.AddressLine)
+            composeRule.waitForTag(UiTags.AddressLine)
             addressForm.line.performTextReplacement(editedLine)
             addressForm.save.performScrollTo()
             addressForm.save.performClick()
-            waitForText(editedLine)
+            composeRule.waitForText(editedLine)
         }
 
         step("Add a second address and make it the default") {
-            waitForTag(UiTags.AddressAdd)
+            composeRule.waitForTag(UiTags.AddressAdd)
             addresses.add.performClick()
-            waitForTag(UiTags.AddressRecipient)
+            composeRule.waitForTag(UiTags.AddressRecipient)
             addressForm.recipient.performTextInput(secondRecipient)
             addressForm.phone.performTextInput(phone)
             addressForm.line.performTextInput(secondLine)
@@ -134,37 +126,18 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
 
         step("Log out and log back in") {
             addresses.back.performClick()
-            waitForTag(UiTags.ProfileEmail)
+            composeRule.waitForTag(UiTags.ProfileEmail)
             profile.email.assertIsDisplayed()
             profile.logout.performScrollTo()
             profile.logout.performClick()
-            waitForTag(UiTags.ProfileLogoutConfirm)
+            composeRule.waitForTag(UiTags.ProfileLogoutConfirm)
             profile.confirmLogout.performClick()
-            waitForTag(UiTags.AuthEmail)
+            composeRule.waitForTag(UiTags.AuthEmail)
             auth.email.performTextInput(email)
             auth.password.performTextInput(password)
             auth.submit.performScrollTo()
             auth.submit.performClick()
-            waitForText("Xin chào, $fullName")
-        }
-    }
-
-    private fun waitForTag(tag: String) {
-        composeRule.waitUntil(15_000) {
-            composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
-        }
-    }
-
-    private fun waitForText(text: String) {
-        composeRule.waitUntil(15_000) {
-            composeRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
-        }
-    }
-
-    private fun waitForCard(name: String) {
-        composeRule.waitUntil(15_000) {
-            composeRule.onAllNodes(hasTestTag(UiTags.ProductCard) and hasText(name))
-                .fetchSemanticsNodes().isNotEmpty()
+            composeRule.waitForText("Xin chào, $fullName")
         }
     }
 

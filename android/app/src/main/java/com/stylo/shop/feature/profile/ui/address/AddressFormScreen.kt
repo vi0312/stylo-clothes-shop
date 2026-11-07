@@ -159,6 +159,7 @@ fun AddressFormScreen(
                         checked = state.isDefault,
                         onCheckedChange = viewModel::onDefaultChange,
                         enabled = !state.isDefaultLocked,
+                        modifier = Modifier.testTag(UiTags.AddressDefaultSwitch),
                     )
                 }
 

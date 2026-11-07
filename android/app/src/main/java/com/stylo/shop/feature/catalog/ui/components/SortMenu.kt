@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CatalogSortOption
 
@@ -61,10 +62,12 @@ fun SortSelector(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
+            modifier = Modifier.e2eTagsAsResourceId(),
         ) {
             CatalogSortOption.entries.forEach { option ->
                 val isSelected = option == selectedSort
                 DropdownMenuItem(
+                    modifier = Modifier.testTag(UiTags.CatalogSortItem),
                     text = {
                         Text(
                             text = stringResource(option.labelResId),

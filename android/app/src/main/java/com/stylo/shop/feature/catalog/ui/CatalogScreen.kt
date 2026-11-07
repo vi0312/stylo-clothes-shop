@@ -186,7 +186,10 @@ fun CatalogScreen(
                 },
                 trailingIcon = {
                     if (state.searchQuery.isNotBlank()) {
-                        IconButton(onClick = viewModel::onClearSearch) {
+                        IconButton(
+                            onClick = viewModel::onClearSearch,
+                            modifier = Modifier.testTag(UiTags.CatalogSearchClear),
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
                                 contentDescription = "Xoá",
@@ -276,6 +279,7 @@ fun CatalogScreen(
                         selected = isAllSelected,
                         onClick = { viewModel.onSelectCategoryTab(null) },
                         label = { Text(stringResource(R.string.catalog_all_categories)) },
+                        modifier = Modifier.testTag(UiTags.CatalogCategoryChip),
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
@@ -289,6 +293,7 @@ fun CatalogScreen(
                         selected = isSelected,
                         onClick = { viewModel.onSelectCategoryTab(category.id) },
                         label = { Text(category.name) },
+                        modifier = Modifier.testTag(UiTags.CatalogCategoryChip),
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
@@ -358,7 +363,10 @@ fun CatalogScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Spacer(Modifier.height(16.dp))
-                        Button(onClick = viewModel::onRetry) {
+                        Button(
+                            onClick = viewModel::onRetry,
+                            modifier = Modifier.testTag(UiTags.CatalogRetry),
+                        ) {
                             Text(stringResource(R.string.action_retry))
                         }
                     }
@@ -389,7 +397,10 @@ fun CatalogScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Spacer(Modifier.height(20.dp))
-                            Button(onClick = viewModel::onClearAllFilters) {
+                            Button(
+                                onClick = viewModel::onClearAllFilters,
+                                modifier = Modifier.testTag(UiTags.CatalogEmptyClear),
+                            ) {
                                 Text(stringResource(R.string.catalog_filter_clear))
                             }
                         }

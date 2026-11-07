@@ -56,75 +56,48 @@ class CheckoutJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
         }
 
         step("Register a new customer") {
-            waitForTag(UiTags.AuthRegisterTab)
-            auth.registerTab.performClick()
-            auth.fullName.performTextInput(fullName)
-            auth.phone.performTextInput(phone)
-            auth.email.performTextInput(email)
-            auth.password.performTextInput(password)
-            auth.submit.performScrollTo()
-            auth.submit.performClick()
-            waitForText("Xin chào, $fullName")
+            composeRule.registerCustomer(auth, fullName, phone, email, password)
         }
 
         step("Add a product to the cart") {
-            waitForCard("Áo thun basic")
+            composeRule.waitForCard("Áo thun basic")
             catalog.card("Áo thun basic").performClick()
-            waitForTag(UiTags.ProductDetailCta)
+            composeRule.waitForTag(UiTags.ProductDetailCta)
             detail.cta.performClick()
-            waitForText("Đã thêm vào giỏ.")
+            composeRule.waitForText("Đã thêm vào giỏ.")
         }
 
         step("Open the cart and continue to checkout") {
             detail.back.performClick()
-            waitForTag(UiTags.CatalogCart)
+            composeRule.waitForTag(UiTags.CatalogCart)
             catalog.cart.performClick()
-            waitForTag(UiTags.CartCheckout)
+            composeRule.waitForTag(UiTags.CartCheckout)
             cart.itemName.assertIsDisplayed()
             cart.checkout.performClick()
-            waitForTag(UiTags.CheckoutPaymentCod)
+            composeRule.waitForTag(UiTags.CheckoutPaymentCod)
         }
 
         step("Add the shipping address from the empty state") {
             // Two buttons carry this tag while no address exists: the empty state and the bar.
             composeRule.onAllNodesWithTag(UiTags.CheckoutAddressAdd).onFirst().performClick()
-            waitForTag(UiTags.AddressRecipient)
+            composeRule.waitForTag(UiTags.AddressRecipient)
             addressForm.recipient.performTextInput(recipient)
             addressForm.phone.performTextInput(phone)
             addressForm.line.performTextInput(line)
             addressForm.save.performScrollTo()
             addressForm.save.performClick()
-            waitForTag(UiTags.CheckoutAddressChange)
+            composeRule.waitForTag(UiTags.CheckoutAddressChange)
         }
 
         step("Place the COD order") {
             checkout.paymentCod.performClick()
             checkout.submit.performClick()
-            waitForTag(UiTags.OrderDetailCode)
+            composeRule.waitForTag(UiTags.OrderDetailCode)
             composeRule.onNodeWithTag(UiTags.OrderDetailCode).assertIsDisplayed()
             orderDetail.total.assertIsDisplayed()
             val statusShown = composeRule.onAllNodesWithText("Chờ xác nhận")
                 .fetchSemanticsNodes().isNotEmpty()
             assertTrue("order detail shows the pending status", statusShown)
-        }
-    }
-
-    private fun waitForTag(tag: String) {
-        composeRule.waitUntil(15_000) {
-            composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
-        }
-    }
-
-    private fun waitForText(text: String) {
-        composeRule.waitUntil(15_000) {
-            composeRule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
-        }
-    }
-
-    private fun waitForCard(name: String) {
-        composeRule.waitUntil(15_000) {
-            composeRule.onAllNodes(hasTestTag(UiTags.ProductCard) and hasText(name))
-                .fetchSemanticsNodes().isNotEmpty()
         }
     }
 }

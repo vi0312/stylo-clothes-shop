@@ -354,7 +354,7 @@ private fun ActionsCard(
     isUpdating: Boolean,
     onRequestTransition: (OrderStatus) -> Unit,
 ) {
-    AdminCard(modifier = Modifier.testTag(UiTags.AdminOrderTransition)) {
+    AdminCard {
         SectionTitle(stringResource(R.string.admin_order_actions_title))
         if (allowedTargets.isEmpty()) {
             Text(
@@ -370,7 +370,9 @@ private fun ActionsCard(
                     OutlinedButton(
                         onClick = { onRequestTransition(target) },
                         enabled = !isUpdating,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(UiTags.adminOrderTransition(target.name)),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = MaterialTheme.colorScheme.error,
                         ),
@@ -385,7 +387,9 @@ private fun ActionsCard(
                     Button(
                         onClick = { onRequestTransition(target) },
                         enabled = !isUpdating,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(UiTags.adminOrderTransition(target.name)),
                     ) {
                         if (isUpdating) {
                             CircularProgressIndicator(

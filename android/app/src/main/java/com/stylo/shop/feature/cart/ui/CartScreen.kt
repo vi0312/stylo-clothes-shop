@@ -56,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.BuildConfig
 import com.stylo.shop.R
 import com.stylo.shop.core.network.ApiClient
@@ -172,7 +173,10 @@ fun CartScreen(
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(onClick = viewModel::retry) {
+                Button(
+                    onClick = viewModel::retry,
+                    modifier = Modifier.testTag(UiTags.CartRetry),
+                ) {
                     Text(stringResource(R.string.action_retry))
                 }
             }
@@ -203,6 +207,7 @@ fun CartScreen(
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = { showClearDialog = false },
+            modifier = Modifier.e2eTagsAsResourceId(),
             title = { Text(stringResource(R.string.cart_clear_title)) },
             text = { Text(stringResource(R.string.cart_clear_body)) },
             confirmButton = {
@@ -220,7 +225,10 @@ fun CartScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showClearDialog = false }) {
+                TextButton(
+                    onClick = { showClearDialog = false },
+                    modifier = Modifier.testTag(UiTags.CartClearCancel),
+                ) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },
@@ -367,7 +375,11 @@ private fun CartLine(
                         )
                     }
                     Spacer(Modifier.weight(1f))
-                    TextButton(onClick = onRemove, enabled = enabled) {
+                    TextButton(
+                        onClick = onRemove,
+                        enabled = enabled,
+                        modifier = Modifier.testTag(UiTags.CartItemRemove),
+                    ) {
                         Text(
                             text = stringResource(R.string.action_delete),
                             color = MaterialTheme.colorScheme.error,

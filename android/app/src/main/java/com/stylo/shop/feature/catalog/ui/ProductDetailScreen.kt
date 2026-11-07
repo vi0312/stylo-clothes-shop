@@ -220,11 +220,17 @@ fun ProductDetailScreen(
                         )
                         Spacer(Modifier.height(16.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Button(onClick = onBack) {
+                            Button(
+                                onClick = onBack,
+                                modifier = Modifier.testTag(UiTags.ProductDetailErrorBack),
+                            ) {
                                 Text("Quay lại")
                             }
                             if (productState.error.code != "NOT_FOUND") {
-                                Button(onClick = viewModel::onRetry) {
+                                Button(
+                                    onClick = viewModel::onRetry,
+                                    modifier = Modifier.testTag(UiTags.ProductDetailErrorRetry),
+                                ) {
                                     Text(stringResource(R.string.action_retry))
                                 }
                             }

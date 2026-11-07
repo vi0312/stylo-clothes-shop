@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.ErrorMessages
 import com.stylo.shop.core.ui.Formatters
@@ -130,7 +131,10 @@ fun CheckoutScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.testTag(UiTags.CheckoutBack),
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),
@@ -176,7 +180,10 @@ fun CheckoutScreen(
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(onClick = viewModel::retry) {
+                Button(
+                    onClick = viewModel::retry,
+                    modifier = Modifier.testTag(UiTags.CheckoutLoadRetry),
+                ) {
                     Text(stringResource(R.string.action_retry))
                 }
             }
@@ -194,7 +201,10 @@ fun CheckoutScreen(
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(onClick = onBackToCart) {
+                Button(
+                    onClick = onBackToCart,
+                    modifier = Modifier.testTag(UiTags.CheckoutLoadBack),
+                ) {
                     Text(stringResource(R.string.checkout_back_to_cart))
                 }
             }
@@ -548,10 +558,16 @@ private fun SubmitErrorSection(
                     )
                     Spacer(Modifier.height(8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(onClick = onRetry) {
+                        Button(
+                            onClick = onRetry,
+                            modifier = Modifier.testTag(UiTags.CheckoutErrorRetry),
+                        ) {
                             Text(stringResource(R.string.action_retry))
                         }
-                        TextButton(onClick = onDismiss) {
+                        TextButton(
+                            onClick = onDismiss,
+                            modifier = Modifier.testTag(UiTags.CheckoutErrorDismiss),
+                        ) {
                             Text(stringResource(R.string.action_dismiss))
                         }
                     }
@@ -674,6 +690,7 @@ private fun AddressPickerSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.e2eTagsAsResourceId(),
     ) {
         Column(
             modifier = Modifier

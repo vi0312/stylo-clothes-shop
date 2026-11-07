@@ -75,13 +75,35 @@ internal class E2eOrderDetailScreen(provider: SemanticsNodeInteractionsProvider)
     val status = onNode { hasTestTag(UiTags.OrderDetailStatus) }
     val payment = onNode { hasTestTag(UiTags.OrderDetailPayment) }
     val total = onNode { hasTestTag(UiTags.OrderDetailTotal) }
-    val paymentLabel = onNode { hasText("Tải lại đơn") }
+    val paymentRefresh = onNode { hasTestTag(UiTags.OrderDetailPaymentRetry) }
+    val back = onNode { hasTestTag(UiTags.OrderDetailBack) }
+    val list = onNode { hasTestTag(UiTags.OrderDetailList) }
+    val cancel = onNode { hasTestTag(UiTags.OrderCancel) }
+    val cancelConfirm = onNode { hasTestTag(UiTags.OrderCancelConfirm) }
+}
+
+internal class E2eOrdersScreen(provider: SemanticsNodeInteractionsProvider) :
+    ComposeScreen<E2eOrdersScreen>(provider) {
+    val back = onNode { hasTestTag(UiTags.OrdersBack) }
+
+    fun row(code: String) = onNode {
+        hasTestTag(UiTags.OrderRow)
+        hasText(code)
+    }
+
+    val filters = onNode { hasTestTag(UiTags.OrdersFilters) }
+
+    fun statusFilter(label: String) = onNode {
+        hasTestTag(UiTags.OrdersStatusFilter)
+        hasText(label)
+    }
 }
 
 internal class E2eProfileScreen(provider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<E2eProfileScreen>(provider) {
     val email = onNode { hasTestTag(UiTags.ProfileEmail) }
     val addresses = onNode { hasTestTag(UiTags.ProfileAddresses) }
+    val orders = onNode { hasTestTag(UiTags.ProfileOrders) }
     val logout = onNode { hasTestTag(UiTags.ProfileLogout) }
     val confirmLogout = onNode { hasTestTag(UiTags.ProfileLogoutConfirm) }
 }
@@ -90,8 +112,8 @@ internal class E2eAddressListScreen(provider: SemanticsNodeInteractionsProvider)
     ComposeScreen<E2eAddressListScreen>(provider) {
     val add = onNode { hasTestTag(UiTags.AddressAdd) }
     val back = onNode { hasTestTag(UiTags.ProfileBack) }
-    val edit = onNode { hasText("Sửa") }
-    val setDefault = onNode { hasText("Đặt làm mặc định") }
+    val edit = onNode { hasTestTag(UiTags.AddressEdit) }
+    val setDefault = onNode { hasTestTag(UiTags.AddressSetDefault) }
 
     fun header(recipient: String) = onNode {
         hasTestTag(UiTags.AddressHeader)

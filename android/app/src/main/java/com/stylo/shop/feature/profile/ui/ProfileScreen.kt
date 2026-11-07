@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.UiEffectHost
 import com.stylo.shop.core.ui.UiTags
@@ -178,6 +179,7 @@ fun ProfileScreen(
     if (confirmLogout) {
         AlertDialog(
             onDismissRequest = { confirmLogout = false },
+            modifier = Modifier.e2eTagsAsResourceId(),
             title = { Text(stringResource(R.string.profile_logout_title)) },
             text = { Text(stringResource(R.string.profile_logout_body)) },
             confirmButton = {
@@ -192,7 +194,10 @@ fun ProfileScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { confirmLogout = false }) {
+                TextButton(
+                    onClick = { confirmLogout = false },
+                    modifier = Modifier.testTag(UiTags.ProfileLogoutCancel),
+                ) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },

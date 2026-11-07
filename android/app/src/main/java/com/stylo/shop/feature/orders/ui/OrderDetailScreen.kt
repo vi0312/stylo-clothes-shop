@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.ErrorMessages
 import com.stylo.shop.core.ui.Formatters
@@ -107,7 +108,10 @@ fun OrderDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.testTag(UiTags.OrderDetailBack),
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),
@@ -143,7 +147,10 @@ fun OrderDetailScreen(
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(onClick = viewModel::retry) {
+                Button(
+                    onClick = viewModel::retry,
+                    modifier = Modifier.testTag(UiTags.OrderDetailRetry),
+                ) {
                     Text(stringResource(R.string.action_retry))
                 }
             }
@@ -164,6 +171,7 @@ fun OrderDetailScreen(
         val order = (state.orderState as? UiState.Content)?.data
         AlertDialog(
             onDismissRequest = { showCancelDialog = false },
+            modifier = Modifier.e2eTagsAsResourceId(),
             title = { Text(stringResource(R.string.order_cancel_title)) },
             text = {
                 Text(
@@ -188,7 +196,10 @@ fun OrderDetailScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showCancelDialog = false }) {
+                TextButton(
+                    onClick = { showCancelDialog = false },
+                    modifier = Modifier.testTag(UiTags.OrderCancelDismiss),
+                ) {
                     Text(stringResource(R.string.order_cancel_keep))
                 }
             },
@@ -206,7 +217,7 @@ private fun OrderContent(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.testTag(UiTags.OrderDetailList),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -303,19 +314,25 @@ private fun PaymentBanner(
     }
 
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag(UiTags.OrderDetailPayment),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = container,
         contentColor = content,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, style = MaterialTheme.typography.titleSmall)
+            // The status text carries the tag; the banner surface also hosts the refresh action.
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.testTag(UiTags.OrderDetailPayment),
+            )
             Spacer(Modifier.height(4.dp))
             Text(text = hint, style = MaterialTheme.typography.bodySmall)
             if (order.paymentStatus != PaymentStatus.PAID) {
-                TextButton(onClick = onRefresh) {
+                TextButton(
+                    onClick = onRefresh,
+                    modifier = Modifier.testTag(UiTags.OrderDetailPaymentRetry),
+                ) {
                     Text(stringResource(R.string.order_detail_refresh))
                 }
             }

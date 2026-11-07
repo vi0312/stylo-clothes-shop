@@ -158,7 +158,7 @@ export async function seed(): Promise<void> {
 
   if (!existingReceipt) {
     const received = [
-      { sku: 'STY-AO-001-M', quantity: 20, unitCost: 110_000 },
+      { sku: 'STY-AO-001-M', quantity: 200, unitCost: 110_000 },
       { sku: 'STY-QU-001-30', quantity: 15, unitCost: 260_000 },
     ]
 

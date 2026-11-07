@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.stylo.shop.core.ui.e2eTagsAsResourceId
 import com.stylo.shop.R
 import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.catalog.model.CatalogFilters
@@ -68,7 +69,7 @@ fun FilterBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
-        modifier = modifier,
+        modifier = modifier.e2eTagsAsResourceId(),
     ) {
         Column(
             modifier = Modifier
@@ -87,7 +88,10 @@ fun FilterBottomSheet(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                 )
-                TextButton(onClick = onClear) {
+                TextButton(
+                    onClick = onClear,
+                    modifier = Modifier.testTag(UiTags.FilterClear),
+                ) {
                     Text(
                         text = stringResource(R.string.catalog_filter_clear),
                         color = MaterialTheme.colorScheme.secondary,
@@ -150,6 +154,7 @@ fun FilterBottomSheet(
                             selected = isSelected,
                             onClick = { onBrandSelected(if (isSelected) null else brand.id) },
                             label = { Text(brand.name) },
+                            modifier = Modifier.testTag(UiTags.FilterBrand),
                             leadingIcon = if (isSelected) {
                                 { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
                             } else null,
@@ -184,6 +189,7 @@ fun FilterBottomSheet(
                             selected = isSelected,
                             onClick = { onColorSelected(if (isSelected) null else color) },
                             label = { Text(color) },
+                            modifier = Modifier.testTag(UiTags.FilterColor),
                             leadingIcon = if (isSelected) {
                                 { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
                             } else null,
@@ -218,6 +224,7 @@ fun FilterBottomSheet(
                             selected = isSelected,
                             onClick = { onSizeSelected(if (isSelected) null else size) },
                             label = { Text(size) },
+                            modifier = Modifier.testTag(UiTags.FilterSize),
                             leadingIcon = if (isSelected) {
                                 { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
                             } else null,
@@ -263,6 +270,7 @@ fun FilterBottomSheet(
                             }
                         },
                         label = { Text(label) },
+                        modifier = Modifier.testTag(UiTags.FilterPrice),
                         leadingIcon = if (isSelected) {
                             { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
                         } else null,
