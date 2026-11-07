@@ -17,7 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -54,8 +53,6 @@ import com.stylo.shop.feature.profile.model.PROFILE_PHONE_MAX
 
 @Composable
 fun ProfileScreen(
-    onBack: () -> Unit,
-    onOpenOrders: () -> Unit,
     onOpenAddresses: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
@@ -69,7 +66,6 @@ fun ProfileScreen(
 
     ProfileDetailScaffold(
         title = stringResource(R.string.profile_title),
-        onBack = onBack,
         modifier = modifier,
         snackbarHostState = snackbarHostState,
     ) { padding ->
@@ -144,14 +140,6 @@ fun ProfileScreen(
             }
 
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
-
-            ProfileLinkRow(
-                icon = Icons.AutoMirrored.Filled.List,
-                title = stringResource(R.string.profile_orders),
-                hint = stringResource(R.string.profile_orders_hint),
-                onClick = onOpenOrders,
-                tag = UiTags.ProfileOrders,
-            )
 
             ProfileLinkRow(
                 icon = Icons.Filled.LocationOn,

@@ -42,13 +42,13 @@ class OrdersJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     private val auth by lazy { E2eAuthScreen(composeRule) }
+    private val nav by lazy { E2eNavBar(composeRule) }
     private val catalog by lazy { E2eCatalogScreen(composeRule) }
     private val detail by lazy { E2eProductDetailScreen(composeRule) }
     private val cart by lazy { E2eCartScreen(composeRule) }
     private val checkout by lazy { E2eCheckoutScreen(composeRule) }
     private val orderDetail by lazy { E2eOrderDetailScreen(composeRule) }
     private val orders by lazy { E2eOrdersScreen(composeRule) }
-    private val profile by lazy { E2eProfileScreen(composeRule) }
     private val addressForm by lazy { E2eAddressFormScreen(composeRule) }
 
     private val email = "e2e+orders+${System.currentTimeMillis()}@stylo.local"
@@ -69,6 +69,8 @@ class OrdersJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
         }
 
         step("Place a COD order") {
+            composeRule.openCatalog()
+            composeRule.searchCatalog("thun")
             composeRule.waitForCard("Áo thun basic")
             catalog.card("Áo thun basic").performClick()
             composeRule.waitForTag(UiTags.ProductDetailCta)
@@ -76,8 +78,8 @@ class OrdersJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
             composeRule.waitForText("Đã thêm vào giỏ.")
             detail.back.performClick()
 
-            composeRule.waitForTag(UiTags.CatalogCart)
-            catalog.cart.performClick()
+            composeRule.waitForTag(UiTags.NavCart)
+            nav.cart.performClick()
             composeRule.waitForTag(UiTags.CartCheckout)
             cart.checkout.performClick()
             composeRule.waitForTag(UiTags.CheckoutPaymentCod)
@@ -105,14 +107,11 @@ class OrdersJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
             .joinToString("") { it.text }
         assertTrue("order detail shows a code", orderCode.isNotBlank())
 
-        step("Reach the orders list from the profile") {
+        step("Reach the orders list from its tab") {
             // Checkout replaced cart in the back stack, so back from the order lands on Home.
             orderDetail.back.performClick()
-            composeRule.waitForTag(UiTags.CatalogProfile)
-            catalog.profile.performClick()
-            composeRule.waitForTag(UiTags.ProfileOrders)
-            profile.orders.performScrollTo()
-            profile.orders.performClick()
+            composeRule.waitForTag(UiTags.NavOrders)
+            nav.orders.performClick()
             composeRule.waitForTag(UiTags.OrdersList)
             orders.row(orderCode).assertIsDisplayed()
         }

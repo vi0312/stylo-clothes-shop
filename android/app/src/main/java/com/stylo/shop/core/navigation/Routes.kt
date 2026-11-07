@@ -20,6 +20,8 @@ data object RegisterRoute
 @Serializable
 data object HomeRoute
 
+@Serializable
+data class CatalogRoute(val categoryId: Long? = null, val focusSearch: Boolean = false)
 
 @Serializable
 data class ProductDetailRoute(val productId: Long)

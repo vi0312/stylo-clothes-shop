@@ -28,11 +28,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +51,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -67,7 +65,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stylo.shop.R
-import com.stylo.shop.core.model.User
 import com.stylo.shop.core.ui.ErrorMessages
 import com.stylo.shop.core.ui.UiState
 import com.stylo.shop.core.ui.UiTags
@@ -80,16 +77,23 @@ import com.stylo.shop.feature.catalog.ui.components.SortSelector
 @Composable
 fun CatalogScreen(
     onNavigateToProduct: (Long) -> Unit,
-    onNavigateToProfile: () -> Unit,
-    onNavigateToCart: () -> Unit,
-    user: User?,
     modifier: Modifier = Modifier,
+    categoryId: Long? = null,
+    focusSearch: Boolean = false,
     viewModel: CatalogViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
     val gridState = rememberLazyGridState()
     val filterSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val searchFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(categoryId) {
+        if (categoryId != null) viewModel.onSelectCategoryTab(categoryId)
+    }
+    LaunchedEffect(focusSearch) {
+        if (focusSearch) searchFocusRequester.requestFocus()
+    }
 
     // Trigger load more when reaching bottom of grid
     val shouldLoadMore by remember {
@@ -120,45 +124,13 @@ fun CatalogScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column {
-                Text(
-                    text = "STYLO",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    letterSpacing = 2.sp,
-                )
-                if (user != null) {
-                    Text(
-                        text = "Xin chào, ${user.fullName}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(
-                    onClick = onNavigateToCart,
-                    modifier = Modifier.testTag(UiTags.CatalogCart),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ShoppingCart,
-                        contentDescription = stringResource(R.string.cart_title),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                IconButton(
-                    onClick = onNavigateToProfile,
-                    modifier = Modifier.testTag(UiTags.CatalogProfile),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = stringResource(R.string.profile_title),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
+            Text(
+                text = "STYLO",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                letterSpacing = 2.sp,
+            )
         }
 
         // Search Bar & Filter Button
@@ -214,6 +186,7 @@ fun CatalogScreen(
                 modifier = Modifier
                     .weight(1f)
                     .height(52.dp)
+                    .focusRequester(searchFocusRequester)
                     .testTag(UiTags.CatalogSearch),
             )
 

@@ -43,6 +43,7 @@ class OnlinePaymentJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.w
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     private val auth by lazy { E2eAuthScreen(composeRule) }
+    private val nav by lazy { E2eNavBar(composeRule) }
     private val catalog by lazy { E2eCatalogScreen(composeRule) }
     private val detail by lazy { E2eProductDetailScreen(composeRule) }
     private val cart by lazy { E2eCartScreen(composeRule) }
@@ -80,6 +81,8 @@ class OnlinePaymentJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.w
         }
 
         step("Place an ONLINE order with a saved address") {
+            composeRule.openCatalog()
+            composeRule.searchCatalog("thun")
             composeRule.waitForCard("Áo thun basic")
             catalog.card("Áo thun basic").performClick()
             composeRule.waitForTag(UiTags.ProductDetailCta)
@@ -87,8 +90,8 @@ class OnlinePaymentJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.w
             composeRule.waitForText("Đã thêm vào giỏ.")
             detail.back.performClick()
 
-            composeRule.waitForTag(UiTags.CatalogCart)
-            catalog.cart.performClick()
+            composeRule.waitForTag(UiTags.NavCart)
+            nav.cart.performClick()
             composeRule.waitForTag(UiTags.CartCheckout)
             cart.checkout.performClick()
             composeRule.waitForTag(UiTags.CheckoutPaymentCod)

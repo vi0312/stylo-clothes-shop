@@ -24,8 +24,6 @@ internal class E2eAuthScreen(provider: SemanticsNodeInteractionsProvider) :
 internal class E2eCatalogScreen(provider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<E2eCatalogScreen>(provider) {
     val search = onNode { hasTestTag(UiTags.CatalogSearch) }
-    val profile = onNode { hasTestTag(UiTags.CatalogProfile) }
-    val cart = onNode { hasTestTag(UiTags.CatalogCart) }
     val filter = onNode { hasTestTag(UiTags.FilterOpen) }
     val apply = onNode { hasTestTag(UiTags.FilterApply) }
     val sort = onNode { hasTestTag(UiTags.CatalogSort) }
@@ -53,7 +51,7 @@ internal class E2eProductDetailScreen(provider: SemanticsNodeInteractionsProvide
 
 internal class E2eCartScreen(provider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<E2eCartScreen>(provider) {
-    val back = onNode { hasTestTag(UiTags.CartBack) }
+    val root = onNode { hasTestTag(UiTags.CartRoot) }
     val itemName = onNode { hasTestTag(UiTags.CartItemName) }
     val subtotal = onNode { hasTestTag(UiTags.CartSubtotal) }
     val checkout = onNode { hasTestTag(UiTags.CartCheckout) }
@@ -84,7 +82,6 @@ internal class E2eOrderDetailScreen(provider: SemanticsNodeInteractionsProvider)
 
 internal class E2eOrdersScreen(provider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<E2eOrdersScreen>(provider) {
-    val back = onNode { hasTestTag(UiTags.OrdersBack) }
 
     fun row(code: String) = onNode {
         hasTestTag(UiTags.OrderRow)
@@ -103,9 +100,24 @@ internal class E2eProfileScreen(provider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<E2eProfileScreen>(provider) {
     val email = onNode { hasTestTag(UiTags.ProfileEmail) }
     val addresses = onNode { hasTestTag(UiTags.ProfileAddresses) }
-    val orders = onNode { hasTestTag(UiTags.ProfileOrders) }
     val logout = onNode { hasTestTag(UiTags.ProfileLogout) }
     val confirmLogout = onNode { hasTestTag(UiTags.ProfileLogoutConfirm) }
+}
+
+/** The five shared bottom tabs; every customer tab screen renders this same bar. */
+internal class E2eNavBar(provider: SemanticsNodeInteractionsProvider) :
+    ComposeScreen<E2eNavBar>(provider) {
+    val home = onNode { hasTestTag(UiTags.NavHome) }
+    val catalog = onNode { hasTestTag(UiTags.NavCatalog) }
+    val cart = onNode { hasTestTag(UiTags.NavCart) }
+    val orders = onNode { hasTestTag(UiTags.NavOrders) }
+    val profile = onNode { hasTestTag(UiTags.NavProfile) }
+}
+
+internal class E2eHomeScreen(provider: SemanticsNodeInteractionsProvider) :
+    ComposeScreen<E2eHomeScreen>(provider) {
+    val greeting = onNode { hasTestTag(UiTags.HomeGreeting) }
+    val search = onNode { hasTestTag(UiTags.HomeSearch) }
 }
 
 internal class E2eAddressListScreen(provider: SemanticsNodeInteractionsProvider) :

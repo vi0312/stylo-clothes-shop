@@ -1,5 +1,6 @@
 package com.stylo.shop.e2e
 
+import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,6 +37,7 @@ class CheckoutJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     private val auth by lazy { E2eAuthScreen(composeRule) }
+    private val nav by lazy { E2eNavBar(composeRule) }
     private val catalog by lazy { E2eCatalogScreen(composeRule) }
     private val detail by lazy { E2eProductDetailScreen(composeRule) }
     private val cart by lazy { E2eCartScreen(composeRule) }
@@ -60,6 +63,8 @@ class CheckoutJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
         }
 
         step("Add a product to the cart") {
+            composeRule.openCatalog()
+            composeRule.searchCatalog("thun")
             composeRule.waitForCard("Áo thun basic")
             catalog.card("Áo thun basic").performClick()
             composeRule.waitForTag(UiTags.ProductDetailCta)
@@ -68,9 +73,13 @@ class CheckoutJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
         }
 
         step("Open the cart and continue to checkout") {
+            // The badge lives on the tab bar, which pushed screens hide.
             detail.back.performClick()
-            composeRule.waitForTag(UiTags.CatalogCart)
-            catalog.cart.performClick()
+            composeRule.waitForTag(UiTags.NavCart)
+            composeRule.onNodeWithTag(UiTags.NavCartBadge, useUnmergedTree = true)
+                .onChildren()
+                .assertAny(hasText("1"))
+            nav.cart.performClick()
             composeRule.waitForTag(UiTags.CartCheckout)
             cart.itemName.assertIsDisplayed()
             cart.checkout.performClick()

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import com.stylo.shop.core.ui.UiTags
@@ -20,16 +21,41 @@ import com.stylo.shop.core.ui.UiTags
  * one process and exercises a path a customer actually takes.
  */
 internal fun ComposeTestRule.startLoggedOut() {
-    if (!tagAppears(UiTags.CatalogProfile, timeoutMs = 8_000)) {
-        waitForTag(UiTags.AuthEmail)
-        return
+    startGuest()
+    if (!tagAppears(UiTags.AuthEmail, timeoutMs = 1_000)) {
+        // A guest tapping a guarded tab is the only way into Login now.
+        onNodeWithTag(UiTags.NavProfile).performClick()
     }
-    onNodeWithTag(UiTags.CatalogProfile).performClick()
-    waitForTag(UiTags.ProfileLogout)
-    onNodeWithTag(UiTags.ProfileLogout).performScrollTo().performClick()
-    waitForTag(UiTags.ProfileLogoutConfirm)
-    onNodeWithTag(UiTags.ProfileLogoutConfirm).performClick()
     waitForTag(UiTags.AuthEmail)
+}
+
+/** Leaves the app signed out on the guest Home tab. */
+internal fun ComposeTestRule.startGuest() {
+    if (tagAppears(UiTags.HomeGreeting, timeoutMs = 8_000)) {
+        onNodeWithTag(UiTags.NavProfile).performClick()
+        waitForTag(UiTags.ProfileLogout)
+        onNodeWithTag(UiTags.ProfileLogout).performScrollTo().performClick()
+        waitForTag(UiTags.ProfileLogoutConfirm)
+        onNodeWithTag(UiTags.ProfileLogoutConfirm).performClick()
+    }
+    waitForTag(UiTags.NavHome)
+    onNodeWithTag(UiTags.NavHome).performClick()
+    waitUntil(5_000) { onAllNodesWithTag(UiTags.HomeGreeting).fetchSemanticsNodes().isEmpty() }
+}
+
+/** Switches to the Catalog tab and waits for its search field. */
+internal fun ComposeTestRule.openCatalog() {
+    onNodeWithTag(UiTags.NavCatalog).performClick()
+    waitForTag(UiTags.CatalogSearch)
+}
+
+/**
+ * Types a catalog query and submits it. Catalog only reloads on the IME search action, and the
+ * unfiltered first page can push a product past the composed viewport.
+ */
+internal fun ComposeTestRule.searchCatalog(query: String) {
+    onNodeWithTag(UiTags.CatalogSearch).performTextInput(query)
+    onNodeWithTag(UiTags.CatalogSearch).performImeAction()
 }
 
 internal fun ComposeTestRule.waitForTag(tag: String, timeoutMs: Long = 15_000) {
@@ -87,5 +113,24 @@ internal fun ComposeTestRule.registerCustomer(
     auth.password.performTextInput(password)
     auth.submit.performScrollTo()
     auth.submit.performClick()
+    waitForTag(UiTags.NavHome)
+    onNodeWithTag(UiTags.NavHome).performClick()
+    waitForText("Xin chào, $fullName")
+}
+
+/** Signs an existing account in from the login screen and waits for the home header. */
+internal fun ComposeTestRule.loginCustomer(
+    auth: E2eAuthScreen,
+    email: String,
+    password: String,
+    fullName: String,
+) {
+    waitForTag(UiTags.AuthEmail)
+    auth.email.performTextInput(email)
+    auth.password.performTextInput(password)
+    auth.submit.performScrollTo()
+    auth.submit.performClick()
+    waitForTag(UiTags.NavHome)
+    onNodeWithTag(UiTags.NavHome).performClick()
     waitForText("Xin chào, $fullName")
 }

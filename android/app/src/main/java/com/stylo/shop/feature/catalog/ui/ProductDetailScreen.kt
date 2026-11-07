@@ -74,6 +74,8 @@ import com.stylo.shop.feature.catalog.ui.components.SizeSelector
 fun ProductDetailScreen(
     onBack: () -> Unit,
     onOpenCart: () -> Unit,
+    isSignedIn: Boolean = true,
+    onRequireLogin: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
@@ -155,7 +157,9 @@ fun ProductDetailScreen(
                         }
 
                         Button(
-                            onClick = viewModel::addToCart,
+                            onClick = {
+                                if (isSignedIn) viewModel.addToCart() else onRequireLogin()
+                            },
                             enabled = state.isCtaEnabled && !state.isAddingToCart,
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier

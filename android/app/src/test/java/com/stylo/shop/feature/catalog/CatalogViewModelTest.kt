@@ -53,9 +53,11 @@ class FakeCatalogRepository : CatalogRepository {
     }
 
     var lastQuery: CatalogQuery? = null
+    val queries = mutableListOf<CatalogQuery>()
 
     override suspend fun listProducts(query: CatalogQuery): ApiResult<PaginatedProducts> {
         lastQuery = query
+        queries += query
         return listProductsResult(query)
     }
 

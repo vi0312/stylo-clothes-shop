@@ -16,27 +16,29 @@ interface CartRepository {
 
 class DefaultCartRepository @Inject constructor(
     private val api: CartApi,
+    private val badge: CartBadgeStore,
 ) : CartRepository {
 
-    override suspend fun getCart(): ApiResult<Cart> = apiCall {
-        api.getCart().toCart()
+    private suspend fun request(block: suspend () -> CartDto): ApiResult<Cart> =
+        apiCall { block().toCart() }.also { result ->
+            if (result is ApiResult.Success) badge.update(result.data.itemCount)
+        }
+
+    override suspend fun getCart(): ApiResult<Cart> = request { api.getCart() }
+
+    override suspend fun addItem(variantId: Long, quantity: Int): ApiResult<Cart> = request {
+        api.addItem(AddCartItemRequest(variantId = variantId, quantity = quantity))
     }
 
-    override suspend fun addItem(variantId: Long, quantity: Int): ApiResult<Cart> = apiCall {
-        api.addItem(AddCartItemRequest(variantId = variantId, quantity = quantity)).toCart()
+    override suspend fun updateQuantity(itemId: Long, quantity: Int): ApiResult<Cart> = request {
+        api.updateItem(itemId, UpdateCartItemRequest(quantity = quantity))
     }
 
-    override suspend fun updateQuantity(itemId: Long, quantity: Int): ApiResult<Cart> = apiCall {
-        api.updateItem(itemId, UpdateCartItemRequest(quantity = quantity)).toCart()
+    override suspend fun removeItem(itemId: Long): ApiResult<Cart> = request {
+        api.removeItem(itemId)
     }
 
-    override suspend fun removeItem(itemId: Long): ApiResult<Cart> = apiCall {
-        api.removeItem(itemId).toCart()
-    }
-
-    override suspend fun clear(): ApiResult<Cart> = apiCall {
-        api.clearCart().toCart()
-    }
+    override suspend fun clear(): ApiResult<Cart> = request { api.clearCart() }
 }
 
 fun CartDto.toCart(): Cart = Cart(

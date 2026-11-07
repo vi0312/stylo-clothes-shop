@@ -34,7 +34,7 @@ import com.stylo.shop.feature.profile.model.ProfileFieldError
 @Composable
 fun ProfileDetailScaffold(
     title: String,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     actions: @Composable () -> Unit = {},
@@ -47,14 +47,16 @@ fun ProfileDetailScaffold(
             TopAppBar(
                 title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onBack,
-                        modifier = Modifier.testTag(UiTags.ProfileBack),
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
+                    if (onBack != null) {
+                        IconButton(
+                            onClick = onBack,
+                            modifier = Modifier.testTag(UiTags.ProfileBack),
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                            )
+                        }
                     }
                 },
                 actions = { actions() },

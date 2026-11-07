@@ -2,11 +2,13 @@ package com.stylo.shop.e2e
 
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -29,6 +31,7 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     private val auth by lazy { E2eAuthScreen(composeRule) }
+    private val nav by lazy { E2eNavBar(composeRule) }
     private val catalog by lazy { E2eCatalogScreen(composeRule) }
     private val detail by lazy { E2eProductDetailScreen(composeRule) }
     private val profile by lazy { E2eProfileScreen(composeRule) }
@@ -53,11 +56,12 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
 
         step("Register a new customer") {
             composeRule.registerCustomer(auth, fullName, phone, email, password)
-            catalog.profile.assertIsDisplayed()
+            composeRule.onNodeWithTag(UiTags.HomeGreeting).assertIsDisplayed()
         }
 
         step("Search, filter and sort the catalog") {
-            catalog.search.performTextInput("thun")
+            composeRule.openCatalog()
+            composeRule.searchCatalog("thun")
             composeRule.waitForCard("Áo thun basic")
             catalog.filter.performClick()
             composeRule.waitForTag(UiTags.FilterApply)
@@ -81,7 +85,7 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
         }
 
         step("Create the first address") {
-            catalog.profile.performClick()
+            nav.profile.performClick()
             composeRule.waitForTag(UiTags.ProfileEmail)
             profile.email.assertIsDisplayed()
             profile.addresses.performScrollTo()
@@ -132,11 +136,16 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
             profile.logout.performClick()
             composeRule.waitForTag(UiTags.ProfileLogoutConfirm)
             profile.confirmLogout.performClick()
+            // Logout lands on the guest Home tab; Login is one guarded tab away.
+            composeRule.waitForTag(UiTags.NavHome)
+            nav.profile.performClick()
             composeRule.waitForTag(UiTags.AuthEmail)
             auth.email.performTextInput(email)
             auth.password.performTextInput(password)
             auth.submit.performScrollTo()
             auth.submit.performClick()
+            composeRule.waitForTag(UiTags.NavHome)
+            nav.home.performClick()
             composeRule.waitForText("Xin chào, $fullName")
         }
     }

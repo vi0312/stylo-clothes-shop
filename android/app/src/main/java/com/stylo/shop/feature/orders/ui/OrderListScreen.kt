@@ -16,14 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -55,7 +51,6 @@ import com.stylo.shop.feature.orders.model.OrderSummary
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderListScreen(
-    onBack: () -> Unit,
     onOpenOrder: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: OrderListViewModel = hiltViewModel(),
@@ -78,17 +73,6 @@ fun OrderListScreen(
                         text = stringResource(R.string.orders_title),
                         style = MaterialTheme.typography.headlineSmall,
                     )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBack,
-                        modifier = Modifier.testTag(UiTags.OrdersBack),
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
