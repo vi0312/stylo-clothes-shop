@@ -19,6 +19,10 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Dòng phiếu nhập | `InventoryReceiptItem` | Variant + số lượng + đơn giá nhập | Lưu lịch sử giá nhập |
 | Nhà cung cấp | `supplier` | Tên đơn vị bán hàng cho cửa hàng | Chuỗi tự do trên phiếu nhập, không phải bảng riêng |
 | Giá vốn | `unit_cost` | Giá nhập bình quân gia quyền của variant tại thời điểm bán | Snapshot trên `OrderItem`; null nếu variant chưa từng nhập |
+| Doanh thu | `revenue` | Tổng `order.total` của các đơn đã thanh toán trong kỳ | Gồm phí ship; tính theo ngày `paid_at` đổi sang giờ VN nên đơn COD vào doanh thu ở ngày giao |
+| Giá vốn hàng bán | `cogs` | Σ `quantity × unit_cost` snapshot của dòng đơn đã thanh toán trong kỳ | `unit_cost` null coi như 0; không dùng giá nhập phát sinh sau |
+| Lãi gộp | `grossProfit` | `revenue − cogs` | Không trừ chi phí vận chuyển, nên cao hơn lãi thật đúng bằng tiền ship |
+| Kỳ báo cáo | `from` / `to` | Hai ngày lịch VN, bao gồm cả hai đầu | Mặc định 30 ngày gần nhất; đổi sang cửa sổ UTC nửa mở khi truy vấn |
 | Giỏ hàng | `Cart` | Tập variant khách chọn trước khi đặt | Server-side, đúng một giỏ mỗi khách, tạo khi thêm lần đầu |
 | Dòng giỏ | `CartItem` | Một variant và số lượng trong giỏ | Unique theo `(cart, variant)` |
 | Đơn hàng | `Order` | Cam kết mua của customer | `PENDING → CONFIRMED → SHIPPING → DELIVERED`; `CANCELLED` từ `PENDING`/`CONFIRMED` |
