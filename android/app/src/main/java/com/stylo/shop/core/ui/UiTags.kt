@@ -51,4 +51,22 @@ object UiTags {
     const val CartStepperMinus = "cart_stepper_minus"
     const val CartStepperPlus = "cart_stepper_plus"
     const val CartSubtotal = "cart_subtotal"
+    const val CartCheckout = "cart_checkout"
+
+    const val CheckoutAddressChange = "checkout_address_change"
+    const val CheckoutAddressAdd = "checkout_address_add"
+    const val CheckoutAddressPicker = "checkout_address_picker"
+    const val CheckoutAddressOption = "checkout_address_option"
+    const val CheckoutAddressAddNew = "checkout_address_add_new"
+    const val CheckoutPaymentCod = "checkout_payment_cod"
+    const val CheckoutPaymentOnline = "checkout_payment_online"
+    const val CheckoutNote = "checkout_note"
+    const val CheckoutSubmit = "checkout_submit"
+    const val CheckoutError = "checkout_error"
+    const val CheckoutBackToCart = "checkout_back_to_cart"
+
+    const val OrderDetailCode = "order_detail_code"
+    const val OrderDetailStatus = "order_detail_status"
+    const val OrderDetailPayment = "order_detail_payment"
+    const val OrderDetailTotal = "order_detail_total"
 }

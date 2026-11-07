@@ -72,6 +72,7 @@ import com.stylo.shop.feature.cart.model.CartItem
 fun CartScreen(
     onBack: () -> Unit,
     onShop: () -> Unit,
+    onCheckout: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = hiltViewModel(),
 ) {
@@ -127,6 +128,25 @@ fun CartScreen(
                     containerColor = MaterialTheme.colorScheme.background,
                 ),
             )
+        },
+        bottomBar = {
+            if (cart != null && !cart.isEmpty) {
+                Surface(
+                    shadowElevation = 8.dp,
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    Button(
+                        onClick = onCheckout,
+                        enabled = !state.isMutating,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 12.dp)
+                            .testTag(UiTags.CartCheckout),
+                    ) {
+                        Text(stringResource(R.string.cart_checkout))
+                    }
+                }
+            }
         },
     ) { padding ->
         when (val cartState = state.cartState) {

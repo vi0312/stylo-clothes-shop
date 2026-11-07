@@ -39,7 +39,9 @@ import com.stylo.shop.feature.admin.ui.taxonomy.AdminTaxonomyScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
 import com.stylo.shop.feature.cart.ui.CartScreen
+import com.stylo.shop.feature.checkout.ui.CheckoutScreen
 import com.stylo.shop.feature.home.ui.HomeScreen
+import com.stylo.shop.feature.orders.ui.OrderDetailScreen
 import com.stylo.shop.feature.profile.ui.ProfileScreen
 import com.stylo.shop.feature.profile.ui.address.AddressFormScreen
 import com.stylo.shop.feature.profile.ui.address.AddressListScreen
@@ -117,7 +119,24 @@ private fun SessionNavHost(
                                 launchSingleTop = true
                             }
                         },
+                        onCheckout = { navController.navigate(CheckoutRoute) },
                     )
+                }
+                composable<CheckoutRoute> {
+                    CheckoutScreen(
+                        onBack = { navController.popBackStack() },
+                        onAddAddress = { navController.navigate(AddressCreateRoute) },
+                        onBackToCart = { navController.popBackStack() },
+                        onOrderPlaced = { orderId ->
+                            // The cart is consumed by the order, so it must not stay behind it.
+                            navController.navigate(OrderDetailRoute(orderId)) {
+                                popUpTo<CartRoute> { inclusive = true }
+                            }
+                        },
+                    )
+                }
+                composable<OrderDetailRoute> {
+                    OrderDetailScreen(onBack = { navController.popBackStack() })
                 }
                 composable<ProfileRoute> {
                     ProfileScreen(

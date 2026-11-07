@@ -47,6 +47,10 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
 
     @Test
     fun registerBrowseCatalogAndManageAddresses() = run {
+        step("Start logged out") {
+            composeRule.startLoggedOut()
+        }
+
         step("Register a new customer") {
             waitForTag(UiTags.AuthRegisterTab)
             auth.registerTab.performClick()
@@ -179,71 +183,4 @@ class CustomerJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCo
 
     private fun hasHeader(recipient: String) =
         hasTestTag(UiTags.AddressHeader) and hasText(recipient)
-
-    private class E2eAuthScreen(provider: SemanticsNodeInteractionsProvider) :
-        ComposeScreen<E2eAuthScreen>(provider) {
-        val registerTab = onNode { hasTestTag(UiTags.AuthRegisterTab) }
-        val fullName = onNode { hasTestTag(UiTags.AuthFullName) }
-        val phone = onNode { hasTestTag(UiTags.AuthPhone) }
-        val email = onNode { hasTestTag(UiTags.AuthEmail) }
-        val password = onNode { hasTestTag(UiTags.AuthPassword) }
-        val submit = onNode { hasTestTag(UiTags.AuthSubmit) }
-    }
-
-    private class E2eCatalogScreen(provider: SemanticsNodeInteractionsProvider) :
-        ComposeScreen<E2eCatalogScreen>(provider) {
-        val search = onNode { hasTestTag(UiTags.CatalogSearch) }
-        val profile = onNode { hasTestTag(UiTags.CatalogProfile) }
-        val filter = onNode { hasTestTag(UiTags.FilterOpen) }
-        val apply = onNode { hasTestTag(UiTags.FilterApply) }
-        val sort = onNode { hasTestTag(UiTags.CatalogSort) }
-
-        fun category(name: String) = onNode {
-            hasTestTag(UiTags.FilterCategory)
-            hasText(name)
-        }
-
-        fun sortOption(name: String) = onNode { hasText(name) }
-
-        fun card(name: String) = onNode {
-            hasTestTag(UiTags.ProductCard)
-            hasText(name)
-        }
-    }
-
-    private class E2eProductDetailScreen(provider: SemanticsNodeInteractionsProvider) :
-        ComposeScreen<E2eProductDetailScreen>(provider) {
-        val name = onNode { hasTestTag(UiTags.ProductDetailName) }
-        val price = onNode { hasTestTag(UiTags.ProductDetailPrice) }
-        val back = onNode { hasTestTag(UiTags.ProductDetailBack) }
-    }
-
-    private class E2eProfileScreen(provider: SemanticsNodeInteractionsProvider) :
-        ComposeScreen<E2eProfileScreen>(provider) {
-        val email = onNode { hasTestTag(UiTags.ProfileEmail) }
-        val addresses = onNode { hasTestTag(UiTags.ProfileAddresses) }
-        val logout = onNode { hasTestTag(UiTags.ProfileLogout) }
-        val confirmLogout = onNode { hasTestTag(UiTags.ProfileLogoutConfirm) }
-    }
-
-    private class E2eAddressListScreen(provider: SemanticsNodeInteractionsProvider) :
-        ComposeScreen<E2eAddressListScreen>(provider) {
-        val add = onNode { hasTestTag(UiTags.AddressAdd) }
-        val back = onNode { hasTestTag(UiTags.ProfileBack) }
-        val edit = onNode { hasText("Sửa") }
-        val setDefault = onNode { hasText("Đặt làm mặc định") }
-
-        fun header(recipient: String) = onNode {
-            hasTestTag(UiTags.AddressHeader)
-            hasText(recipient)
-        }
-    }
-
-    private class E2eAddressFormScreen(provider: SemanticsNodeInteractionsProvider) :
-        ComposeScreen<E2eAddressFormScreen>(provider) {
-        val recipient = onNode { hasTestTag(UiTags.AddressRecipient) }
-        val phone = onNode { hasTestTag(UiTags.AddressPhone) }
-        val line = onNode { hasTestTag(UiTags.AddressLine) }
-        val save = onNode { hasTestTag(UiTags.AddressSave) }
-    }
 }
