@@ -6,6 +6,7 @@ import { adminInventoryRouter } from '../modules/inventory/inventory.routes.js'
 import { ordersRouter, adminOrdersRouter } from '../modules/orders/orders.routes.js'
 import { paymentsRouter } from '../modules/payments/payments.routes.js'
 import { profileRouter } from '../modules/profile/profile.routes.js'
+import { adminUsersRouter } from '../modules/users/users.routes.js'
 
 export const apiRouter = Router()
 
@@ -18,3 +19,4 @@ apiRouter.use(paymentsRouter)
 apiRouter.use(catalogRouter)
 apiRouter.use(adminCatalogRouter)
 apiRouter.use(adminInventoryRouter)
+apiRouter.use(adminUsersRouter)

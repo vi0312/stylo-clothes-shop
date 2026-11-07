@@ -311,3 +311,222 @@ describe('role guard', () => {
     expect(missing.body.error.code).toBe('UNAUTHORIZED')
   })
 })
+
+describe('admin users', () => {
+  async function adminSession() {
+    const admin = await createUser({
+      email: 'admin@example.com',
+      fullName: 'Quản Trị Viên',
+      phone: '0900000000',
+      role: 'ADMIN',
+    })
+    return { admin, token: signAccessToken(admin.id, admin.role) }
+  }
+
+  it('searches by email, full name and phone', async () => {
+    const { token } = await adminSession()
+    const bin = await createUser({
+      email: 'binh@example.com',
+      fullName: 'Trần Bình',
+      phone: '0912345678',
+    })
+    await createUser({ email: 'an@example.com', fullName: 'Nguyễn An', phone: '0987654321' })
+
+    const byEmail = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ q: 'binh@' })
+      .set('Authorization', `Bearer ${token}`)
+    expect(byEmail.status).toBe(200)
+    expect(byEmail.body).toEqual(
+      expect.objectContaining({ page: 1, limit: 20, total: 1 }),
+    )
+    expect(byEmail.body.items).toEqual([
+      expect.objectContaining({
+        id: bin.id,
+        email: 'binh@example.com',
+        fullName: 'Trần Bình',
+        phone: '0912345678',
+        role: 'CUSTOMER',
+        status: 'ACTIVE',
+      }),
+    ])
+    expect(byEmail.text).not.toContain('passwordHash')
+
+    const byName = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ q: 'Bình' })
+      .set('Authorization', `Bearer ${token}`)
+    expect(byName.body.items.map((user: { id: number }) => user.id)).toEqual([bin.id])
+
+    const byPhone = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ q: '0987' })
+      .set('Authorization', `Bearer ${token}`)
+    expect(byPhone.body.items).toHaveLength(1)
+    expect(byPhone.body.items[0].email).toBe('an@example.com')
+  })
+
+  it('filters by status and role, paginates and sorts by name', async () => {
+    const { admin, token } = await adminSession()
+    const disabled = await createUser({
+      email: 'off@example.com',
+      fullName: 'Lê Khoá',
+      status: 'DISABLED',
+    })
+    await createUser({ email: 'zoe@example.com', fullName: 'Zoe' })
+    await createUser({ email: 'an@example.com', fullName: 'An' })
+
+    const disabledOnly = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ status: 'DISABLED' })
+      .set('Authorization', `Bearer ${token}`)
+    expect(disabledOnly.body.items.map((user: { id: number }) => user.id)).toEqual([
+      disabled.id,
+    ])
+
+    const adminsOnly = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ role: 'ADMIN' })
+      .set('Authorization', `Bearer ${token}`)
+    expect(adminsOnly.body.items.map((user: { id: number }) => user.id)).toEqual([admin.id])
+
+    const firstPage = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ status: 'ACTIVE', sort: 'name_asc', page: 1, limit: 2 })
+      .set('Authorization', `Bearer ${token}`)
+    const secondPage = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ status: 'ACTIVE', sort: 'name_asc', page: 2, limit: 2 })
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(firstPage.body).toEqual(expect.objectContaining({ page: 1, limit: 2, total: 3 }))
+    expect(secondPage.body).toEqual(expect.objectContaining({ page: 2, limit: 2, total: 3 }))
+    expect(firstPage.body.items).toHaveLength(2)
+    expect(secondPage.body.items).toHaveLength(1)
+
+    const seen = [...firstPage.body.items, ...secondPage.body.items].map(
+      (user: { id: number }) => user.id,
+    )
+    expect(new Set(seen).size).toBe(3)
+  })
+
+  it('disabling revokes refresh tokens and blocks the account immediately', async () => {
+    const session = await register()
+    const { token } = await adminSession()
+    const userId = session.body.user.id as number
+
+    const response = await request(app)
+      .patch(`/api/v1/admin/users/${userId}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'DISABLED' })
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual(
+      expect.objectContaining({ id: userId, status: 'DISABLED' }),
+    )
+
+    const me = await request(app)
+      .get('/api/v1/me')
+      .set('Authorization', `Bearer ${session.body.accessToken}`)
+    expect(me.status).toBe(403)
+    expect(me.body.error.code).toBe('ACCOUNT_DISABLED')
+
+    const refresh = await request(app)
+      .post('/api/v1/auth/refresh')
+      .send({ refreshToken: session.body.refreshToken })
+    expect(refresh.status).toBe(401)
+    expect(refresh.body.error.code).toBe('INVALID_TOKEN')
+
+    const login = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: 'an@example.com', password: registerBody.password })
+    expect(login.status).toBe(403)
+    expect(login.body.error.code).toBe('ACCOUNT_DISABLED')
+
+    const revoked = await prisma.refreshToken.count({
+      where: { userId, revokedAt: null },
+    })
+    expect(revoked).toBe(0)
+  })
+
+  it('re-enables a disabled account', async () => {
+    const { token } = await adminSession()
+    const customer = await createUser({
+      email: 'back@example.com',
+      status: 'DISABLED',
+    })
+
+    const response = await request(app)
+      .patch(`/api/v1/admin/users/${customer.id}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'ACTIVE' })
+    expect(response.status).toBe(200)
+    expect(response.body.status).toBe('ACTIVE')
+
+    const login = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: 'back@example.com', password: 'matkhau123' })
+    expect(login.status).toBe(200)
+  })
+
+  it('refuses to disable the acting admin', async () => {
+    const { admin, token } = await adminSession()
+
+    const response = await request(app)
+      .patch(`/api/v1/admin/users/${admin.id}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'DISABLED' })
+
+    expect(response.status).toBe(409)
+    expect(response.body.error.code).toBe('CANNOT_DISABLE_SELF')
+
+    const stored = await prisma.user.findUniqueOrThrow({ where: { id: admin.id } })
+    expect(stored.status).toBe('ACTIVE')
+  })
+
+  it('validates the query and body, and 404s an unknown user', async () => {
+    const { token } = await adminSession()
+
+    const unknown = await request(app)
+      .patch('/api/v1/admin/users/999999/status')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'DISABLED' })
+    expect(unknown.status).toBe(404)
+    expect(unknown.body.error.code).toBe('NOT_FOUND')
+
+    const badStatus = await request(app)
+      .patch('/api/v1/admin/users/1/status')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'BANNED' })
+    expect(badStatus.status).toBe(400)
+    expect(badStatus.body.error.code).toBe('VALIDATION_FAILED')
+
+    const rolePatch = await request(app)
+      .patch('/api/v1/admin/users/1/status')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'ACTIVE', role: 'ADMIN' })
+    expect(rolePatch.status).toBe(400)
+    expect(rolePatch.body.error.code).toBe('VALIDATION_FAILED')
+
+    const badSort = await request(app)
+      .get('/api/v1/admin/users')
+      .query({ sort: 'oldest' })
+      .set('Authorization', `Bearer ${token}`)
+    expect(badSort.status).toBe(400)
+    expect(badSort.body.error.code).toBe('VALIDATION_FAILED')
+  })
+
+  it('rejects a customer and a missing token', async () => {
+    const customer = await createUser({ role: 'CUSTOMER' })
+
+    const forbidden = await request(app)
+      .get('/api/v1/admin/users')
+      .set('Authorization', `Bearer ${signAccessToken(customer.id, customer.role)}`)
+    expect(forbidden.status).toBe(403)
+    expect(forbidden.body.error.code).toBe('FORBIDDEN')
+
+    const missing = await request(app).get('/api/v1/admin/users')
+    expect(missing.status).toBe(401)
+    expect(missing.body.error.code).toBe('UNAUTHORIZED')
+  })
+})
