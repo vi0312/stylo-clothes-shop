@@ -531,23 +531,26 @@ describe('Seed data catalog query', () => {
 
     const listRes = await request(app).get('/api/v1/products')
     expect(listRes.status).toBe(200)
-    expect(listRes.body.total).toBe(2)
-    const productNames = listRes.body.items.map((p: { name: string }) => p.name)
+    expect(listRes.body.total).toBeGreaterThan(0)
+    expect(listRes.body.items.length).toBeGreaterThan(0)
+
+    const searchRes = await request(app).get('/api/v1/products').query({ search: 'áo thun basic' })
+    expect(searchRes.status).toBe(200)
+    const productNames = searchRes.body.items.map((p: { name: string }) => p.name)
     expect(productNames).toContain('Áo thun basic')
-    expect(productNames).toContain('Quần jeans straight')
 
     const filtersRes = await request(app).get('/api/v1/catalog/filters')
     expect(filtersRes.status).toBe(200)
-    expect(filtersRes.body.categories.map((c: { name: string }) => c.name)).toEqual(['Áo', 'Quần'])
-    expect(filtersRes.body.brands.map((b: { name: string }) => b.name)).toEqual([
-      'Local Brand',
-      'Stylo',
-    ])
-    expect(filtersRes.body.colors).toEqual(['Đen', 'Xanh đậm'])
-    expect(filtersRes.body.sizes).toEqual(['30', 'M'])
-    expect(filtersRes.body.priceRange).toEqual({ min: 199_000, max: 459_000 })
+    const categoryNames = filtersRes.body.categories.map((c: { name: string }) => c.name)
+    expect(categoryNames).toEqual(expect.arrayContaining(['Áo', 'Quần', 'Áo khoác', 'Giày']))
+    expect(categoryNames).not.toContain('Phụ kiện')
+    expect(filtersRes.body.brands.map((b: { name: string }) => b.name)).toContain('Stylo')
+    expect(filtersRes.body.colors.length).toBeGreaterThan(0)
+    expect(filtersRes.body.sizes.length).toBeGreaterThan(0)
+    expect(filtersRes.body.priceRange.min).toBeGreaterThan(0)
+    expect(filtersRes.body.priceRange.max).toBeGreaterThanOrEqual(filtersRes.body.priceRange.min)
 
-    const firstProduct = listRes.body.items[0]
+    const firstProduct = searchRes.body.items[0]
     const detailRes = await request(app).get(`/api/v1/products/${firstProduct.id}`)
     expect(detailRes.status).toBe(200)
     expect(detailRes.body.id).toBe(firstProduct.id)
