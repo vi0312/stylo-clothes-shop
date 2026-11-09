@@ -43,26 +43,21 @@ USER_AGENT = "stylo-seed-builder/1.0 (+coursework demo)"
 
 BRANDS = ["Stylo", "Local Brand", "Urban Viet", "Basic Lab"]
 
-# (category, articleType) -> how many products to take
+# (category, articleType) -> how many products to take.
+# Clothing only; the pinned T-shirt counts inside Tshirts.
 QUOTAS: dict[tuple[str, str], int] = {
-    ("Áo", "Tshirts"): 20,
-    ("Áo", "Shirts"): 10,
-    ("Áo", "Tops"): 6,
-    ("Áo", "Sweaters"): 4,
-    ("Quần", "Jeans"): 8,
-    ("Quần", "Trousers"): 8,
-    ("Quần", "Shorts"): 6,
-    ("Quần", "Track Pants"): 5,
-    ("Quần", "Leggings"): 2,
-    ("Quần", "Capris"): 1,
-    ("Áo khoác", "Jackets"): 8,
-    ("Áo khoác", "Sweatshirts"): 7,
-    ("Giày", "Casual Shoes"): 4,
-    ("Giày", "Sports Shoes"): 4,
-    ("Giày", "Formal Shoes"): 2,
-    ("Giày", "Heels"): 2,
-    ("Giày", "Flats"): 2,
-    ("Giày", "Sandals"): 1,
+    ("Áo", "Tshirts"): 47,
+    ("Áo", "Shirts"): 28,
+    ("Áo", "Tops"): 12,
+    ("Áo", "Sweaters"): 8,
+    ("Quần", "Jeans"): 16,
+    ("Quần", "Trousers"): 16,
+    ("Quần", "Shorts"): 12,
+    ("Quần", "Track Pants"): 10,
+    ("Quần", "Leggings"): 4,
+    ("Quần", "Capris"): 2,
+    ("Áo khoác", "Jackets"): 16,
+    ("Áo khoác", "Sweatshirts"): 14,
 }
 
 ARTICLE: dict[str, tuple[str, str, tuple[str, str]]] = {
@@ -79,12 +74,6 @@ ARTICLE: dict[str, tuple[str, str, tuple[str, str]]] = {
     "Track Pants": ("Quần", "Quần thể thao", (299_000, 599_000)),
     "Leggings": ("Quần", "Quần legging", (199_000, 349_000)),
     "Capris": ("Quần", "Quần capri", (249_000, 399_000)),
-    "Casual Shoes": ("Giày", "Giày casual", (499_000, 999_000)),
-    "Sports Shoes": ("Giày", "Giày thể thao", (699_000, 1_499_000)),
-    "Formal Shoes": ("Giày", "Giày tây", (699_000, 1_299_000)),
-    "Heels": ("Giày", "Giày cao gót", (399_000, 899_000)),
-    "Flats": ("Giày", "Giày búp bê", (299_000, 599_000)),
-    "Sandals": ("Giày", "Giày sandal", (299_000, 599_000)),
 }
 
 COLORS = {
@@ -183,10 +172,7 @@ SIZES = {
     "Áo": ["S", "M", "L", "XL"],
     "Áo khoác": ["S", "M", "L", "XL"],
     "Quần": ["28", "29", "30", "31", "32"],
-    "Giày": ["39", "40", "41", "42", "43"],
 }
-
-WOMEN_SHOE_SIZES = ["36", "37", "38", "39"]
 
 DESCRIPTIONS = {
     "Tshirts": "Áo thun {gender} màu {color}, chất liệu cotton co giãn, {style}. Phù hợp mặc {usage} hằng ngày.",
@@ -201,15 +187,9 @@ DESCRIPTIONS = {
     "Track Pants": "Quần thể thao {gender} màu {color}, co giãn, {style}. Phù hợp vận động.",
     "Leggings": "Quần legging {gender} màu {color}, co giãn ôm vừa, {style}. Dễ mặc hằng ngày.",
     "Capris": "Quần capri {gender} màu {color}, dáng lửng, {style}. Phù hợp mùa hè.",
-    "Casual Shoes": "Giày casual {gender} màu {color}, {style}, đế êm, dễ phối đồ.",
-    "Sports Shoes": "Giày thể thao {gender} màu {color}, {style}, đế bám tốt, phù hợp chạy bộ và tập luyện.",
-    "Formal Shoes": "Giày tây {gender} màu {color}, da bóng, {style}. Phù hợp công sở và sự kiện.",
-    "Heels": "Giày cao gót {gender} màu {color}, thiết kế thanh mảnh, {style}. Phù hợp dự tiệc.",
-    "Flats": "Giày búp bê {gender} màu {color}, mềm nhẹ, {style}. Dễ mang hằng ngày.",
-    "Sandals": "Giày sandal {gender} màu {color}, quai chắc chắn, {style}. Phù hợp dạo phố.",
 }
 
-SKU_PREFIX = {"Áo": "AO", "Quần": "QU", "Áo khoác": "AK", "Giày": "GI"}
+SKU_PREFIX = {"Áo": "AO", "Quần": "QU", "Áo khoác": "AK"}
 
 
 def stable_int(*parts: object) -> int:
@@ -233,7 +213,7 @@ def fetch_rows(batches: int = 40, batch: int = 100) -> list[dict]:
         if offset in fetched:
             continue
         url = f"{ROWS_URL}&offset={offset}&length={batch}"
-        for attempt in range(5):
+        for attempt in range(8):
             try:
                 with urllib.request.urlopen(url, timeout=45) as response:
                     payload = json.load(response)
@@ -248,11 +228,11 @@ def fetch_rows(batches: int = 40, batch: int = 100) -> list[dict]:
                     print(f"  rate limited, waiting {wait}s", flush=True)
                     time.sleep(wait)
                     continue
-                if attempt == 4:
+                if attempt == 7:
                     raise SystemExit(f"dataset fetch failed at offset {offset}: {error}") from error
                 time.sleep(2 * (attempt + 1))
             except (urllib.error.URLError, TimeoutError, KeyError, json.JSONDecodeError) as error:
-                if attempt == 4:
+                if attempt == 7:
                     raise SystemExit(f"dataset fetch failed at offset {offset}: {error}") from error
                 time.sleep(2 * (attempt + 1))
         print(f"  fetched offset {offset} ({len(rows)} unique rows)", flush=True)
@@ -277,11 +257,7 @@ def all_descriptors(source_name: str) -> list[str]:
 
 
 def variants_for(row: dict, category: str, price: int) -> list[dict]:
-    gender = row["gender"]
-    if category == "Giày":
-        sizes = WOMEN_SHOE_SIZES if gender == "Women" else SIZES["Giày"]
-    else:
-        sizes = SIZES[category]
+    sizes = SIZES[category]
 
     seed = stable_int(row["id"], "sizes")
     count = 2 + seed % min(3, len(sizes) - 1)
@@ -417,6 +393,11 @@ def main() -> None:
                 if not any(p["name"] == candidate_name for p in products):
                     name = candidate_name
                     break
+            else:
+                suffix = 2
+                while any(p["name"] == f"{name} {suffix}" for p in products):
+                    suffix += 1
+                name = f"{name} {suffix}"
 
         products.append(
             {
@@ -482,16 +463,15 @@ def main() -> None:
             ),
             "retrievedAt": date.today().isoformat(),
             "selection": (
-                "100 products from 42,426 rows; Apparel/Footwear only; Men/Women/Unisex; "
-                "mapped to the Stylo category and brand model; prices, sizes and stock are "
-                "deterministic demo values, not source facts."
+                f"{len(products)} products from 42,426 rows; clothing only (Áo, Quần, Áo khoác); "
+                "Men/Women/Unisex; mapped to the Stylo category and brand model; prices, "
+                "sizes and stock are deterministic demo values, not source facts."
             ),
         },
         "products": products,
     }
-    CATALOG_PATH.write_text(
-        json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    with CATALOG_PATH.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n")
     referenced = {product["image"] for product in products}
     for stale in IMAGE_DIR.glob("*.jpg"):
         if stale.name not in referenced:

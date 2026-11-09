@@ -4,8 +4,8 @@
     "mirror": "https://huggingface.co/datasets/mecha2019/fashion-product-images-small",
     "original": "https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-dataset",
     "license": "Unknown. Product images originate from Myntra and the mirror declares no license. Use for coursework/demo only; do not redistribute commercially.",
-    "retrievedAt": "2026-11-07",
-    "selection": "100 products from 42,426 rows; Apparel/Footwear only; Men/Women/Unisex; mapped to the Stylo category and brand model; prices, sizes and stock are deterministic demo values, not source facts."
+    "retrievedAt": "2026-11-09",
+    "selection": "185 products from 42,426 rows; clothing only (Áo, Quần, Áo khoác); Men/Women/Unisex; mapped to the Stylo category and brand model; prices, sizes and stock are deterministic demo values, not source facts."
   },
   "products": [
     {
@@ -704,12 +704,868 @@
       ]
     },
     {
+      "datasetId": 4321,
+      "sourceName": "Tantra Kid's Unisex Genius Red Kidswear",
+      "name": "Áo thun unisex trơn màu đỏ",
+      "description": "Áo thun unisex màu đỏ, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p4321.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đỏ",
+          "price": 230000,
+          "targetStock": 28,
+          "sku": "STY-AO-021-S"
+        },
+        {
+          "size": "M",
+          "color": "Đỏ",
+          "price": 230000,
+          "targetStock": 28,
+          "sku": "STY-AO-021-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 2005,
+      "sourceName": "ADIDAS Mens Black T-shirt",
+      "name": "Áo thun nam trơn màu đen",
+      "description": "Áo thun nam màu đen, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p2005.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đen",
+          "price": 330000,
+          "targetStock": 34,
+          "sku": "STY-AO-022-S"
+        },
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 330000,
+          "targetStock": 34,
+          "sku": "STY-AO-022-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 330000,
+          "targetStock": 34,
+          "sku": "STY-AO-022-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 2983,
+      "sourceName": "Puma Women's Graphic V-Neck Grey T-shirt",
+      "name": "Áo thun nữ in hình màu xám",
+      "description": "Áo thun nữ màu xám, chất liệu cotton co giãn, in hình. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2983.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Xám",
+          "price": 200000,
+          "targetStock": 30,
+          "sku": "STY-AO-023-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xám",
+          "price": 200000,
+          "targetStock": 30,
+          "sku": "STY-AO-023-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 12585,
+      "sourceName": "Tantra Unisex Printed Blue Tshirts",
+      "name": "Áo thun unisex in họa tiết màu xanh dương",
+      "description": "Áo thun unisex màu xanh dương, chất liệu cotton co giãn, in họa tiết. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p12585.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 300000,
+          "targetStock": 5,
+          "sku": "STY-AO-024-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh dương",
+          "price": 300000,
+          "targetStock": 5,
+          "sku": "STY-AO-024-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 2039,
+      "sourceName": "ADIDAS Men's White Polo T-shirt",
+      "name": "Áo thun nam cổ bẻ màu trắng",
+      "description": "Áo thun nam màu trắng, chất liệu cotton co giãn, cổ bẻ. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p2039.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 280000,
+          "targetStock": 24,
+          "sku": "STY-AO-025-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 280000,
+          "targetStock": 24,
+          "sku": "STY-AO-025-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 280000,
+          "targetStock": 24,
+          "sku": "STY-AO-025-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 3073,
+      "sourceName": "Tantra Women's Cut Crap Chocolate T-shirt",
+      "name": "Áo thun nữ trơn màu nâu nhạt",
+      "description": "Áo thun nữ màu nâu nhạt, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p3073.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Nâu nhạt",
+          "price": 250000,
+          "targetStock": 31,
+          "sku": "STY-AO-026-M"
+        },
+        {
+          "size": "L",
+          "color": "Nâu nhạt",
+          "price": 250000,
+          "targetStock": 31,
+          "sku": "STY-AO-026-L"
+        },
+        {
+          "size": "XL",
+          "color": "Nâu nhạt",
+          "price": 250000,
+          "targetStock": 31,
+          "sku": "STY-AO-026-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 12592,
+      "sourceName": "Tantra Unisex Printed Green Tshirts",
+      "name": "Áo thun unisex in họa tiết màu xanh lá",
+      "description": "Áo thun unisex màu xanh lá, chất liệu cotton co giãn, in họa tiết. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p12592.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh lá",
+          "price": 330000,
+          "targetStock": 30,
+          "sku": "STY-AO-027-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh lá",
+          "price": 330000,
+          "targetStock": 30,
+          "sku": "STY-AO-027-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh lá",
+          "price": 330000,
+          "targetStock": 30,
+          "sku": "STY-AO-027-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 2041,
+      "sourceName": "ADIDAS Mens Fire Grey T-shirt",
+      "name": "Áo thun nam trơn màu xám phong cách tối giản",
+      "description": "Áo thun nam màu xám, chất liệu cotton co giãn, trơn. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p2041.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xám",
+          "price": 330000,
+          "targetStock": 3,
+          "sku": "STY-AO-028-S"
+        },
+        {
+          "size": "M",
+          "color": "Xám",
+          "price": 330000,
+          "targetStock": 3,
+          "sku": "STY-AO-028-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 3522,
+      "sourceName": "Myntra Women's Reaching The Moon Black T-shirt",
+      "name": "Áo thun nữ trơn màu đen form rộng",
+      "description": "Áo thun nữ màu đen, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p3522.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đen",
+          "price": 250000,
+          "targetStock": 9,
+          "sku": "STY-AO-029-S"
+        },
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 250000,
+          "targetStock": 9,
+          "sku": "STY-AO-029-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 250000,
+          "targetStock": 9,
+          "sku": "STY-AO-029-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 12598,
+      "sourceName": "Tantra Unisex Printed Orange Tshirts",
+      "name": "Áo thun unisex in họa tiết màu cam",
+      "description": "Áo thun unisex màu cam, chất liệu cotton co giãn, in họa tiết. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p12598.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Cam",
+          "price": 210000,
+          "targetStock": 17,
+          "sku": "STY-AO-030-S"
+        },
+        {
+          "size": "M",
+          "color": "Cam",
+          "price": 210000,
+          "targetStock": 17,
+          "sku": "STY-AO-030-M"
+        },
+        {
+          "size": "L",
+          "color": "Cam",
+          "price": 210000,
+          "targetStock": 17,
+          "sku": "STY-AO-030-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 2042,
+      "sourceName": "ADIDAS Mens Graphic White Tee",
+      "name": "Áo thun nam in hình màu trắng",
+      "description": "Áo thun nam màu trắng, chất liệu cotton co giãn, in hình. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2042.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 310000,
+          "targetStock": 27,
+          "sku": "STY-AO-031-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 310000,
+          "targetStock": 27,
+          "sku": "STY-AO-031-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 310000,
+          "targetStock": 27,
+          "sku": "STY-AO-031-L"
+        },
+        {
+          "size": "XL",
+          "color": "Trắng",
+          "price": 310000,
+          "targetStock": 27,
+          "sku": "STY-AO-031-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 3938,
+      "sourceName": "Jealous 21 Women's White Blue T-shirt",
+      "name": "Áo thun nữ trơn màu trắng form regular",
+      "description": "Áo thun nữ màu trắng, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p3938.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 320000,
+          "targetStock": 9,
+          "sku": "STY-AO-032-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 320000,
+          "targetStock": 9,
+          "sku": "STY-AO-032-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 320000,
+          "targetStock": 9,
+          "sku": "STY-AO-032-L"
+        },
+        {
+          "size": "XL",
+          "color": "Trắng",
+          "price": 320000,
+          "targetStock": 9,
+          "sku": "STY-AO-032-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 2150,
+      "sourceName": "Basics Men Yellow Striped Polo T-shirt",
+      "name": "Áo thun nam kẻ sọc màu trắng",
+      "description": "Áo thun nam màu trắng, chất liệu cotton co giãn, kẻ sọc. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p2150.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 280000,
+          "targetStock": 16,
+          "sku": "STY-AO-033-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 280000,
+          "targetStock": 16,
+          "sku": "STY-AO-033-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 3939,
+      "sourceName": "Jealous 21 Women's Lavender Trendy T-shirt",
+      "name": "Áo thun nữ trơn màu tím form regular",
+      "description": "Áo thun nữ màu tím, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p3939.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 210000,
+          "targetStock": 20,
+          "sku": "STY-AO-034-M"
+        },
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 210000,
+          "targetStock": 20,
+          "sku": "STY-AO-034-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 2153,
+      "sourceName": "Basics Men Blue & Yellow Polo T-shirt",
+      "name": "Áo thun nam cổ bẻ màu xanh navy",
+      "description": "Áo thun nam màu xanh navy, chất liệu cotton co giãn, cổ bẻ. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2153.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh navy",
+          "price": 280000,
+          "targetStock": 13,
+          "sku": "STY-AO-035-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh navy",
+          "price": 280000,
+          "targetStock": 13,
+          "sku": "STY-AO-035-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 3940,
+      "sourceName": "Jealous 21 Women's Pink Black Print T-shirt",
+      "name": "Áo thun nữ in họa tiết màu hồng",
+      "description": "Áo thun nữ màu hồng, chất liệu cotton co giãn, in họa tiết. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p3940.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Hồng",
+          "price": 340000,
+          "targetStock": 29,
+          "sku": "STY-AO-036-M"
+        },
+        {
+          "size": "L",
+          "color": "Hồng",
+          "price": 340000,
+          "targetStock": 29,
+          "sku": "STY-AO-036-L"
+        },
+        {
+          "size": "XL",
+          "color": "Hồng",
+          "price": 340000,
+          "targetStock": 29,
+          "sku": "STY-AO-036-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 2177,
+      "sourceName": "Probase Men Purple & Blue T-shirt",
+      "name": "Áo thun nam trơn màu xanh dương form regular",
+      "description": "Áo thun nam màu xanh dương, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p2177.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh dương",
+          "price": 220000,
+          "targetStock": 22,
+          "sku": "STY-AO-037-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh dương",
+          "price": 220000,
+          "targetStock": 22,
+          "sku": "STY-AO-037-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 220000,
+          "targetStock": 22,
+          "sku": "STY-AO-037-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 3942,
+      "sourceName": "Jealous 21 Women's Purple T-shirt",
+      "name": "Áo thun nữ trơn màu tím form rộng",
+      "description": "Áo thun nữ màu tím, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p3942.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 270000,
+          "targetStock": 25,
+          "sku": "STY-AO-038-M"
+        },
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 270000,
+          "targetStock": 25,
+          "sku": "STY-AO-038-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 2185,
+      "sourceName": "Probase Mens Shut Up Yellow Tee T-shirt",
+      "name": "Áo thun nam trơn màu vàng",
+      "description": "Áo thun nam màu vàng, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2185.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Vàng",
+          "price": 190000,
+          "targetStock": 15,
+          "sku": "STY-AO-039-S"
+        },
+        {
+          "size": "M",
+          "color": "Vàng",
+          "price": 190000,
+          "targetStock": 15,
+          "sku": "STY-AO-039-M"
+        },
+        {
+          "size": "L",
+          "color": "Vàng",
+          "price": 190000,
+          "targetStock": 15,
+          "sku": "STY-AO-039-L"
+        },
+        {
+          "size": "XL",
+          "color": "Vàng",
+          "price": 190000,
+          "targetStock": 15,
+          "sku": "STY-AO-039-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 3943,
+      "sourceName": "Jealous 21 Women's Maroon T-shirt",
+      "name": "Áo thun nữ trơn màu đỏ đô",
+      "description": "Áo thun nữ màu đỏ đô, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p3943.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đỏ đô",
+          "price": 230000,
+          "targetStock": 5,
+          "sku": "STY-AO-040-S"
+        },
+        {
+          "size": "M",
+          "color": "Đỏ đô",
+          "price": 230000,
+          "targetStock": 5,
+          "sku": "STY-AO-040-M"
+        },
+        {
+          "size": "L",
+          "color": "Đỏ đô",
+          "price": 230000,
+          "targetStock": 5,
+          "sku": "STY-AO-040-L"
+        },
+        {
+          "size": "XL",
+          "color": "Đỏ đô",
+          "price": 230000,
+          "targetStock": 5,
+          "sku": "STY-AO-040-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 2232,
+      "sourceName": "ADIDAS Men Stripe Red White Polo T-shirt",
+      "name": "Áo thun nam kẻ sọc màu trắng form regular",
+      "description": "Áo thun nam màu trắng, chất liệu cotton co giãn, kẻ sọc. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p2232.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 160000,
+          "targetStock": 23,
+          "sku": "STY-AO-041-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 160000,
+          "targetStock": 23,
+          "sku": "STY-AO-041-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 160000,
+          "targetStock": 23,
+          "sku": "STY-AO-041-L"
+        },
+        {
+          "size": "XL",
+          "color": "Trắng",
+          "price": 160000,
+          "targetStock": 23,
+          "sku": "STY-AO-041-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 3954,
+      "sourceName": "Jealous 21 Women's Pink T-shirt",
+      "name": "Áo thun nữ trơn màu hồng form rộng",
+      "description": "Áo thun nữ màu hồng, chất liệu cotton co giãn, trơn. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p3954.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Hồng",
+          "price": 310000,
+          "targetStock": 27,
+          "sku": "STY-AO-042-S"
+        },
+        {
+          "size": "M",
+          "color": "Hồng",
+          "price": 310000,
+          "targetStock": 27,
+          "sku": "STY-AO-042-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 2237,
+      "sourceName": "ADIDAS Men Stripe Purple T-shirt",
+      "name": "Áo thun nam kẻ sọc màu tím",
+      "description": "Áo thun nam màu tím, chất liệu cotton co giãn, kẻ sọc. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2237.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Tím",
+          "price": 220000,
+          "targetStock": 10,
+          "sku": "STY-AO-043-S"
+        },
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 220000,
+          "targetStock": 10,
+          "sku": "STY-AO-043-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 4784,
+      "sourceName": "ADIDAS Women's V Neck With Crystal Purple T-shirt",
+      "name": "Áo thun nữ trơn màu tím phong cách tối giản",
+      "description": "Áo thun nữ màu tím, chất liệu cotton co giãn, trơn. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p4784.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Tím",
+          "price": 190000,
+          "targetStock": 0,
+          "sku": "STY-AO-044-S"
+        },
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 190000,
+          "targetStock": 0,
+          "sku": "STY-AO-044-M"
+        },
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 190000,
+          "targetStock": 0,
+          "sku": "STY-AO-044-L"
+        },
+        {
+          "size": "XL",
+          "color": "Tím",
+          "price": 190000,
+          "targetStock": 0,
+          "sku": "STY-AO-044-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 2273,
+      "sourceName": "Nike Mens Red Polo T-shirt",
+      "name": "Áo thun nam cổ bẻ màu đỏ",
+      "description": "Áo thun nam màu đỏ, chất liệu cotton co giãn, cổ bẻ. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p2273.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đỏ",
+          "price": 270000,
+          "targetStock": 10,
+          "sku": "STY-AO-045-S"
+        },
+        {
+          "size": "M",
+          "color": "Đỏ",
+          "price": 270000,
+          "targetStock": 10,
+          "sku": "STY-AO-045-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 4846,
+      "sourceName": "Sher Singh Women White Polo T-shirt",
+      "name": "Áo thun nữ cổ bẻ màu trắng",
+      "description": "Áo thun nữ màu trắng, chất liệu cotton co giãn, cổ bẻ. Phù hợp mặc dạo phố hằng ngày.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p4846.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 4,
+          "sku": "STY-AO-046-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 4,
+          "sku": "STY-AO-046-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 4,
+          "sku": "STY-AO-046-L"
+        },
+        {
+          "size": "XL",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 4,
+          "sku": "STY-AO-046-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 2282,
+      "sourceName": "Nike Men Grey T-shirt",
+      "name": "Áo thun nam trơn màu xám dễ phối đồ",
+      "description": "Áo thun nam màu xám, chất liệu cotton co giãn, trơn. Phù hợp mặc thể thao hằng ngày.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2282.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Xám",
+          "price": 200000,
+          "targetStock": 29,
+          "sku": "STY-AO-047-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xám",
+          "price": 200000,
+          "targetStock": 29,
+          "sku": "STY-AO-047-XL"
+        }
+      ]
+    },
+    {
       "datasetId": 2169,
       "sourceName": "Probase Men Red & Blue Shirt",
       "name": "Áo sơ mi nam trơn màu đỏ",
       "description": "Áo sơ mi nam màu đỏ, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p2169.jpg",
       "variants": [
@@ -718,21 +1574,21 @@
           "color": "Đỏ",
           "price": 440000,
           "targetStock": 3,
-          "sku": "STY-AO-021-S"
+          "sku": "STY-AO-048-S"
         },
         {
           "size": "M",
           "color": "Đỏ",
           "price": 440000,
           "targetStock": 3,
-          "sku": "STY-AO-021-M"
+          "sku": "STY-AO-048-M"
         },
         {
           "size": "L",
           "color": "Đỏ",
           "price": 440000,
           "targetStock": 3,
-          "sku": "STY-AO-021-L"
+          "sku": "STY-AO-048-L"
         }
       ]
     },
@@ -742,8 +1598,8 @@
       "name": "Áo sơ mi nữ trơn màu xanh dương",
       "description": "Áo sơ mi nữ màu xanh dương, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Stylo",
+      "status": "ACTIVE",
       "image": "p5111.jpg",
       "variants": [
         {
@@ -751,21 +1607,21 @@
           "color": "Xanh dương",
           "price": 450000,
           "targetStock": 1,
-          "sku": "STY-AO-022-S"
+          "sku": "STY-AO-049-S"
         },
         {
           "size": "M",
           "color": "Xanh dương",
           "price": 450000,
           "targetStock": 1,
-          "sku": "STY-AO-022-M"
+          "sku": "STY-AO-049-M"
         },
         {
           "size": "L",
           "color": "Xanh dương",
           "price": 450000,
           "targetStock": 1,
-          "sku": "STY-AO-022-L"
+          "sku": "STY-AO-049-L"
         }
       ]
     },
@@ -775,7 +1631,7 @@
       "name": "Áo sơ mi nam trơn màu trắng",
       "description": "Áo sơ mi nam màu trắng, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Urban Viet",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p4943.jpg",
       "variants": [
@@ -784,28 +1640,28 @@
           "color": "Trắng",
           "price": 470000,
           "targetStock": 6,
-          "sku": "STY-AO-023-S"
+          "sku": "STY-AO-050-S"
         },
         {
           "size": "M",
           "color": "Trắng",
           "price": 470000,
           "targetStock": 6,
-          "sku": "STY-AO-023-M"
+          "sku": "STY-AO-050-M"
         },
         {
           "size": "L",
           "color": "Trắng",
           "price": 470000,
           "targetStock": 6,
-          "sku": "STY-AO-023-L"
+          "sku": "STY-AO-050-L"
         },
         {
           "size": "XL",
           "color": "Trắng",
           "price": 470000,
           "targetStock": 6,
-          "sku": "STY-AO-023-XL"
+          "sku": "STY-AO-050-XL"
         }
       ]
     },
@@ -815,7 +1671,7 @@
       "name": "Áo sơ mi nữ trơn màu đỏ",
       "description": "Áo sơ mi nữ màu đỏ, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p5147.jpg",
       "variants": [
@@ -824,14 +1680,14 @@
           "color": "Đỏ",
           "price": 540000,
           "targetStock": 5,
-          "sku": "STY-AO-024-L"
+          "sku": "STY-AO-051-L"
         },
         {
           "size": "XL",
           "color": "Đỏ",
           "price": 540000,
           "targetStock": 5,
-          "sku": "STY-AO-024-XL"
+          "sku": "STY-AO-051-XL"
         }
       ]
     },
@@ -841,7 +1697,7 @@
       "name": "Áo sơ mi nam trơn màu đỏ form regular",
       "description": "Áo sơ mi nam màu đỏ, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p4955.jpg",
       "variants": [
@@ -850,21 +1706,21 @@
           "color": "Đỏ",
           "price": 510000,
           "targetStock": 0,
-          "sku": "STY-AO-025-S"
+          "sku": "STY-AO-052-S"
         },
         {
           "size": "M",
           "color": "Đỏ",
           "price": 510000,
           "targetStock": 0,
-          "sku": "STY-AO-025-M"
+          "sku": "STY-AO-052-M"
         },
         {
           "size": "L",
           "color": "Đỏ",
           "price": 510000,
           "targetStock": 0,
-          "sku": "STY-AO-025-L"
+          "sku": "STY-AO-052-L"
         }
       ]
     },
@@ -874,7 +1730,7 @@
       "name": "Áo sơ mi nữ trơn màu tím",
       "description": "Áo sơ mi nữ màu tím, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Local Brand",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p8471.jpg",
       "variants": [
@@ -883,14 +1739,14 @@
           "color": "Tím",
           "price": 490000,
           "targetStock": 20,
-          "sku": "STY-AO-026-M"
+          "sku": "STY-AO-053-M"
         },
         {
           "size": "L",
           "color": "Tím",
           "price": 490000,
           "targetStock": 20,
-          "sku": "STY-AO-026-L"
+          "sku": "STY-AO-053-L"
         }
       ]
     },
@@ -900,8 +1756,8 @@
       "name": "Áo sơ mi nam ca-rô màu xanh dương",
       "description": "Áo sơ mi nam màu xanh dương, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Urban Viet",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p5941.jpg",
       "variants": [
         {
@@ -909,28 +1765,28 @@
           "color": "Xanh dương",
           "price": 440000,
           "targetStock": 30,
-          "sku": "STY-AO-027-S"
+          "sku": "STY-AO-054-S"
         },
         {
           "size": "M",
           "color": "Xanh dương",
           "price": 440000,
           "targetStock": 30,
-          "sku": "STY-AO-027-M"
+          "sku": "STY-AO-054-M"
         },
         {
           "size": "L",
           "color": "Xanh dương",
           "price": 440000,
           "targetStock": 30,
-          "sku": "STY-AO-027-L"
+          "sku": "STY-AO-054-L"
         },
         {
           "size": "XL",
           "color": "Xanh dương",
           "price": 440000,
           "targetStock": 30,
-          "sku": "STY-AO-027-XL"
+          "sku": "STY-AO-054-XL"
         }
       ]
     },
@@ -940,7 +1796,7 @@
       "name": "Áo sơ mi nữ ca-rô màu xanh lá",
       "description": "Áo sơ mi nữ màu xanh lá, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p13452.jpg",
       "variants": [
@@ -949,21 +1805,21 @@
           "color": "Xanh lá",
           "price": 480000,
           "targetStock": 12,
-          "sku": "STY-AO-028-M"
+          "sku": "STY-AO-055-M"
         },
         {
           "size": "L",
           "color": "Xanh lá",
           "price": 480000,
           "targetStock": 12,
-          "sku": "STY-AO-028-L"
+          "sku": "STY-AO-055-L"
         },
         {
           "size": "XL",
           "color": "Xanh lá",
           "price": 480000,
           "targetStock": 12,
-          "sku": "STY-AO-028-XL"
+          "sku": "STY-AO-055-XL"
         }
       ]
     },
@@ -973,7 +1829,7 @@
       "name": "Áo sơ mi nam ca-rô màu xanh dương form regular",
       "description": "Áo sơ mi nam màu xanh dương, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p5956.jpg",
       "variants": [
@@ -982,21 +1838,21 @@
           "color": "Xanh dương",
           "price": 490000,
           "targetStock": 15,
-          "sku": "STY-AO-029-M"
+          "sku": "STY-AO-056-M"
         },
         {
           "size": "L",
           "color": "Xanh dương",
           "price": 490000,
           "targetStock": 15,
-          "sku": "STY-AO-029-L"
+          "sku": "STY-AO-056-L"
         },
         {
           "size": "XL",
           "color": "Xanh dương",
           "price": 490000,
           "targetStock": 15,
-          "sku": "STY-AO-029-XL"
+          "sku": "STY-AO-056-XL"
         }
       ]
     },
@@ -1006,8 +1862,8 @@
       "name": "Áo sơ mi nữ trơn màu trắng",
       "description": "Áo sơ mi nữ màu trắng, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
       "category": "Áo",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Stylo",
+      "status": "ACTIVE",
       "image": "p13457.jpg",
       "variants": [
         {
@@ -1015,28 +1871,608 @@
           "color": "Trắng",
           "price": 440000,
           "targetStock": 20,
-          "sku": "STY-AO-030-S"
+          "sku": "STY-AO-057-S"
         },
         {
           "size": "M",
           "color": "Trắng",
           "price": 440000,
           "targetStock": 20,
-          "sku": "STY-AO-030-M"
+          "sku": "STY-AO-057-M"
         },
         {
           "size": "L",
           "color": "Trắng",
           "price": 440000,
           "targetStock": 20,
-          "sku": "STY-AO-030-L"
+          "sku": "STY-AO-057-L"
         },
         {
           "size": "XL",
           "color": "Trắng",
           "price": 440000,
           "targetStock": 20,
-          "sku": "STY-AO-030-XL"
+          "sku": "STY-AO-057-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 5959,
+      "sourceName": "Locomotive Men Green White Blue Checked Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xanh lá",
+      "description": "Áo sơ mi nam màu xanh lá, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p5959.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh lá",
+          "price": 310000,
+          "targetStock": 1,
+          "sku": "STY-AO-058-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh lá",
+          "price": 310000,
+          "targetStock": 1,
+          "sku": "STY-AO-058-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh lá",
+          "price": 310000,
+          "targetStock": 1,
+          "sku": "STY-AO-058-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh lá",
+          "price": 310000,
+          "targetStock": 1,
+          "sku": "STY-AO-058-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 13458,
+      "sourceName": "United Colors of Benetton Women Solid Black Shirts",
+      "name": "Áo sơ mi nữ trơn màu đen",
+      "description": "Áo sơ mi nữ màu đen, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p13458.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đen",
+          "price": 530000,
+          "targetStock": 30,
+          "sku": "STY-AO-059-S"
+        },
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 530000,
+          "targetStock": 30,
+          "sku": "STY-AO-059-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 530000,
+          "targetStock": 30,
+          "sku": "STY-AO-059-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 5960,
+      "sourceName": "Highlander Men Solid Poplin Purple Shirts",
+      "name": "Áo sơ mi nam trơn màu tím",
+      "description": "Áo sơ mi nam màu tím, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p5960.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Tím",
+          "price": 400000,
+          "targetStock": 25,
+          "sku": "STY-AO-060-S"
+        },
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 400000,
+          "targetStock": 25,
+          "sku": "STY-AO-060-M"
+        },
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 400000,
+          "targetStock": 25,
+          "sku": "STY-AO-060-L"
+        },
+        {
+          "size": "XL",
+          "color": "Tím",
+          "price": 400000,
+          "targetStock": 25,
+          "sku": "STY-AO-060-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 14721,
+      "sourceName": "Scullers For Her Women Casual Shirt Purple Shirts",
+      "name": "Áo sơ mi nữ trơn màu tím form regular",
+      "description": "Áo sơ mi nữ màu tím, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p14721.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 330000,
+          "targetStock": 31,
+          "sku": "STY-AO-061-L"
+        },
+        {
+          "size": "XL",
+          "color": "Tím",
+          "price": 330000,
+          "targetStock": 31,
+          "sku": "STY-AO-061-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 5974,
+      "sourceName": "Locomotive Men Green Black White Checked Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xanh lá form regular",
+      "description": "Áo sơ mi nam màu xanh lá, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p5974.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh lá",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-062-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh lá",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-062-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh lá",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-062-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh lá",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-062-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 14722,
+      "sourceName": "Scullers For Her Women Casual Shirt Black Shirts",
+      "name": "Áo sơ mi nữ trơn màu đen form regular",
+      "description": "Áo sơ mi nữ màu đen, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p14722.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đen",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-063-S"
+        },
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-063-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 440000,
+          "targetStock": 23,
+          "sku": "STY-AO-063-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 5978,
+      "sourceName": "Highlander Men Blue Black Checked Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xanh dương form rộng",
+      "description": "Áo sơ mi nam màu xanh dương, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p5978.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh dương",
+          "price": 380000,
+          "targetStock": 5,
+          "sku": "STY-AO-064-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh dương",
+          "price": 380000,
+          "targetStock": 5,
+          "sku": "STY-AO-064-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 380000,
+          "targetStock": 5,
+          "sku": "STY-AO-064-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 18877,
+      "sourceName": "Arrow Woman Celesta Red Shirt",
+      "name": "Áo sơ mi nữ trơn màu đỏ form regular",
+      "description": "Áo sơ mi nữ màu đỏ, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p18877.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đỏ",
+          "price": 420000,
+          "targetStock": 35,
+          "sku": "STY-AO-065-S"
+        },
+        {
+          "size": "M",
+          "color": "Đỏ",
+          "price": 420000,
+          "targetStock": 35,
+          "sku": "STY-AO-065-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 5980,
+      "sourceName": "Locomotive Men Charcoal Stripe Shirt",
+      "name": "Áo sơ mi nam kẻ sọc màu xám",
+      "description": "Áo sơ mi nam màu xám, chất liệu linen pha cotton, kẻ sọc. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p5980.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xám",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-AO-066-S"
+        },
+        {
+          "size": "M",
+          "color": "Xám",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-AO-066-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 18880,
+      "sourceName": "Arrow Woman Kenzie Purple Shirt",
+      "name": "Áo sơ mi nữ trơn màu tím form rộng",
+      "description": "Áo sơ mi nữ màu tím, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p18880.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 380000,
+          "targetStock": 25,
+          "sku": "STY-AO-067-L"
+        },
+        {
+          "size": "XL",
+          "color": "Tím",
+          "price": 380000,
+          "targetStock": 25,
+          "sku": "STY-AO-067-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 5992,
+      "sourceName": "Locomotive Men Navy Blue Checked Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xanh navy",
+      "description": "Áo sơ mi nam màu xanh navy, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p5992.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh navy",
+          "price": 470000,
+          "targetStock": 21,
+          "sku": "STY-AO-068-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh navy",
+          "price": 470000,
+          "targetStock": 21,
+          "sku": "STY-AO-068-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh navy",
+          "price": 470000,
+          "targetStock": 21,
+          "sku": "STY-AO-068-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh navy",
+          "price": 470000,
+          "targetStock": 21,
+          "sku": "STY-AO-068-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 18883,
+      "sourceName": "Arrow Woman Payton Navy Blue Shirt",
+      "name": "Áo sơ mi nữ trơn màu xanh navy",
+      "description": "Áo sơ mi nữ màu xanh navy, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p18883.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh navy",
+          "price": 450000,
+          "targetStock": 15,
+          "sku": "STY-AO-069-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh navy",
+          "price": 450000,
+          "targetStock": 15,
+          "sku": "STY-AO-069-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh navy",
+          "price": 450000,
+          "targetStock": 15,
+          "sku": "STY-AO-069-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 5994,
+      "sourceName": "Highlander Men Grey Checked Slim Fit Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xám",
+      "description": "Áo sơ mi nam màu xám, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p5994.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xám",
+          "price": 370000,
+          "targetStock": 21,
+          "sku": "STY-AO-070-S"
+        },
+        {
+          "size": "M",
+          "color": "Xám",
+          "price": 370000,
+          "targetStock": 21,
+          "sku": "STY-AO-070-M"
+        },
+        {
+          "size": "L",
+          "color": "Xám",
+          "price": 370000,
+          "targetStock": 21,
+          "sku": "STY-AO-070-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 18886,
+      "sourceName": "Arrow Woman Simona Purple Shirt",
+      "name": "Áo sơ mi nữ trơn màu tím phong cách tối giản",
+      "description": "Áo sơ mi nữ màu tím, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p18886.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Tím",
+          "price": 520000,
+          "targetStock": 2,
+          "sku": "STY-AO-071-S"
+        },
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 520000,
+          "targetStock": 2,
+          "sku": "STY-AO-071-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 5998,
+      "sourceName": "Highlander Men Blue Red Plaid Checked Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xanh dương phong cách tối giản",
+      "description": "Áo sơ mi nam màu xanh dương, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p5998.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh dương",
+          "price": 550000,
+          "targetStock": 22,
+          "sku": "STY-AO-072-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh dương",
+          "price": 550000,
+          "targetStock": 22,
+          "sku": "STY-AO-072-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 550000,
+          "targetStock": 22,
+          "sku": "STY-AO-072-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 19726,
+      "sourceName": "United Colors of Benetton Women Solid Black Shirt",
+      "name": "Áo sơ mi nữ trơn màu đen form rộng",
+      "description": "Áo sơ mi nữ màu đen, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p19726.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đen",
+          "price": 520000,
+          "targetStock": 7,
+          "sku": "STY-AO-073-S"
+        },
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 520000,
+          "targetStock": 7,
+          "sku": "STY-AO-073-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 520000,
+          "targetStock": 7,
+          "sku": "STY-AO-073-L"
+        },
+        {
+          "size": "XL",
+          "color": "Đen",
+          "price": 520000,
+          "targetStock": 7,
+          "sku": "STY-AO-073-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 6009,
+      "sourceName": "Highlander Men White Blue Checked Slim Fit Shirt",
+      "name": "Áo sơ mi nam ca-rô màu xanh dương dễ phối đồ",
+      "description": "Áo sơ mi nam màu xanh dương, chất liệu linen pha cotton, ca-rô. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p6009.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 330000,
+          "targetStock": 20,
+          "sku": "STY-AO-074-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh dương",
+          "price": 330000,
+          "targetStock": 20,
+          "sku": "STY-AO-074-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 20125,
+      "sourceName": "Wrangler Women Flower Purple Shirt",
+      "name": "Áo sơ mi nữ trơn màu tím dễ phối đồ",
+      "description": "Áo sơ mi nữ màu tím, chất liệu linen pha cotton, trơn. Phối tốt với quần tây hoặc jean.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p20125.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Tím",
+          "price": 400000,
+          "targetStock": 3,
+          "sku": "STY-AO-075-S"
+        },
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 400000,
+          "targetStock": 3,
+          "sku": "STY-AO-075-M"
         }
       ]
     },
@@ -1046,7 +2482,7 @@
       "name": "Áo kiểu nữ trơn màu vàng",
       "description": "Áo kiểu nữ màu vàng, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
       "category": "Áo",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p2956.jpg",
       "variants": [
@@ -1055,21 +2491,21 @@
           "color": "Vàng",
           "price": 230000,
           "targetStock": 1,
-          "sku": "STY-AO-031-M"
+          "sku": "STY-AO-076-M"
         },
         {
           "size": "L",
           "color": "Vàng",
           "price": 230000,
           "targetStock": 1,
-          "sku": "STY-AO-031-L"
+          "sku": "STY-AO-076-L"
         },
         {
           "size": "XL",
           "color": "Vàng",
           "price": 230000,
           "targetStock": 1,
-          "sku": "STY-AO-031-XL"
+          "sku": "STY-AO-076-XL"
         }
       ]
     },
@@ -1079,7 +2515,7 @@
       "name": "Áo kiểu nữ trơn màu đen",
       "description": "Áo kiểu nữ màu đen, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
       "category": "Áo",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p4620.jpg",
       "variants": [
@@ -1088,28 +2524,28 @@
           "color": "Đen",
           "price": 400000,
           "targetStock": 7,
-          "sku": "STY-AO-032-S"
+          "sku": "STY-AO-077-S"
         },
         {
           "size": "M",
           "color": "Đen",
           "price": 400000,
           "targetStock": 7,
-          "sku": "STY-AO-032-M"
+          "sku": "STY-AO-077-M"
         },
         {
           "size": "L",
           "color": "Đen",
           "price": 400000,
           "targetStock": 7,
-          "sku": "STY-AO-032-L"
+          "sku": "STY-AO-077-L"
         },
         {
           "size": "XL",
           "color": "Đen",
           "price": 400000,
           "targetStock": 7,
-          "sku": "STY-AO-032-XL"
+          "sku": "STY-AO-077-XL"
         }
       ]
     },
@@ -1119,8 +2555,8 @@
       "name": "Áo kiểu nữ trơn màu tím",
       "description": "Áo kiểu nữ màu tím, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
       "category": "Áo",
-      "brand": "Stylo",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p4884.jpg",
       "variants": [
         {
@@ -1128,21 +2564,21 @@
           "color": "Tím",
           "price": 350000,
           "targetStock": 28,
-          "sku": "STY-AO-033-M"
+          "sku": "STY-AO-078-M"
         },
         {
           "size": "L",
           "color": "Tím",
           "price": 350000,
           "targetStock": 28,
-          "sku": "STY-AO-033-L"
+          "sku": "STY-AO-078-L"
         },
         {
           "size": "XL",
           "color": "Tím",
           "price": 350000,
           "targetStock": 28,
-          "sku": "STY-AO-033-XL"
+          "sku": "STY-AO-078-XL"
         }
       ]
     },
@@ -1152,7 +2588,7 @@
       "name": "Áo kiểu nữ trơn màu trắng",
       "description": "Áo kiểu nữ màu trắng, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
       "category": "Áo",
-      "brand": "Local Brand",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p4888.jpg",
       "variants": [
@@ -1161,28 +2597,28 @@
           "color": "Trắng",
           "price": 390000,
           "targetStock": 25,
-          "sku": "STY-AO-034-S"
+          "sku": "STY-AO-079-S"
         },
         {
           "size": "M",
           "color": "Trắng",
           "price": 390000,
           "targetStock": 25,
-          "sku": "STY-AO-034-M"
+          "sku": "STY-AO-079-M"
         },
         {
           "size": "L",
           "color": "Trắng",
           "price": 390000,
           "targetStock": 25,
-          "sku": "STY-AO-034-L"
+          "sku": "STY-AO-079-L"
         },
         {
           "size": "XL",
           "color": "Trắng",
           "price": 390000,
           "targetStock": 25,
-          "sku": "STY-AO-034-XL"
+          "sku": "STY-AO-079-XL"
         }
       ]
     },
@@ -1192,7 +2628,7 @@
       "name": "Áo kiểu nữ trơn màu hồng",
       "description": "Áo kiểu nữ màu hồng, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
       "category": "Áo",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p5012.jpg",
       "variants": [
@@ -1201,28 +2637,28 @@
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-AO-035-S"
+          "sku": "STY-AO-080-S"
         },
         {
           "size": "M",
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-AO-035-M"
+          "sku": "STY-AO-080-M"
         },
         {
           "size": "L",
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-AO-035-L"
+          "sku": "STY-AO-080-L"
         },
         {
           "size": "XL",
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-AO-035-XL"
+          "sku": "STY-AO-080-XL"
         }
       ]
     },
@@ -1232,7 +2668,7 @@
       "name": "Áo kiểu nữ trơn màu đỏ",
       "description": "Áo kiểu nữ màu đỏ, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
       "category": "Áo",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p5750.jpg",
       "variants": [
@@ -1241,21 +2677,226 @@
           "color": "Đỏ",
           "price": 290000,
           "targetStock": 23,
-          "sku": "STY-AO-036-M"
+          "sku": "STY-AO-081-M"
         },
         {
           "size": "L",
           "color": "Đỏ",
           "price": 290000,
           "targetStock": 23,
-          "sku": "STY-AO-036-L"
+          "sku": "STY-AO-081-L"
         },
         {
           "size": "XL",
           "color": "Đỏ",
           "price": 290000,
           "targetStock": 23,
-          "sku": "STY-AO-036-XL"
+          "sku": "STY-AO-081-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 5785,
+      "sourceName": "Jealous 21 Women V Neck Blue Graphic Top",
+      "name": "Áo kiểu nữ in hình màu xanh dương",
+      "description": "Áo kiểu nữ màu xanh dương, thiết kế in hình, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p5785.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh dương",
+          "price": 310000,
+          "targetStock": 28,
+          "sku": "STY-AO-082-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh dương",
+          "price": 310000,
+          "targetStock": 28,
+          "sku": "STY-AO-082-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 5791,
+      "sourceName": "Jealous 21 Women's Butterfly Blue Top",
+      "name": "Áo kiểu nữ trơn màu xanh dương",
+      "description": "Áo kiểu nữ màu xanh dương, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p5791.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh dương",
+          "price": 210000,
+          "targetStock": 10,
+          "sku": "STY-AO-083-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh dương",
+          "price": 210000,
+          "targetStock": 10,
+          "sku": "STY-AO-083-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 210000,
+          "targetStock": 10,
+          "sku": "STY-AO-083-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 5869,
+      "sourceName": "ADIDAS Women's Clean Yellow Top",
+      "name": "Áo kiểu nữ trơn màu vàng form regular",
+      "description": "Áo kiểu nữ màu vàng, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p5869.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Vàng",
+          "price": 370000,
+          "targetStock": 33,
+          "sku": "STY-AO-084-S"
+        },
+        {
+          "size": "M",
+          "color": "Vàng",
+          "price": 370000,
+          "targetStock": 33,
+          "sku": "STY-AO-084-M"
+        },
+        {
+          "size": "L",
+          "color": "Vàng",
+          "price": 370000,
+          "targetStock": 33,
+          "sku": "STY-AO-084-L"
+        },
+        {
+          "size": "XL",
+          "color": "Vàng",
+          "price": 370000,
+          "targetStock": 33,
+          "sku": "STY-AO-084-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 7154,
+      "sourceName": "Scullers For Her Women's Fashion Summer Lite Ash Grey Top",
+      "name": "Áo kiểu nữ trơn màu xám",
+      "description": "Áo kiểu nữ màu xám, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p7154.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xám",
+          "price": 340000,
+          "targetStock": 19,
+          "sku": "STY-AO-085-S"
+        },
+        {
+          "size": "M",
+          "color": "Xám",
+          "price": 340000,
+          "targetStock": 19,
+          "sku": "STY-AO-085-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 7305,
+      "sourceName": "UCB Women Racer Back Pink Top",
+      "name": "Áo kiểu nữ trơn màu hồng form regular",
+      "description": "Áo kiểu nữ màu hồng, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc dạo phố.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p7305.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Hồng",
+          "price": 370000,
+          "targetStock": 14,
+          "sku": "STY-AO-086-S"
+        },
+        {
+          "size": "M",
+          "color": "Hồng",
+          "price": 370000,
+          "targetStock": 14,
+          "sku": "STY-AO-086-M"
+        },
+        {
+          "size": "L",
+          "color": "Hồng",
+          "price": 370000,
+          "targetStock": 14,
+          "sku": "STY-AO-086-L"
+        },
+        {
+          "size": "XL",
+          "color": "Hồng",
+          "price": 370000,
+          "targetStock": 14,
+          "sku": "STY-AO-086-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 7422,
+      "sourceName": "W Women Mandarin Neck Full Sleeve White Top",
+      "name": "Áo kiểu nữ trơn màu trắng form regular",
+      "description": "Áo kiểu nữ màu trắng, thiết kế trơn, chất liệu mềm nhẹ. Phù hợp mặc truyền thống.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p7422.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 350000,
+          "targetStock": 0,
+          "sku": "STY-AO-087-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 350000,
+          "targetStock": 0,
+          "sku": "STY-AO-087-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 350000,
+          "targetStock": 0,
+          "sku": "STY-AO-087-L"
+        },
+        {
+          "size": "XL",
+          "color": "Trắng",
+          "price": 350000,
+          "targetStock": 0,
+          "sku": "STY-AO-087-XL"
         }
       ]
     },
@@ -1265,7 +2906,7 @@
       "name": "Áo len nam trơn màu xám",
       "description": "Áo len nam màu xám, chất liệu giữ ấm nhẹ, trơn. Phù hợp thời tiết se lạnh.",
       "category": "Áo",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p8832.jpg",
       "variants": [
@@ -1274,21 +2915,21 @@
           "color": "Xám",
           "price": 540000,
           "targetStock": 32,
-          "sku": "STY-AO-037-S"
+          "sku": "STY-AO-088-S"
         },
         {
           "size": "M",
           "color": "Xám",
           "price": 540000,
           "targetStock": 32,
-          "sku": "STY-AO-037-M"
+          "sku": "STY-AO-088-M"
         },
         {
           "size": "L",
           "color": "Xám",
           "price": 540000,
           "targetStock": 32,
-          "sku": "STY-AO-037-L"
+          "sku": "STY-AO-088-L"
         }
       ]
     },
@@ -1298,8 +2939,8 @@
       "name": "Áo len nữ trơn màu tím",
       "description": "Áo len nữ màu tím, chất liệu giữ ấm nhẹ, trơn. Phù hợp thời tiết se lạnh.",
       "category": "Áo",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Stylo",
+      "status": "ACTIVE",
       "image": "p13520.jpg",
       "variants": [
         {
@@ -1307,28 +2948,28 @@
           "color": "Tím",
           "price": 450000,
           "targetStock": 0,
-          "sku": "STY-AO-038-S"
+          "sku": "STY-AO-089-S"
         },
         {
           "size": "M",
           "color": "Tím",
           "price": 450000,
           "targetStock": 0,
-          "sku": "STY-AO-038-M"
+          "sku": "STY-AO-089-M"
         },
         {
           "size": "L",
           "color": "Tím",
           "price": 450000,
           "targetStock": 0,
-          "sku": "STY-AO-038-L"
+          "sku": "STY-AO-089-L"
         },
         {
           "size": "XL",
           "color": "Tím",
           "price": 450000,
           "targetStock": 0,
-          "sku": "STY-AO-038-XL"
+          "sku": "STY-AO-089-XL"
         }
       ]
     },
@@ -1338,7 +2979,7 @@
       "name": "Áo len nam kẻ sọc màu vàng",
       "description": "Áo len nam màu vàng, chất liệu giữ ấm nhẹ, kẻ sọc. Phù hợp thời tiết se lạnh.",
       "category": "Áo",
-      "brand": "Urban Viet",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p11170.jpg",
       "variants": [
@@ -1347,14 +2988,14 @@
           "color": "Vàng",
           "price": 490000,
           "targetStock": 22,
-          "sku": "STY-AO-039-S"
+          "sku": "STY-AO-090-S"
         },
         {
           "size": "M",
           "color": "Vàng",
           "price": 490000,
           "targetStock": 22,
-          "sku": "STY-AO-039-M"
+          "sku": "STY-AO-090-M"
         }
       ]
     },
@@ -1364,7 +3005,7 @@
       "name": "Áo len nữ kẻ sọc màu hồng",
       "description": "Áo len nữ màu hồng, chất liệu giữ ấm nhẹ, kẻ sọc. Phù hợp thời tiết se lạnh.",
       "category": "Áo",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p15030.jpg",
       "variants": [
@@ -1373,14 +3014,146 @@
           "color": "Hồng",
           "price": 460000,
           "targetStock": 13,
-          "sku": "STY-AO-040-S"
+          "sku": "STY-AO-091-S"
         },
         {
           "size": "M",
           "color": "Hồng",
           "price": 460000,
           "targetStock": 13,
-          "sku": "STY-AO-040-M"
+          "sku": "STY-AO-091-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 11173,
+      "sourceName": "Scullers Men Stripes Red Sweaters",
+      "name": "Áo len nam kẻ sọc màu đỏ",
+      "description": "Áo len nam màu đỏ, chất liệu giữ ấm nhẹ, kẻ sọc. Phù hợp thời tiết se lạnh.",
+      "category": "Áo",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p11173.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đỏ",
+          "price": 420000,
+          "targetStock": 7,
+          "sku": "STY-AO-092-S"
+        },
+        {
+          "size": "M",
+          "color": "Đỏ",
+          "price": 420000,
+          "targetStock": 7,
+          "sku": "STY-AO-092-M"
+        },
+        {
+          "size": "L",
+          "color": "Đỏ",
+          "price": 420000,
+          "targetStock": 7,
+          "sku": "STY-AO-092-L"
+        },
+        {
+          "size": "XL",
+          "color": "Đỏ",
+          "price": 420000,
+          "targetStock": 7,
+          "sku": "STY-AO-092-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 15032,
+      "sourceName": "ADIDAS Women Stripes Blue Sweaters",
+      "name": "Áo len nữ kẻ sọc màu xanh dương",
+      "description": "Áo len nữ màu xanh dương, chất liệu giữ ấm nhẹ, kẻ sọc. Phù hợp thời tiết se lạnh.",
+      "category": "Áo",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p15032.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 490000,
+          "targetStock": 9,
+          "sku": "STY-AO-093-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh dương",
+          "price": 490000,
+          "targetStock": 9,
+          "sku": "STY-AO-093-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 13812,
+      "sourceName": "Proline Navy Striped Sweater",
+      "name": "Áo len nam kẻ sọc màu xanh navy",
+      "description": "Áo len nam màu xanh navy, chất liệu giữ ấm nhẹ, kẻ sọc. Phù hợp thời tiết se lạnh.",
+      "category": "Áo",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p13812.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Xanh navy",
+          "price": 480000,
+          "targetStock": 4,
+          "sku": "STY-AO-094-S"
+        },
+        {
+          "size": "M",
+          "color": "Xanh navy",
+          "price": 480000,
+          "targetStock": 4,
+          "sku": "STY-AO-094-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh navy",
+          "price": 480000,
+          "targetStock": 4,
+          "sku": "STY-AO-094-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh navy",
+          "price": 480000,
+          "targetStock": 4,
+          "sku": "STY-AO-094-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 20228,
+      "sourceName": "Wrangler Women Cable Red Sweater",
+      "name": "Áo len nữ trơn màu đỏ",
+      "description": "Áo len nữ màu đỏ, chất liệu giữ ấm nhẹ, trơn. Phù hợp thời tiết se lạnh.",
+      "category": "Áo",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p20228.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đỏ",
+          "price": 550000,
+          "targetStock": 29,
+          "sku": "STY-AO-095-S"
+        },
+        {
+          "size": "M",
+          "color": "Đỏ",
+          "price": 550000,
+          "targetStock": 29,
+          "sku": "STY-AO-095-M"
         }
       ]
     },
@@ -1390,7 +3163,7 @@
       "name": "Quần jean nam trơn màu xanh dương",
       "description": "Quần jean nam màu xanh dương, trơn, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p9166.jpg",
       "variants": [
@@ -1430,7 +3203,7 @@
       "name": "Quần jean nữ trơn màu đen",
       "description": "Quần jean nữ màu đen, trơn, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Local Brand",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p5771.jpg",
       "variants": [
@@ -1470,7 +3243,7 @@
       "name": "Quần jean nam dáng skinny màu xanh dương",
       "description": "Quần jean nam màu xanh dương, dáng skinny, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Urban Viet",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p9903.jpg",
       "variants": [
@@ -1510,7 +3283,7 @@
       "name": "Quần jean nữ trơn màu xanh dương",
       "description": "Quần jean nữ màu xanh dương, trơn, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p9148.jpg",
       "variants": [
@@ -1536,7 +3309,7 @@
       "name": "Quần jean nam trơn màu xanh dương form regular",
       "description": "Quần jean nam màu xanh dương, trơn, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p11285.jpg",
       "variants": [
@@ -1562,8 +3335,8 @@
       "name": "Quần jean nữ dáng skinny màu đen",
       "description": "Quần jean nữ màu đen, dáng skinny, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Stylo",
+      "status": "ACTIVE",
       "image": "p9150.jpg",
       "variants": [
         {
@@ -1588,8 +3361,8 @@
       "name": "Quần jean nam trơn màu xanh dương form rộng",
       "description": "Quần jean nam màu xanh dương, trơn, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Urban Viet",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p11339.jpg",
       "variants": [
         {
@@ -1628,7 +3401,7 @@
       "name": "Quần jean nữ trơn màu xanh dương form regular",
       "description": "Quần jean nữ màu xanh dương, trơn, chất liệu denim bền, dễ phối đồ.",
       "category": "Quần",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p11303.jpg",
       "variants": [
@@ -1663,12 +3436,290 @@
       ]
     },
     {
+      "datasetId": 11342,
+      "sourceName": "Lee Men Black Chicago Fit Jeans",
+      "name": "Quần jean nam trơn màu đen",
+      "description": "Quần jean nam màu đen, trơn, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p11342.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Đen",
+          "price": 660000,
+          "targetStock": 8,
+          "sku": "STY-QU-009-29"
+        },
+        {
+          "size": "30",
+          "color": "Đen",
+          "price": 660000,
+          "targetStock": 8,
+          "sku": "STY-QU-009-30"
+        },
+        {
+          "size": "31",
+          "color": "Đen",
+          "price": 660000,
+          "targetStock": 8,
+          "sku": "STY-QU-009-31"
+        },
+        {
+          "size": "32",
+          "color": "Đen",
+          "price": 660000,
+          "targetStock": 8,
+          "sku": "STY-QU-009-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 11317,
+      "sourceName": "United Colors of Benetton Women Washed Black Jeans",
+      "name": "Quần jean nữ bạc màu màu đen",
+      "description": "Quần jean nữ màu đen, bạc màu, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p11317.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Đen",
+          "price": 680000,
+          "targetStock": 8,
+          "sku": "STY-QU-010-30"
+        },
+        {
+          "size": "31",
+          "color": "Đen",
+          "price": 680000,
+          "targetStock": 8,
+          "sku": "STY-QU-010-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 15670,
+      "sourceName": "Locomotive Men Loco Denims Blue Jeans",
+      "name": "Quần jean nam trơn màu xanh dương phong cách tối giản",
+      "description": "Quần jean nam màu xanh dương, trơn, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p15670.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Xanh dương",
+          "price": 720000,
+          "targetStock": 22,
+          "sku": "STY-QU-011-29"
+        },
+        {
+          "size": "30",
+          "color": "Xanh dương",
+          "price": 720000,
+          "targetStock": 22,
+          "sku": "STY-QU-011-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 11318,
+      "sourceName": "United Colors of Benetton Women Solid Black Jeans",
+      "name": "Quần jean nữ trơn màu đen form regular",
+      "description": "Quần jean nữ màu đen, trơn, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p11318.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Đen",
+          "price": 490000,
+          "targetStock": 11,
+          "sku": "STY-QU-012-28"
+        },
+        {
+          "size": "29",
+          "color": "Đen",
+          "price": 490000,
+          "targetStock": 11,
+          "sku": "STY-QU-012-29"
+        },
+        {
+          "size": "30",
+          "color": "Đen",
+          "price": 490000,
+          "targetStock": 11,
+          "sku": "STY-QU-012-30"
+        },
+        {
+          "size": "31",
+          "color": "Đen",
+          "price": 490000,
+          "targetStock": 11,
+          "sku": "STY-QU-012-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 16919,
+      "sourceName": "Spykar Men Washed Blue Jeans",
+      "name": "Quần jean nam bạc màu màu xanh dương",
+      "description": "Quần jean nam màu xanh dương, bạc màu, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p16919.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Xanh dương",
+          "price": 510000,
+          "targetStock": 26,
+          "sku": "STY-QU-013-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh dương",
+          "price": 510000,
+          "targetStock": 26,
+          "sku": "STY-QU-013-31"
+        },
+        {
+          "size": "32",
+          "color": "Xanh dương",
+          "price": 510000,
+          "targetStock": 26,
+          "sku": "STY-QU-013-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 13351,
+      "sourceName": "Spykar Women Washed Black Jeans",
+      "name": "Quần jean nữ bạc màu màu đen form regular",
+      "description": "Quần jean nữ màu đen, bạc màu, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p13351.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Đen",
+          "price": 620000,
+          "targetStock": 11,
+          "sku": "STY-QU-014-29"
+        },
+        {
+          "size": "30",
+          "color": "Đen",
+          "price": 620000,
+          "targetStock": 11,
+          "sku": "STY-QU-014-30"
+        },
+        {
+          "size": "31",
+          "color": "Đen",
+          "price": 620000,
+          "targetStock": 11,
+          "sku": "STY-QU-014-31"
+        },
+        {
+          "size": "32",
+          "color": "Đen",
+          "price": 620000,
+          "targetStock": 11,
+          "sku": "STY-QU-014-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 16920,
+      "sourceName": "Spykar Men Washed Navy Blue Jeans",
+      "name": "Quần jean nam bạc màu màu xanh navy",
+      "description": "Quần jean nam màu xanh navy, bạc màu, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p16920.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Xanh navy",
+          "price": 600000,
+          "targetStock": 33,
+          "sku": "STY-QU-015-28"
+        },
+        {
+          "size": "29",
+          "color": "Xanh navy",
+          "price": 600000,
+          "targetStock": 33,
+          "sku": "STY-QU-015-29"
+        },
+        {
+          "size": "30",
+          "color": "Xanh navy",
+          "price": 600000,
+          "targetStock": 33,
+          "sku": "STY-QU-015-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh navy",
+          "price": 600000,
+          "targetStock": 33,
+          "sku": "STY-QU-015-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 14122,
+      "sourceName": "Flying Machine Women Washed Blue Jeans",
+      "name": "Quần jean nữ bạc màu màu xanh dương",
+      "description": "Quần jean nữ màu xanh dương, bạc màu, chất liệu denim bền, dễ phối đồ.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p14122.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Xanh dương",
+          "price": 640000,
+          "targetStock": 3,
+          "sku": "STY-QU-016-29"
+        },
+        {
+          "size": "30",
+          "color": "Xanh dương",
+          "price": 640000,
+          "targetStock": 3,
+          "sku": "STY-QU-016-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh dương",
+          "price": 640000,
+          "targetStock": 3,
+          "sku": "STY-QU-016-31"
+        }
+      ]
+    },
+    {
       "datasetId": 8884,
       "sourceName": "Scullers Men Scul Cream Trousers",
       "name": "Quần dài nam trơn màu kem",
       "description": "Quần dài nam màu kem, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p8884.jpg",
       "variants": [
@@ -1677,14 +3728,14 @@
           "color": "Kem",
           "price": 670000,
           "targetStock": 3,
-          "sku": "STY-QU-009-30"
+          "sku": "STY-QU-017-30"
         },
         {
           "size": "31",
           "color": "Kem",
           "price": 670000,
           "targetStock": 3,
-          "sku": "STY-QU-009-31"
+          "sku": "STY-QU-017-31"
         }
       ]
     },
@@ -1694,7 +3745,7 @@
       "name": "Quần dài nữ trơn màu nâu nhạt",
       "description": "Quần dài nữ màu nâu nhạt, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Local Brand",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p27901.jpg",
       "variants": [
@@ -1703,14 +3754,14 @@
           "color": "Nâu nhạt",
           "price": 400000,
           "targetStock": 7,
-          "sku": "STY-QU-010-30"
+          "sku": "STY-QU-018-30"
         },
         {
           "size": "31",
           "color": "Nâu nhạt",
           "price": 400000,
           "targetStock": 7,
-          "sku": "STY-QU-010-31"
+          "sku": "STY-QU-018-31"
         }
       ]
     },
@@ -1720,7 +3771,7 @@
       "name": "Quần dài nam trơn màu xám",
       "description": "Quần dài nam màu xám, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Urban Viet",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p8901.jpg",
       "variants": [
@@ -1729,28 +3780,28 @@
           "color": "Xám",
           "price": 530000,
           "targetStock": 23,
-          "sku": "STY-QU-011-28"
+          "sku": "STY-QU-019-28"
         },
         {
           "size": "29",
           "color": "Xám",
           "price": 530000,
           "targetStock": 23,
-          "sku": "STY-QU-011-29"
+          "sku": "STY-QU-019-29"
         },
         {
           "size": "30",
           "color": "Xám",
           "price": 530000,
           "targetStock": 23,
-          "sku": "STY-QU-011-30"
+          "sku": "STY-QU-019-30"
         },
         {
           "size": "31",
           "color": "Xám",
           "price": 530000,
           "targetStock": 23,
-          "sku": "STY-QU-011-31"
+          "sku": "STY-QU-019-31"
         }
       ]
     },
@@ -1760,7 +3811,7 @@
       "name": "Quần dài nữ trơn màu xám",
       "description": "Quần dài nữ màu xám, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p27904.jpg",
       "variants": [
@@ -1769,21 +3820,21 @@
           "color": "Xám",
           "price": 350000,
           "targetStock": 1,
-          "sku": "STY-QU-012-29"
+          "sku": "STY-QU-020-29"
         },
         {
           "size": "30",
           "color": "Xám",
           "price": 350000,
           "targetStock": 1,
-          "sku": "STY-QU-012-30"
+          "sku": "STY-QU-020-30"
         },
         {
           "size": "31",
           "color": "Xám",
           "price": 350000,
           "targetStock": 1,
-          "sku": "STY-QU-012-31"
+          "sku": "STY-QU-020-31"
         }
       ]
     },
@@ -1793,7 +3844,7 @@
       "name": "Quần dài nam trơn màu đen",
       "description": "Quần dài nam màu đen, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p10262.jpg",
       "variants": [
@@ -1802,28 +3853,28 @@
           "color": "Đen",
           "price": 410000,
           "targetStock": 20,
-          "sku": "STY-QU-013-28"
+          "sku": "STY-QU-021-28"
         },
         {
           "size": "29",
           "color": "Đen",
           "price": 410000,
           "targetStock": 20,
-          "sku": "STY-QU-013-29"
+          "sku": "STY-QU-021-29"
         },
         {
           "size": "30",
           "color": "Đen",
           "price": 410000,
           "targetStock": 20,
-          "sku": "STY-QU-013-30"
+          "sku": "STY-QU-021-30"
         },
         {
           "size": "31",
           "color": "Đen",
           "price": 410000,
           "targetStock": 20,
-          "sku": "STY-QU-013-31"
+          "sku": "STY-QU-021-31"
         }
       ]
     },
@@ -1833,8 +3884,8 @@
       "name": "Quần dài nữ trơn màu xám form regular",
       "description": "Quần dài nữ màu xám, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Stylo",
+      "status": "ACTIVE",
       "image": "p27916.jpg",
       "variants": [
         {
@@ -1842,28 +3893,28 @@
           "color": "Xám",
           "price": 510000,
           "targetStock": 24,
-          "sku": "STY-QU-014-29"
+          "sku": "STY-QU-022-29"
         },
         {
           "size": "30",
           "color": "Xám",
           "price": 510000,
           "targetStock": 24,
-          "sku": "STY-QU-014-30"
+          "sku": "STY-QU-022-30"
         },
         {
           "size": "31",
           "color": "Xám",
           "price": 510000,
           "targetStock": 24,
-          "sku": "STY-QU-014-31"
+          "sku": "STY-QU-022-31"
         },
         {
           "size": "32",
           "color": "Xám",
           "price": 510000,
           "targetStock": 24,
-          "sku": "STY-QU-014-32"
+          "sku": "STY-QU-022-32"
         }
       ]
     },
@@ -1873,8 +3924,8 @@
       "name": "Quần dài nam trơn màu xanh olive",
       "description": "Quần dài nam màu xanh olive, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Urban Viet",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p11253.jpg",
       "variants": [
         {
@@ -1882,21 +3933,21 @@
           "color": "Xanh olive",
           "price": 460000,
           "targetStock": 12,
-          "sku": "STY-QU-015-29"
+          "sku": "STY-QU-023-29"
         },
         {
           "size": "30",
           "color": "Xanh olive",
           "price": 460000,
           "targetStock": 12,
-          "sku": "STY-QU-015-30"
+          "sku": "STY-QU-023-30"
         },
         {
           "size": "31",
           "color": "Xanh olive",
           "price": 460000,
           "targetStock": 12,
-          "sku": "STY-QU-015-31"
+          "sku": "STY-QU-023-31"
         }
       ]
     },
@@ -1906,7 +3957,7 @@
       "name": "Quần dài nữ trơn màu đen",
       "description": "Quần dài nữ màu đen, form đứng, trơn. Phù hợp công sở và dạo phố.",
       "category": "Quần",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p32585.jpg",
       "variants": [
@@ -1915,28 +3966,250 @@
           "color": "Đen",
           "price": 660000,
           "targetStock": 5,
-          "sku": "STY-QU-016-28"
+          "sku": "STY-QU-024-28"
         },
         {
           "size": "29",
           "color": "Đen",
           "price": 660000,
           "targetStock": 5,
-          "sku": "STY-QU-016-29"
+          "sku": "STY-QU-024-29"
         },
         {
           "size": "30",
           "color": "Đen",
           "price": 660000,
           "targetStock": 5,
-          "sku": "STY-QU-016-30"
+          "sku": "STY-QU-024-30"
         },
         {
           "size": "31",
           "color": "Đen",
           "price": 660000,
           "targetStock": 5,
-          "sku": "STY-QU-016-31"
+          "sku": "STY-QU-024-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 12217,
+      "sourceName": "Basics Men Beige New Improved Fit Trousers",
+      "name": "Quần dài nam trơn màu be",
+      "description": "Quần dài nam màu be, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p12217.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Be",
+          "price": 380000,
+          "targetStock": 15,
+          "sku": "STY-QU-025-29"
+        },
+        {
+          "size": "30",
+          "color": "Be",
+          "price": 380000,
+          "targetStock": 15,
+          "sku": "STY-QU-025-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 39761,
+      "sourceName": "Arrow Woman Beige Trousers",
+      "name": "Quần dài nữ trơn màu be",
+      "description": "Quần dài nữ màu be, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p39761.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Be",
+          "price": 360000,
+          "targetStock": 0,
+          "sku": "STY-QU-026-29"
+        },
+        {
+          "size": "30",
+          "color": "Be",
+          "price": 360000,
+          "targetStock": 0,
+          "sku": "STY-QU-026-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 13783,
+      "sourceName": "Belmonte Men Solid Khaki Trousers",
+      "name": "Quần dài nam trơn màu kaki",
+      "description": "Quần dài nam màu kaki, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p13783.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Kaki",
+          "price": 390000,
+          "targetStock": 28,
+          "sku": "STY-QU-027-29"
+        },
+        {
+          "size": "30",
+          "color": "Kaki",
+          "price": 390000,
+          "targetStock": 28,
+          "sku": "STY-QU-027-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 13855,
+      "sourceName": "Indigo Nation Men Solid Blue Trousers",
+      "name": "Quần dài nam trơn màu xanh dương",
+      "description": "Quần dài nam màu xanh dương, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p13855.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Xanh dương",
+          "price": 670000,
+          "targetStock": 31,
+          "sku": "STY-QU-028-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh dương",
+          "price": 670000,
+          "targetStock": 31,
+          "sku": "STY-QU-028-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 14700,
+      "sourceName": "Basics Men Khaki Trousers",
+      "name": "Quần dài nam trơn màu kaki form regular",
+      "description": "Quần dài nam màu kaki, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p14700.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Kaki",
+          "price": 640000,
+          "targetStock": 15,
+          "sku": "STY-QU-029-29"
+        },
+        {
+          "size": "30",
+          "color": "Kaki",
+          "price": 640000,
+          "targetStock": 15,
+          "sku": "STY-QU-029-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 15123,
+      "sourceName": "Arrow Men Solid Grey Trousers",
+      "name": "Quần dài nam trơn màu xám form regular",
+      "description": "Quần dài nam màu xám, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p15123.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Xám",
+          "price": 380000,
+          "targetStock": 30,
+          "sku": "STY-QU-030-29"
+        },
+        {
+          "size": "30",
+          "color": "Xám",
+          "price": 380000,
+          "targetStock": 30,
+          "sku": "STY-QU-030-30"
+        },
+        {
+          "size": "31",
+          "color": "Xám",
+          "price": 380000,
+          "targetStock": 30,
+          "sku": "STY-QU-030-31"
+        },
+        {
+          "size": "32",
+          "color": "Xám",
+          "price": 380000,
+          "targetStock": 30,
+          "sku": "STY-QU-030-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 16058,
+      "sourceName": "Highlander Men Solid Khaki Trouser",
+      "name": "Quần dài nam trơn màu kaki form rộng",
+      "description": "Quần dài nam màu kaki, form đứng, trơn. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p16058.jpg",
+      "variants": [
+        {
+          "size": "31",
+          "color": "Kaki",
+          "price": 440000,
+          "targetStock": 13,
+          "sku": "STY-QU-031-31"
+        },
+        {
+          "size": "32",
+          "color": "Kaki",
+          "price": 440000,
+          "targetStock": 13,
+          "sku": "STY-QU-031-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 16374,
+      "sourceName": "Peter England Men Stripes Navy Blue Trouser",
+      "name": "Quần dài nam kẻ sọc màu xanh navy",
+      "description": "Quần dài nam màu xanh navy, form đứng, kẻ sọc. Phù hợp công sở và dạo phố.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p16374.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Xanh navy",
+          "price": 560000,
+          "targetStock": 5,
+          "sku": "STY-QU-032-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh navy",
+          "price": 560000,
+          "targetStock": 5,
+          "sku": "STY-QU-032-31"
         }
       ]
     },
@@ -1946,7 +4219,7 @@
       "name": "Quần short nam tập luyện màu đen",
       "description": "Quần short nam màu đen, chất liệu nhẹ, tập luyện. Thoáng mát cho ngày nóng.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p1567.jpg",
       "variants": [
@@ -1955,14 +4228,14 @@
           "color": "Đen",
           "price": 270000,
           "targetStock": 18,
-          "sku": "STY-QU-017-28"
+          "sku": "STY-QU-033-28"
         },
         {
           "size": "29",
           "color": "Đen",
           "price": 270000,
           "targetStock": 18,
-          "sku": "STY-QU-017-29"
+          "sku": "STY-QU-033-29"
         }
       ]
     },
@@ -1972,7 +4245,7 @@
       "name": "Quần short nữ trơn màu vàng",
       "description": "Quần short nữ màu vàng, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
       "category": "Quần",
-      "brand": "Local Brand",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p6525.jpg",
       "variants": [
@@ -1981,28 +4254,28 @@
           "color": "Vàng",
           "price": 380000,
           "targetStock": 30,
-          "sku": "STY-QU-018-28"
+          "sku": "STY-QU-034-28"
         },
         {
           "size": "29",
           "color": "Vàng",
           "price": 380000,
           "targetStock": 30,
-          "sku": "STY-QU-018-29"
+          "sku": "STY-QU-034-29"
         },
         {
           "size": "30",
           "color": "Vàng",
           "price": 380000,
           "targetStock": 30,
-          "sku": "STY-QU-018-30"
+          "sku": "STY-QU-034-30"
         },
         {
           "size": "31",
           "color": "Vàng",
           "price": 380000,
           "targetStock": 30,
-          "sku": "STY-QU-018-31"
+          "sku": "STY-QU-034-31"
         }
       ]
     },
@@ -2012,7 +4285,7 @@
       "name": "Quần short nam kẻ sọc màu xanh navy",
       "description": "Quần short nam màu xanh navy, chất liệu nhẹ, kẻ sọc. Thoáng mát cho ngày nóng.",
       "category": "Quần",
-      "brand": "Urban Viet",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p2106.jpg",
       "variants": [
@@ -2021,14 +4294,14 @@
           "color": "Xanh navy",
           "price": 340000,
           "targetStock": 10,
-          "sku": "STY-QU-019-30"
+          "sku": "STY-QU-035-30"
         },
         {
           "size": "31",
           "color": "Xanh navy",
           "price": 340000,
           "targetStock": 10,
-          "sku": "STY-QU-019-31"
+          "sku": "STY-QU-035-31"
         }
       ]
     },
@@ -2038,7 +4311,7 @@
       "name": "Quần short nữ trơn màu tím",
       "description": "Quần short nữ màu tím, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
       "category": "Quần",
-      "brand": "Basic Lab",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p7497.jpg",
       "variants": [
@@ -2047,14 +4320,14 @@
           "color": "Tím",
           "price": 270000,
           "targetStock": 12,
-          "sku": "STY-QU-020-28"
+          "sku": "STY-QU-036-28"
         },
         {
           "size": "29",
           "color": "Tím",
           "price": 270000,
           "targetStock": 12,
-          "sku": "STY-QU-020-29"
+          "sku": "STY-QU-036-29"
         }
       ]
     },
@@ -2064,7 +4337,7 @@
       "name": "Quần short nam trơn màu xám",
       "description": "Quần short nam màu xám, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p2117.jpg",
       "variants": [
@@ -2073,21 +4346,21 @@
           "color": "Xám",
           "price": 220000,
           "targetStock": 26,
-          "sku": "STY-QU-021-29"
+          "sku": "STY-QU-037-29"
         },
         {
           "size": "30",
           "color": "Xám",
           "price": 220000,
           "targetStock": 26,
-          "sku": "STY-QU-021-30"
+          "sku": "STY-QU-037-30"
         },
         {
           "size": "31",
           "color": "Xám",
           "price": 220000,
           "targetStock": 26,
-          "sku": "STY-QU-021-31"
+          "sku": "STY-QU-037-31"
         }
       ]
     },
@@ -2097,8 +4370,8 @@
       "name": "Quần short nữ trơn màu xanh dương",
       "description": "Quần short nữ màu xanh dương, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
       "category": "Quần",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Stylo",
+      "status": "ACTIVE",
       "image": "p10661.jpg",
       "variants": [
         {
@@ -2106,14 +4379,205 @@
           "color": "Xanh dương",
           "price": 250000,
           "targetStock": 0,
-          "sku": "STY-QU-022-31"
+          "sku": "STY-QU-038-31"
         },
         {
           "size": "32",
           "color": "Xanh dương",
           "price": 250000,
           "targetStock": 0,
-          "sku": "STY-QU-022-32"
+          "sku": "STY-QU-038-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 4949,
+      "sourceName": "Gini and Jony Boy's Kimon Blue Bermuda Kidswear",
+      "name": "Quần short nam trơn màu xanh dương",
+      "description": "Quần short nam màu xanh dương, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p4949.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Xanh dương",
+          "price": 200000,
+          "targetStock": 19,
+          "sku": "STY-QU-039-28"
+        },
+        {
+          "size": "29",
+          "color": "Xanh dương",
+          "price": 200000,
+          "targetStock": 19,
+          "sku": "STY-QU-039-29"
+        }
+      ]
+    },
+    {
+      "datasetId": 21434,
+      "sourceName": "roxy Women Beach Brights Blue Short",
+      "name": "Quần short nữ trơn màu xanh dương form regular",
+      "description": "Quần short nữ màu xanh dương, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p21434.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Xanh dương",
+          "price": 290000,
+          "targetStock": 18,
+          "sku": "STY-QU-040-28"
+        },
+        {
+          "size": "29",
+          "color": "Xanh dương",
+          "price": 290000,
+          "targetStock": 18,
+          "sku": "STY-QU-040-29"
+        }
+      ]
+    },
+    {
+      "datasetId": 5018,
+      "sourceName": "Levis Kids Boy's Aldon White Kidswear",
+      "name": "Quần short nam trơn màu trắng",
+      "description": "Quần short nam màu trắng, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p5018.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-QU-041-30"
+        },
+        {
+          "size": "31",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-QU-041-31"
+        },
+        {
+          "size": "32",
+          "color": "Trắng",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-QU-041-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 28459,
+      "sourceName": "Urban Yoga Women Purple Shorts",
+      "name": "Quần short nữ trơn màu tím form regular",
+      "description": "Quần short nữ màu tím, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p28459.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Tím",
+          "price": 270000,
+          "targetStock": 28,
+          "sku": "STY-QU-042-30"
+        },
+        {
+          "size": "31",
+          "color": "Tím",
+          "price": 270000,
+          "targetStock": 28,
+          "sku": "STY-QU-042-31"
+        },
+        {
+          "size": "32",
+          "color": "Tím",
+          "price": 270000,
+          "targetStock": 28,
+          "sku": "STY-QU-042-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 6564,
+      "sourceName": "Nike Men's Woven Blue Short",
+      "name": "Quần short nam trơn màu xanh dương form regular",
+      "description": "Quần short nam màu xanh dương, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p6564.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Xanh dương",
+          "price": 370000,
+          "targetStock": 10,
+          "sku": "STY-QU-043-28"
+        },
+        {
+          "size": "29",
+          "color": "Xanh dương",
+          "price": 370000,
+          "targetStock": 10,
+          "sku": "STY-QU-043-29"
+        },
+        {
+          "size": "30",
+          "color": "Xanh dương",
+          "price": 370000,
+          "targetStock": 10,
+          "sku": "STY-QU-043-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 28460,
+      "sourceName": "Urban Yoga Women Pink Shorts",
+      "name": "Quần short nữ trơn màu hồng",
+      "description": "Quần short nữ màu hồng, chất liệu nhẹ, trơn. Thoáng mát cho ngày nóng.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p28460.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Hồng",
+          "price": 360000,
+          "targetStock": 29,
+          "sku": "STY-QU-044-28"
+        },
+        {
+          "size": "29",
+          "color": "Hồng",
+          "price": 360000,
+          "targetStock": 29,
+          "sku": "STY-QU-044-29"
+        },
+        {
+          "size": "30",
+          "color": "Hồng",
+          "price": 360000,
+          "targetStock": 29,
+          "sku": "STY-QU-044-30"
+        },
+        {
+          "size": "31",
+          "color": "Hồng",
+          "price": 360000,
+          "targetStock": 29,
+          "sku": "STY-QU-044-31"
         }
       ]
     },
@@ -2123,7 +4587,7 @@
       "name": "Quần thể thao nam trơn màu đen",
       "description": "Quần thể thao nam màu đen, co giãn, trơn. Phù hợp vận động.",
       "category": "Quần",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p3919.jpg",
       "variants": [
@@ -2132,14 +4596,14 @@
           "color": "Đen",
           "price": 370000,
           "targetStock": 27,
-          "sku": "STY-QU-023-30"
+          "sku": "STY-QU-045-30"
         },
         {
           "size": "31",
           "color": "Đen",
           "price": 370000,
           "targetStock": 27,
-          "sku": "STY-QU-023-31"
+          "sku": "STY-QU-045-31"
         }
       ]
     },
@@ -2149,7 +4613,7 @@
       "name": "Quần thể thao nữ dáng slim màu đen",
       "description": "Quần thể thao nữ màu đen, co giãn, dáng slim. Phù hợp vận động.",
       "category": "Quần",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p2109.jpg",
       "variants": [
@@ -2158,21 +4622,21 @@
           "color": "Đen",
           "price": 560000,
           "targetStock": 29,
-          "sku": "STY-QU-024-29"
+          "sku": "STY-QU-046-29"
         },
         {
           "size": "30",
           "color": "Đen",
           "price": 560000,
           "targetStock": 29,
-          "sku": "STY-QU-024-30"
+          "sku": "STY-QU-046-30"
         },
         {
           "size": "31",
           "color": "Đen",
           "price": 560000,
           "targetStock": 29,
-          "sku": "STY-QU-024-31"
+          "sku": "STY-QU-046-31"
         }
       ]
     },
@@ -2182,8 +4646,8 @@
       "name": "Quần thể thao nam trơn màu be",
       "description": "Quần thể thao nam màu be, co giãn, trơn. Phù hợp vận động.",
       "category": "Quần",
-      "brand": "Stylo",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p3920.jpg",
       "variants": [
         {
@@ -2191,28 +4655,28 @@
           "color": "Be",
           "price": 500000,
           "targetStock": 14,
-          "sku": "STY-QU-025-28"
+          "sku": "STY-QU-047-28"
         },
         {
           "size": "29",
           "color": "Be",
           "price": 500000,
           "targetStock": 14,
-          "sku": "STY-QU-025-29"
+          "sku": "STY-QU-047-29"
         },
         {
           "size": "30",
           "color": "Be",
           "price": 500000,
           "targetStock": 14,
-          "sku": "STY-QU-025-30"
+          "sku": "STY-QU-047-30"
         },
         {
           "size": "31",
           "color": "Be",
           "price": 500000,
           "targetStock": 14,
-          "sku": "STY-QU-025-31"
+          "sku": "STY-QU-047-31"
         }
       ]
     },
@@ -2222,7 +4686,7 @@
       "name": "Quần thể thao nữ trơn màu đen",
       "description": "Quần thể thao nữ màu đen, co giãn, trơn. Phù hợp vận động.",
       "category": "Quần",
-      "brand": "Local Brand",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p2111.jpg",
       "variants": [
@@ -2231,28 +4695,28 @@
           "color": "Đen",
           "price": 320000,
           "targetStock": 8,
-          "sku": "STY-QU-026-29"
+          "sku": "STY-QU-048-29"
         },
         {
           "size": "30",
           "color": "Đen",
           "price": 320000,
           "targetStock": 8,
-          "sku": "STY-QU-026-30"
+          "sku": "STY-QU-048-30"
         },
         {
           "size": "31",
           "color": "Đen",
           "price": 320000,
           "targetStock": 8,
-          "sku": "STY-QU-026-31"
+          "sku": "STY-QU-048-31"
         },
         {
           "size": "32",
           "color": "Đen",
           "price": 320000,
           "targetStock": 8,
-          "sku": "STY-QU-026-32"
+          "sku": "STY-QU-048-32"
         }
       ]
     },
@@ -2262,7 +4726,7 @@
       "name": "Quần thể thao nam trơn màu xanh navy",
       "description": "Quần thể thao nam màu xanh navy, co giãn, trơn. Phù hợp vận động.",
       "category": "Quần",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p3923.jpg",
       "variants": [
@@ -2271,28 +4735,200 @@
           "color": "Xanh navy",
           "price": 320000,
           "targetStock": 19,
-          "sku": "STY-QU-027-28"
+          "sku": "STY-QU-049-28"
         },
         {
           "size": "29",
           "color": "Xanh navy",
           "price": 320000,
           "targetStock": 19,
-          "sku": "STY-QU-027-29"
+          "sku": "STY-QU-049-29"
         },
         {
           "size": "30",
           "color": "Xanh navy",
           "price": 320000,
           "targetStock": 19,
-          "sku": "STY-QU-027-30"
+          "sku": "STY-QU-049-30"
         },
         {
           "size": "31",
           "color": "Xanh navy",
           "price": 320000,
           "targetStock": 19,
-          "sku": "STY-QU-027-31"
+          "sku": "STY-QU-049-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 2112,
+      "sourceName": "ADIDAS Women's Essential Black Capris",
+      "name": "Quần thể thao nữ trơn màu đen form regular",
+      "description": "Quần thể thao nữ màu đen, co giãn, trơn. Phù hợp vận động.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p2112.jpg",
+      "variants": [
+        {
+          "size": "30",
+          "color": "Đen",
+          "price": 460000,
+          "targetStock": 22,
+          "sku": "STY-QU-050-30"
+        },
+        {
+          "size": "31",
+          "color": "Đen",
+          "price": 460000,
+          "targetStock": 22,
+          "sku": "STY-QU-050-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 4825,
+      "sourceName": "ADIDAS Men's Woven Lead White Track Pant",
+      "name": "Quần thể thao nam trơn màu xám",
+      "description": "Quần thể thao nam màu xám, co giãn, trơn. Phù hợp vận động.",
+      "category": "Quần",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p4825.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Xám",
+          "price": 340000,
+          "targetStock": 13,
+          "sku": "STY-QU-051-29"
+        },
+        {
+          "size": "30",
+          "color": "Xám",
+          "price": 340000,
+          "targetStock": 13,
+          "sku": "STY-QU-051-30"
+        },
+        {
+          "size": "31",
+          "color": "Xám",
+          "price": 340000,
+          "targetStock": 13,
+          "sku": "STY-QU-051-31"
+        },
+        {
+          "size": "32",
+          "color": "Xám",
+          "price": 340000,
+          "targetStock": 13,
+          "sku": "STY-QU-051-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 2114,
+      "sourceName": "ADIDAS Women Essential Black Candy Pants",
+      "name": "Quần thể thao nữ trơn màu đen form rộng",
+      "description": "Quần thể thao nữ màu đen, co giãn, trơn. Phù hợp vận động.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p2114.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Đen",
+          "price": 450000,
+          "targetStock": 21,
+          "sku": "STY-QU-052-29"
+        },
+        {
+          "size": "30",
+          "color": "Đen",
+          "price": 450000,
+          "targetStock": 21,
+          "sku": "STY-QU-052-30"
+        },
+        {
+          "size": "31",
+          "color": "Đen",
+          "price": 450000,
+          "targetStock": 21,
+          "sku": "STY-QU-052-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 4826,
+      "sourceName": "ADIDAS Men's Woven Dark Navy White Track Pant",
+      "name": "Quần thể thao nam trơn màu xanh navy form regular",
+      "description": "Quần thể thao nam màu xanh navy, co giãn, trơn. Phù hợp vận động.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p4826.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Xanh navy",
+          "price": 530000,
+          "targetStock": 6,
+          "sku": "STY-QU-053-29"
+        },
+        {
+          "size": "30",
+          "color": "Xanh navy",
+          "price": 530000,
+          "targetStock": 6,
+          "sku": "STY-QU-053-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh navy",
+          "price": 530000,
+          "targetStock": 6,
+          "sku": "STY-QU-053-31"
+        }
+      ]
+    },
+    {
+      "datasetId": 7182,
+      "sourceName": "Jealous 21 Women Dark Blue Jegging",
+      "name": "Quần thể thao nữ trơn màu xanh dương",
+      "description": "Quần thể thao nữ màu xanh dương, co giãn, trơn. Phù hợp vận động.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p7182.jpg",
+      "variants": [
+        {
+          "size": "29",
+          "color": "Xanh dương",
+          "price": 310000,
+          "targetStock": 24,
+          "sku": "STY-QU-054-29"
+        },
+        {
+          "size": "30",
+          "color": "Xanh dương",
+          "price": 310000,
+          "targetStock": 24,
+          "sku": "STY-QU-054-30"
+        },
+        {
+          "size": "31",
+          "color": "Xanh dương",
+          "price": 310000,
+          "targetStock": 24,
+          "sku": "STY-QU-054-31"
+        },
+        {
+          "size": "32",
+          "color": "Xanh dương",
+          "price": 310000,
+          "targetStock": 24,
+          "sku": "STY-QU-054-32"
         }
       ]
     },
@@ -2302,8 +4938,8 @@
       "name": "Quần legging nữ trơn màu đen",
       "description": "Quần legging nữ màu đen, co giãn ôm vừa, trơn. Dễ mặc hằng ngày.",
       "category": "Quần",
-      "brand": "Basic Lab",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p11099.jpg",
       "variants": [
         {
@@ -2311,28 +4947,28 @@
           "color": "Đen",
           "price": 340000,
           "targetStock": 7,
-          "sku": "STY-QU-028-28"
+          "sku": "STY-QU-055-28"
         },
         {
           "size": "29",
           "color": "Đen",
           "price": 340000,
           "targetStock": 7,
-          "sku": "STY-QU-028-29"
+          "sku": "STY-QU-055-29"
         },
         {
           "size": "30",
           "color": "Đen",
           "price": 340000,
           "targetStock": 7,
-          "sku": "STY-QU-028-30"
+          "sku": "STY-QU-055-30"
         },
         {
           "size": "31",
           "color": "Đen",
           "price": 340000,
           "targetStock": 7,
-          "sku": "STY-QU-028-31"
+          "sku": "STY-QU-055-31"
         }
       ]
     },
@@ -2342,7 +4978,7 @@
       "name": "Quần legging nữ trơn màu hồng",
       "description": "Quần legging nữ màu hồng, co giãn ôm vừa, trơn. Dễ mặc hằng ngày.",
       "category": "Quần",
-      "brand": "Stylo",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p22458.jpg",
       "variants": [
@@ -2351,21 +4987,73 @@
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-QU-029-28"
+          "sku": "STY-QU-056-28"
         },
         {
           "size": "29",
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-QU-029-29"
+          "sku": "STY-QU-056-29"
         },
         {
           "size": "30",
           "color": "Hồng",
           "price": 280000,
           "targetStock": 13,
-          "sku": "STY-QU-029-30"
+          "sku": "STY-QU-056-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 25906,
+      "sourceName": "Femella Women Wine Skinny Leggings",
+      "name": "Quần legging nữ dáng skinny màu tím",
+      "description": "Quần legging nữ màu tím, co giãn ôm vừa, dáng skinny. Dễ mặc hằng ngày.",
+      "category": "Quần",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p25906.jpg",
+      "variants": [
+        {
+          "size": "31",
+          "color": "Tím",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-QU-057-31"
+        },
+        {
+          "size": "32",
+          "color": "Tím",
+          "price": 300000,
+          "targetStock": 21,
+          "sku": "STY-QU-057-32"
+        }
+      ]
+    },
+    {
+      "datasetId": 25909,
+      "sourceName": "Femella Women Pink Leggings",
+      "name": "Quần legging nữ trơn màu hồng form regular",
+      "description": "Quần legging nữ màu hồng, co giãn ôm vừa, trơn. Dễ mặc hằng ngày.",
+      "category": "Quần",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p25909.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Hồng",
+          "price": 240000,
+          "targetStock": 14,
+          "sku": "STY-QU-058-28"
+        },
+        {
+          "size": "29",
+          "color": "Hồng",
+          "price": 240000,
+          "targetStock": 14,
+          "sku": "STY-QU-058-29"
         }
       ]
     },
@@ -2376,7 +5064,7 @@
       "description": "Quần capri nữ màu hồng, dáng lửng, trơn. Phù hợp mùa hè.",
       "category": "Quần",
       "brand": "Local Brand",
-      "status": "INACTIVE",
+      "status": "ACTIVE",
       "image": "p5017.jpg",
       "variants": [
         {
@@ -2384,21 +5072,47 @@
           "color": "Hồng",
           "price": 290000,
           "targetStock": 15,
-          "sku": "STY-QU-030-28"
+          "sku": "STY-QU-059-28"
         },
         {
           "size": "29",
           "color": "Hồng",
           "price": 290000,
           "targetStock": 15,
-          "sku": "STY-QU-030-29"
+          "sku": "STY-QU-059-29"
         },
         {
           "size": "30",
           "color": "Hồng",
           "price": 290000,
           "targetStock": 15,
-          "sku": "STY-QU-030-30"
+          "sku": "STY-QU-059-30"
+        }
+      ]
+    },
+    {
+      "datasetId": 7514,
+      "sourceName": "Nike Women Be Fast Purple Capri",
+      "name": "Quần capri nữ trơn màu tím",
+      "description": "Quần capri nữ màu tím, dáng lửng, trơn. Phù hợp mùa hè.",
+      "category": "Quần",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p7514.jpg",
+      "variants": [
+        {
+          "size": "28",
+          "color": "Tím",
+          "price": 330000,
+          "targetStock": 32,
+          "sku": "STY-QU-060-28"
+        },
+        {
+          "size": "29",
+          "color": "Tím",
+          "price": 330000,
+          "targetStock": 32,
+          "sku": "STY-QU-060-29"
         }
       ]
     },
@@ -2408,7 +5122,7 @@
       "name": "Áo khoác nam trơn màu trắng",
       "description": "Áo khoác nam màu trắng, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p6477.jpg",
       "variants": [
@@ -2441,7 +5155,7 @@
       "name": "Áo khoác nữ trơn màu đen",
       "description": "Áo khoác nữ màu đen, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p6880.jpg",
       "variants": [
@@ -2467,8 +5181,8 @@
       "name": "Áo khoác nam trơn màu trắng form regular",
       "description": "Áo khoác nam màu trắng, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Stylo",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p6501.jpg",
       "variants": [
         {
@@ -2493,7 +5207,7 @@
       "name": "Áo khoác nữ trơn màu xanh dương",
       "description": "Áo khoác nữ màu xanh dương, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Local Brand",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p10017.jpg",
       "variants": [
@@ -2533,7 +5247,7 @@
       "name": "Áo khoác nam có mũ màu xanh dương",
       "description": "Áo khoác nam màu xanh dương, có mũ, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p6783.jpg",
       "variants": [
@@ -2566,7 +5280,7 @@
       "name": "Áo khoác nữ trơn màu xanh navy",
       "description": "Áo khoác nữ màu xanh navy, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p19333.jpg",
       "variants": [
@@ -2592,7 +5306,7 @@
       "name": "Áo khoác nam trơn màu đen",
       "description": "Áo khoác nam màu đen, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Stylo",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p6786.jpg",
       "variants": [
@@ -2625,8 +5339,8 @@
       "name": "Áo khoác nữ trơn màu xanh dương form regular",
       "description": "Áo khoác nữ màu xanh dương, trơn, giữ ấm và chắn gió tốt.",
       "category": "Áo khoác",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
       "image": "p43673.jpg",
       "variants": [
         {
@@ -2646,12 +5360,248 @@
       ]
     },
     {
+      "datasetId": 9771,
+      "sourceName": "ADIDAS Men Adna Blue Jackets",
+      "name": "Áo khoác nam trơn màu xanh dương",
+      "description": "Áo khoác nam màu xanh dương, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p9771.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Xanh dương",
+          "price": 500000,
+          "targetStock": 12,
+          "sku": "STY-AK-009-M"
+        },
+        {
+          "size": "L",
+          "color": "Xanh dương",
+          "price": 500000,
+          "targetStock": 12,
+          "sku": "STY-AK-009-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 13240,
+      "sourceName": "Palm Tree Kids Boys Solid White Jackets",
+      "name": "Áo khoác nam trơn màu trắng form rộng",
+      "description": "Áo khoác nam màu trắng, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p13240.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 1220000,
+          "targetStock": 23,
+          "sku": "STY-AK-010-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 1220000,
+          "targetStock": 23,
+          "sku": "STY-AK-010-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 1220000,
+          "targetStock": 23,
+          "sku": "STY-AK-010-L"
+        },
+        {
+          "size": "XL",
+          "color": "Trắng",
+          "price": 1220000,
+          "targetStock": 23,
+          "sku": "STY-AK-010-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 14308,
+      "sourceName": "ADIDAS Men Solid Black Jackets",
+      "name": "Áo khoác nam trơn màu đen form regular",
+      "description": "Áo khoác nam màu đen, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
+      "image": "p14308.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 1270000,
+          "targetStock": 21,
+          "sku": "STY-AK-011-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 1270000,
+          "targetStock": 21,
+          "sku": "STY-AK-011-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 14310,
+      "sourceName": "ADIDAS Men Solid Grey Jackets",
+      "name": "Áo khoác nam trơn màu xám",
+      "description": "Áo khoác nam màu xám, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p14310.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Xám",
+          "price": 1100000,
+          "targetStock": 7,
+          "sku": "STY-AK-012-M"
+        },
+        {
+          "size": "L",
+          "color": "Xám",
+          "price": 1100000,
+          "targetStock": 7,
+          "sku": "STY-AK-012-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 15601,
+      "sourceName": "Nike Men Football Soccer Navy Blue Jackets",
+      "name": "Áo khoác nam trơn màu xanh navy",
+      "description": "Áo khoác nam màu xanh navy, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p15601.jpg",
+      "variants": [
+        {
+          "size": "L",
+          "color": "Xanh navy",
+          "price": 600000,
+          "targetStock": 22,
+          "sku": "STY-AK-013-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xanh navy",
+          "price": 600000,
+          "targetStock": 22,
+          "sku": "STY-AK-013-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 16211,
+      "sourceName": "Puma Men Track Black Jackets",
+      "name": "Áo khoác nam trơn màu đen form rộng",
+      "description": "Áo khoác nam màu đen, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p16211.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 1100000,
+          "targetStock": 30,
+          "sku": "STY-AK-014-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 1100000,
+          "targetStock": 30,
+          "sku": "STY-AK-014-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 18985,
+      "sourceName": "ADIDAS Originals Men ST FB Track Top White Jacket",
+      "name": "Áo khoác nam trơn màu trắng phong cách tối giản",
+      "description": "Áo khoác nam màu trắng, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Local Brand",
+      "status": "ACTIVE",
+      "image": "p18985.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Trắng",
+          "price": 670000,
+          "targetStock": 35,
+          "sku": "STY-AK-015-S"
+        },
+        {
+          "size": "M",
+          "color": "Trắng",
+          "price": 670000,
+          "targetStock": 35,
+          "sku": "STY-AK-015-M"
+        }
+      ]
+    },
+    {
+      "datasetId": 19339,
+      "sourceName": "United Colors of Benetton Men Solid Black Jacket",
+      "name": "Áo khoác nam trơn màu đen phong cách tối giản",
+      "description": "Áo khoác nam màu đen, trơn, giữ ấm và chắn gió tốt.",
+      "category": "Áo khoác",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p19339.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Đen",
+          "price": 850000,
+          "targetStock": 1,
+          "sku": "STY-AK-016-S"
+        },
+        {
+          "size": "M",
+          "color": "Đen",
+          "price": 850000,
+          "targetStock": 1,
+          "sku": "STY-AK-016-M"
+        },
+        {
+          "size": "L",
+          "color": "Đen",
+          "price": 850000,
+          "targetStock": 1,
+          "sku": "STY-AK-016-L"
+        },
+        {
+          "size": "XL",
+          "color": "Đen",
+          "price": 850000,
+          "targetStock": 1,
+          "sku": "STY-AK-016-XL"
+        }
+      ]
+    },
+    {
       "datasetId": 1895,
       "sourceName": "FIFA Men Full Sleeves Hoody Sweatshirt",
       "name": "Áo nỉ nam có mũ màu đen",
       "description": "Áo nỉ nam màu đen, có mũ, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p1895.jpg",
       "variants": [
@@ -2660,21 +5610,21 @@
           "color": "Đen",
           "price": 600000,
           "targetStock": 0,
-          "sku": "STY-AK-009-S"
+          "sku": "STY-AK-017-S"
         },
         {
           "size": "M",
           "color": "Đen",
           "price": 600000,
           "targetStock": 0,
-          "sku": "STY-AK-009-M"
+          "sku": "STY-AK-017-M"
         },
         {
           "size": "L",
           "color": "Đen",
           "price": 600000,
           "targetStock": 0,
-          "sku": "STY-AK-009-L"
+          "sku": "STY-AK-017-L"
         }
       ]
     },
@@ -2684,7 +5634,7 @@
       "name": "Áo nỉ nữ trơn màu xám",
       "description": "Áo nỉ nữ màu xám, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p2268.jpg",
       "variants": [
@@ -2693,28 +5643,28 @@
           "color": "Xám",
           "price": 610000,
           "targetStock": 0,
-          "sku": "STY-AK-010-S"
+          "sku": "STY-AK-018-S"
         },
         {
           "size": "M",
           "color": "Xám",
           "price": 610000,
           "targetStock": 0,
-          "sku": "STY-AK-010-M"
+          "sku": "STY-AK-018-M"
         },
         {
           "size": "L",
           "color": "Xám",
           "price": 610000,
           "targetStock": 0,
-          "sku": "STY-AK-010-L"
+          "sku": "STY-AK-018-L"
         },
         {
           "size": "XL",
           "color": "Xám",
           "price": 610000,
           "targetStock": 0,
-          "sku": "STY-AK-010-XL"
+          "sku": "STY-AK-018-XL"
         }
       ]
     },
@@ -2724,8 +5674,8 @@
       "name": "Áo nỉ nam trơn màu đen",
       "description": "Áo nỉ nam màu đen, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Stylo",
-      "status": "ACTIVE",
+      "brand": "Local Brand",
+      "status": "INACTIVE",
       "image": "p9976.jpg",
       "variants": [
         {
@@ -2733,28 +5683,28 @@
           "color": "Đen",
           "price": 450000,
           "targetStock": 9,
-          "sku": "STY-AK-011-S"
+          "sku": "STY-AK-019-S"
         },
         {
           "size": "M",
           "color": "Đen",
           "price": 450000,
           "targetStock": 9,
-          "sku": "STY-AK-011-M"
+          "sku": "STY-AK-019-M"
         },
         {
           "size": "L",
           "color": "Đen",
           "price": 450000,
           "targetStock": 9,
-          "sku": "STY-AK-011-L"
+          "sku": "STY-AK-019-L"
         },
         {
           "size": "XL",
           "color": "Đen",
           "price": 450000,
           "targetStock": 9,
-          "sku": "STY-AK-011-XL"
+          "sku": "STY-AK-019-XL"
         }
       ]
     },
@@ -2764,7 +5714,7 @@
       "name": "Áo nỉ nữ trơn màu xanh dương",
       "description": "Áo nỉ nữ màu xanh dương, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Local Brand",
+      "brand": "Urban Viet",
       "status": "ACTIVE",
       "image": "p14628.jpg",
       "variants": [
@@ -2773,21 +5723,21 @@
           "color": "Xanh dương",
           "price": 620000,
           "targetStock": 16,
-          "sku": "STY-AK-012-S"
+          "sku": "STY-AK-020-S"
         },
         {
           "size": "M",
           "color": "Xanh dương",
           "price": 620000,
           "targetStock": 16,
-          "sku": "STY-AK-012-M"
+          "sku": "STY-AK-020-M"
         },
         {
           "size": "L",
           "color": "Xanh dương",
           "price": 620000,
           "targetStock": 16,
-          "sku": "STY-AK-012-L"
+          "sku": "STY-AK-020-L"
         }
       ]
     },
@@ -2797,7 +5747,7 @@
       "name": "Áo nỉ nam có mũ màu xám",
       "description": "Áo nỉ nam màu xám, có mũ, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Urban Viet",
+      "brand": "Basic Lab",
       "status": "ACTIVE",
       "image": "p13089.jpg",
       "variants": [
@@ -2806,14 +5756,14 @@
           "color": "Xám",
           "price": 440000,
           "targetStock": 26,
-          "sku": "STY-AK-013-L"
+          "sku": "STY-AK-021-L"
         },
         {
           "size": "XL",
           "color": "Xám",
           "price": 440000,
           "targetStock": 26,
-          "sku": "STY-AK-013-XL"
+          "sku": "STY-AK-021-XL"
         }
       ]
     },
@@ -2823,7 +5773,7 @@
       "name": "Áo nỉ nữ trơn màu tím",
       "description": "Áo nỉ nữ màu tím, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Basic Lab",
+      "brand": "Stylo",
       "status": "ACTIVE",
       "image": "p15026.jpg",
       "variants": [
@@ -2832,14 +5782,14 @@
           "color": "Tím",
           "price": 410000,
           "targetStock": 21,
-          "sku": "STY-AK-014-L"
+          "sku": "STY-AK-022-L"
         },
         {
           "size": "XL",
           "color": "Tím",
           "price": 410000,
           "targetStock": 21,
-          "sku": "STY-AK-014-XL"
+          "sku": "STY-AK-022-XL"
         }
       ]
     },
@@ -2849,7 +5799,7 @@
       "name": "Áo nỉ nam kẻ sọc màu đen",
       "description": "Áo nỉ nam màu đen, kẻ sọc, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
       "category": "Áo khoác",
-      "brand": "Stylo",
+      "brand": "Local Brand",
       "status": "ACTIVE",
       "image": "p13103.jpg",
       "variants": [
@@ -2858,481 +5808,245 @@
           "color": "Đen",
           "price": 630000,
           "targetStock": 2,
-          "sku": "STY-AK-015-M"
+          "sku": "STY-AK-023-M"
         },
         {
           "size": "L",
           "color": "Đen",
           "price": 630000,
           "targetStock": 2,
-          "sku": "STY-AK-015-L"
+          "sku": "STY-AK-023-L"
         }
       ]
     },
     {
-      "datasetId": 2390,
-      "sourceName": "Red Tape Men's Semi Black Casual Shoe",
-      "name": "Giày casual nam trơn màu đen",
-      "description": "Giày casual nam màu đen, trơn, đế êm, dễ phối đồ.",
-      "category": "Giày",
+      "datasetId": 15029,
+      "sourceName": "ADIDAS Women Stripes Purple Sweatshirts",
+      "name": "Áo nỉ nữ kẻ sọc màu tím",
+      "description": "Áo nỉ nữ màu tím, kẻ sọc, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
+      "brand": "Urban Viet",
+      "status": "ACTIVE",
+      "image": "p15029.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Tím",
+          "price": 490000,
+          "targetStock": 13,
+          "sku": "STY-AK-024-M"
+        },
+        {
+          "size": "L",
+          "color": "Tím",
+          "price": 490000,
+          "targetStock": 13,
+          "sku": "STY-AK-024-L"
+        },
+        {
+          "size": "XL",
+          "color": "Tím",
+          "price": 490000,
+          "targetStock": 13,
+          "sku": "STY-AK-024-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 13800,
+      "sourceName": "Proline Mens Grey Sweatshirt",
+      "name": "Áo nỉ nam trơn màu xám",
+      "description": "Áo nỉ nam màu xám, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
+      "brand": "Basic Lab",
+      "status": "ACTIVE",
+      "image": "p13800.jpg",
+      "variants": [
+        {
+          "size": "M",
+          "color": "Xám",
+          "price": 620000,
+          "targetStock": 0,
+          "sku": "STY-AK-025-M"
+        },
+        {
+          "size": "L",
+          "color": "Xám",
+          "price": 620000,
+          "targetStock": 0,
+          "sku": "STY-AK-025-L"
+        },
+        {
+          "size": "XL",
+          "color": "Xám",
+          "price": 620000,
+          "targetStock": 0,
+          "sku": "STY-AK-025-XL"
+        }
+      ]
+    },
+    {
+      "datasetId": 18965,
+      "sourceName": "United Colors of Benetton Women Solid Pink Sweatshirt",
+      "name": "Áo nỉ nữ trơn màu hồng",
+      "description": "Áo nỉ nữ màu hồng, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
+      "brand": "Stylo",
+      "status": "ACTIVE",
+      "image": "p18965.jpg",
+      "variants": [
+        {
+          "size": "S",
+          "color": "Hồng",
+          "price": 650000,
+          "targetStock": 6,
+          "sku": "STY-AK-026-S"
+        },
+        {
+          "size": "M",
+          "color": "Hồng",
+          "price": 650000,
+          "targetStock": 6,
+          "sku": "STY-AK-026-M"
+        },
+        {
+          "size": "L",
+          "color": "Hồng",
+          "price": 650000,
+          "targetStock": 6,
+          "sku": "STY-AK-026-L"
+        }
+      ]
+    },
+    {
+      "datasetId": 14307,
+      "sourceName": "ADIDAS Men Printed White Sweatshirts",
+      "name": "Áo nỉ nam in họa tiết màu trắng",
+      "description": "Áo nỉ nam màu trắng, in họa tiết, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
       "brand": "Local Brand",
       "status": "INACTIVE",
-      "image": "p2390.jpg",
+      "image": "p14307.jpg",
       "variants": [
         {
-          "size": "41",
-          "color": "Đen",
-          "price": 770000,
-          "targetStock": 34,
-          "sku": "STY-GI-001-41"
-        },
-        {
-          "size": "42",
-          "color": "Đen",
-          "price": 770000,
-          "targetStock": 34,
-          "sku": "STY-GI-001-42"
-        },
-        {
-          "size": "43",
-          "color": "Đen",
-          "price": 770000,
-          "targetStock": 34,
-          "sku": "STY-GI-001-43"
-        }
-      ]
-    },
-    {
-      "datasetId": 3505,
-      "sourceName": "ADIDAS Women Adi Light White Fresh Shoe",
-      "name": "Giày casual nữ trơn màu trắng",
-      "description": "Giày casual nữ màu trắng, trơn, đế êm, dễ phối đồ.",
-      "category": "Giày",
-      "brand": "Urban Viet",
-      "status": "ACTIVE",
-      "image": "p3505.jpg",
-      "variants": [
-        {
-          "size": "36",
+          "size": "S",
           "color": "Trắng",
-          "price": 790000,
-          "targetStock": 10,
-          "sku": "STY-GI-002-36"
-        },
-        {
-          "size": "37",
-          "color": "Trắng",
-          "price": 790000,
-          "targetStock": 10,
-          "sku": "STY-GI-002-37"
-        }
-      ]
-    },
-    {
-      "datasetId": 1635,
-      "sourceName": "Newfeel Unisex Red Comfy Shoes",
-      "name": "Giày casual unisex trơn màu đỏ",
-      "description": "Giày casual unisex màu đỏ, trơn, đế êm, dễ phối đồ.",
-      "category": "Giày",
-      "brand": "Basic Lab",
-      "status": "ACTIVE",
-      "image": "p1635.jpg",
-      "variants": [
-        {
-          "size": "40",
-          "color": "Đỏ",
-          "price": 550000,
-          "targetStock": 23,
-          "sku": "STY-GI-003-40"
-        },
-        {
-          "size": "41",
-          "color": "Đỏ",
-          "price": 550000,
-          "targetStock": 23,
-          "sku": "STY-GI-003-41"
-        }
-      ]
-    },
-    {
-      "datasetId": 2399,
-      "sourceName": "Red Tape Black Men's Semi Casual Shoe",
-      "name": "Giày casual nam trơn màu đen form regular",
-      "description": "Giày casual nam màu đen, trơn, đế êm, dễ phối đồ.",
-      "category": "Giày",
-      "brand": "Stylo",
-      "status": "ACTIVE",
-      "image": "p2399.jpg",
-      "variants": [
-        {
-          "size": "40",
-          "color": "Đen",
-          "price": 640000,
-          "targetStock": 0,
-          "sku": "STY-GI-004-40"
-        },
-        {
-          "size": "41",
-          "color": "Đen",
-          "price": 640000,
-          "targetStock": 0,
-          "sku": "STY-GI-004-41"
-        },
-        {
-          "size": "42",
-          "color": "Đen",
-          "price": 640000,
-          "targetStock": 0,
-          "sku": "STY-GI-004-42"
-        }
-      ]
-    },
-    {
-      "datasetId": 1549,
-      "sourceName": "Puma Men's Jiyu Slip On Sneaker",
-      "name": "Giày thể thao nam trơn màu trắng",
-      "description": "Giày thể thao nam màu trắng, trơn, đế bám tốt, phù hợp chạy bộ và tập luyện.",
-      "category": "Giày",
-      "brand": "Local Brand",
-      "status": "ACTIVE",
-      "image": "p1549.jpg",
-      "variants": [
-        {
-          "size": "39",
-          "color": "Trắng",
-          "price": 1240000,
-          "targetStock": 16,
-          "sku": "STY-GI-005-39"
-        },
-        {
-          "size": "40",
-          "color": "Trắng",
-          "price": 1240000,
-          "targetStock": 16,
-          "sku": "STY-GI-005-40"
-        },
-        {
-          "size": "41",
-          "color": "Trắng",
-          "price": 1240000,
-          "targetStock": 16,
-          "sku": "STY-GI-005-41"
-        }
-      ]
-    },
-    {
-      "datasetId": 3162,
-      "sourceName": "Nike Women Downshifter White Blue Shoe",
-      "name": "Giày thể thao nữ trơn màu trắng",
-      "description": "Giày thể thao nữ màu trắng, trơn, đế bám tốt, phù hợp chạy bộ và tập luyện.",
-      "category": "Giày",
-      "brand": "Urban Viet",
-      "status": "ACTIVE",
-      "image": "p3162.jpg",
-      "variants": [
-        {
-          "size": "36",
-          "color": "Trắng",
-          "price": 960000,
+          "price": 600000,
           "targetStock": 22,
-          "sku": "STY-GI-006-36"
+          "sku": "STY-AK-027-S"
         },
         {
-          "size": "37",
+          "size": "M",
           "color": "Trắng",
-          "price": 960000,
+          "price": 600000,
           "targetStock": 22,
-          "sku": "STY-GI-006-37"
+          "sku": "STY-AK-027-M"
+        },
+        {
+          "size": "L",
+          "color": "Trắng",
+          "price": 600000,
+          "targetStock": 22,
+          "sku": "STY-AK-027-L"
         }
       ]
     },
     {
-      "datasetId": 4169,
-      "sourceName": "Reebok Unisex Trail Mudslinger Black Shoe",
-      "name": "Giày thể thao unisex trơn màu đen",
-      "description": "Giày thể thao unisex màu đen, trơn, đế bám tốt, phù hợp chạy bộ và tập luyện.",
-      "category": "Giày",
-      "brand": "Basic Lab",
-      "status": "ACTIVE",
-      "image": "p4169.jpg",
-      "variants": [
-        {
-          "size": "41",
-          "color": "Đen",
-          "price": 1490000,
-          "targetStock": 7,
-          "sku": "STY-GI-007-41"
-        },
-        {
-          "size": "42",
-          "color": "Đen",
-          "price": 1490000,
-          "targetStock": 7,
-          "sku": "STY-GI-007-42"
-        },
-        {
-          "size": "43",
-          "color": "Đen",
-          "price": 1490000,
-          "targetStock": 7,
-          "sku": "STY-GI-007-43"
-        }
-      ]
-    },
-    {
-      "datasetId": 1653,
-      "sourceName": "Reebok Men's Ventilator Ubiq Shoe",
-      "name": "Giày thể thao nam trơn màu nâu",
-      "description": "Giày thể thao nam màu nâu, trơn, đế bám tốt, phù hợp chạy bộ và tập luyện.",
-      "category": "Giày",
-      "brand": "Stylo",
-      "status": "ACTIVE",
-      "image": "p1653.jpg",
-      "variants": [
-        {
-          "size": "39",
-          "color": "Nâu",
-          "price": 770000,
-          "targetStock": 29,
-          "sku": "STY-GI-008-39"
-        },
-        {
-          "size": "40",
-          "color": "Nâu",
-          "price": 770000,
-          "targetStock": 29,
-          "sku": "STY-GI-008-40"
-        },
-        {
-          "size": "41",
-          "color": "Nâu",
-          "price": 770000,
-          "targetStock": 29,
-          "sku": "STY-GI-008-41"
-        }
-      ]
-    },
-    {
-      "datasetId": 2379,
-      "sourceName": "Red Tape Men's Black Formal Shoe",
-      "name": "Giày tây nam trơn màu đen",
-      "description": "Giày tây nam màu đen, da bóng, trơn. Phù hợp công sở và sự kiện.",
-      "category": "Giày",
-      "brand": "Local Brand",
-      "status": "INACTIVE",
-      "image": "p2379.jpg",
-      "variants": [
-        {
-          "size": "40",
-          "color": "Đen",
-          "price": 1170000,
-          "targetStock": 15,
-          "sku": "STY-GI-009-40"
-        },
-        {
-          "size": "41",
-          "color": "Đen",
-          "price": 1170000,
-          "targetStock": 15,
-          "sku": "STY-GI-009-41"
-        },
-        {
-          "size": "42",
-          "color": "Đen",
-          "price": 1170000,
-          "targetStock": 15,
-          "sku": "STY-GI-009-42"
-        }
-      ]
-    },
-    {
-      "datasetId": 2381,
-      "sourceName": "Red Tape Men's Brown Formal Shoe",
-      "name": "Giày tây nam trơn màu nâu",
-      "description": "Giày tây nam màu nâu, da bóng, trơn. Phù hợp công sở và sự kiện.",
-      "category": "Giày",
+      "datasetId": 20206,
+      "sourceName": "Wrangler Women Ann Black Sweatshirt",
+      "name": "Áo nỉ nữ trơn màu đen",
+      "description": "Áo nỉ nữ màu đen, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
       "brand": "Urban Viet",
       "status": "ACTIVE",
-      "image": "p2381.jpg",
+      "image": "p20206.jpg",
       "variants": [
         {
-          "size": "40",
-          "color": "Nâu",
-          "price": 780000,
-          "targetStock": 29,
-          "sku": "STY-GI-010-40"
+          "size": "S",
+          "color": "Đen",
+          "price": 470000,
+          "targetStock": 23,
+          "sku": "STY-AK-028-S"
         },
         {
-          "size": "41",
-          "color": "Nâu",
-          "price": 780000,
-          "targetStock": 29,
-          "sku": "STY-GI-010-41"
-        },
-        {
-          "size": "42",
-          "color": "Nâu",
-          "price": 780000,
-          "targetStock": 29,
-          "sku": "STY-GI-010-42"
-        },
-        {
-          "size": "43",
-          "color": "Nâu",
-          "price": 780000,
-          "targetStock": 29,
-          "sku": "STY-GI-010-43"
+          "size": "M",
+          "color": "Đen",
+          "price": 470000,
+          "targetStock": 23,
+          "sku": "STY-AK-028-M"
         }
       ]
     },
     {
-      "datasetId": 2872,
-      "sourceName": "Catwalk Women Leather Flats",
-      "name": "Giày cao gót nữ da màu nâu",
-      "description": "Giày cao gót nữ màu nâu, thiết kế thanh mảnh, da. Phù hợp dự tiệc.",
-      "category": "Giày",
+      "datasetId": 15625,
+      "sourceName": "Nike Men AS Squad FT LS Crew Grey Sweatshirts",
+      "name": "Áo nỉ nam trơn màu xám form regular",
+      "description": "Áo nỉ nam màu xám, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
       "brand": "Basic Lab",
       "status": "ACTIVE",
-      "image": "p2872.jpg",
+      "image": "p15625.jpg",
       "variants": [
         {
-          "size": "36",
-          "color": "Nâu",
-          "price": 810000,
-          "targetStock": 29,
-          "sku": "STY-GI-011-36"
+          "size": "M",
+          "color": "Xám",
+          "price": 580000,
+          "targetStock": 1,
+          "sku": "STY-AK-029-M"
         },
         {
-          "size": "37",
-          "color": "Nâu",
-          "price": 810000,
-          "targetStock": 29,
-          "sku": "STY-GI-011-37"
+          "size": "L",
+          "color": "Xám",
+          "price": 580000,
+          "targetStock": 1,
+          "sku": "STY-AK-029-L"
         },
         {
-          "size": "38",
-          "color": "Nâu",
-          "price": 810000,
-          "targetStock": 29,
-          "sku": "STY-GI-011-38"
+          "size": "XL",
+          "color": "Xám",
+          "price": 580000,
+          "targetStock": 1,
+          "sku": "STY-AK-029-XL"
         }
       ]
     },
     {
-      "datasetId": 2890,
-      "sourceName": "Catwalk Women Leather Brown Cut Flats",
-      "name": "Giày cao gót nữ da màu nâu form regular",
-      "description": "Giày cao gót nữ màu nâu, thiết kế thanh mảnh, da. Phù hợp dự tiệc.",
-      "category": "Giày",
+      "datasetId": 20209,
+      "sourceName": "Wrangler Women Cowl Purple Sweatshirt",
+      "name": "Áo nỉ nữ trơn màu tím form regular",
+      "description": "Áo nỉ nữ màu tím, trơn, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+      "category": "Áo khoác",
       "brand": "Stylo",
       "status": "ACTIVE",
-      "image": "p2890.jpg",
+      "image": "p20209.jpg",
       "variants": [
         {
-          "size": "38",
-          "color": "Nâu",
-          "price": 740000,
-          "targetStock": 30,
-          "sku": "STY-GI-012-38"
+          "size": "S",
+          "color": "Tím",
+          "price": 670000,
+          "targetStock": 14,
+          "sku": "STY-AK-030-S"
         },
         {
-          "size": "39",
-          "color": "Nâu",
-          "price": 740000,
-          "targetStock": 30,
-          "sku": "STY-GI-012-39"
-        }
-      ]
-    },
-    {
-      "datasetId": 2630,
-      "sourceName": "Carlton London Women Four Strapped Red Sandal",
-      "name": "Giày búp bê nữ trơn màu đỏ",
-      "description": "Giày búp bê nữ màu đỏ, mềm nhẹ, trơn. Dễ mang hằng ngày.",
-      "category": "Giày",
-      "brand": "Local Brand",
-      "status": "ACTIVE",
-      "image": "p2630.jpg",
-      "variants": [
-        {
-          "size": "36",
-          "color": "Đỏ",
-          "price": 430000,
-          "targetStock": 0,
-          "sku": "STY-GI-013-36"
+          "size": "M",
+          "color": "Tím",
+          "price": 670000,
+          "targetStock": 14,
+          "sku": "STY-AK-030-M"
         },
         {
-          "size": "37",
-          "color": "Đỏ",
-          "price": 430000,
-          "targetStock": 0,
-          "sku": "STY-GI-013-37"
+          "size": "L",
+          "color": "Tím",
+          "price": 670000,
+          "targetStock": 14,
+          "sku": "STY-AK-030-L"
         },
         {
-          "size": "38",
-          "color": "Đỏ",
-          "price": 430000,
-          "targetStock": 0,
-          "sku": "STY-GI-013-38"
-        },
-        {
-          "size": "39",
-          "color": "Đỏ",
-          "price": 430000,
-          "targetStock": 0,
-          "sku": "STY-GI-013-39"
-        }
-      ]
-    },
-    {
-      "datasetId": 2886,
-      "sourceName": "Catwalk Women Leather Brown Flats",
-      "name": "Giày búp bê nữ da màu nâu",
-      "description": "Giày búp bê nữ màu nâu, mềm nhẹ, da. Dễ mang hằng ngày.",
-      "category": "Giày",
-      "brand": "Urban Viet",
-      "status": "ACTIVE",
-      "image": "p2886.jpg",
-      "variants": [
-        {
-          "size": "36",
-          "color": "Nâu",
-          "price": 440000,
-          "targetStock": 28,
-          "sku": "STY-GI-014-36"
-        },
-        {
-          "size": "37",
-          "color": "Nâu",
-          "price": 440000,
-          "targetStock": 28,
-          "sku": "STY-GI-014-37"
-        }
-      ]
-    },
-    {
-      "datasetId": 1783,
-      "sourceName": "Quechua Men Grey Sandal",
-      "name": "Giày sandal nam trơn màu xám",
-      "description": "Giày sandal nam màu xám, quai chắc chắn, trơn. Phù hợp dạo phố.",
-      "category": "Giày",
-      "brand": "Basic Lab",
-      "status": "ACTIVE",
-      "image": "p1783.jpg",
-      "variants": [
-        {
-          "size": "39",
-          "color": "Xám",
-          "price": 320000,
-          "targetStock": 19,
-          "sku": "STY-GI-015-39"
-        },
-        {
-          "size": "40",
-          "color": "Xám",
-          "price": 320000,
-          "targetStock": 19,
-          "sku": "STY-GI-015-40"
+          "size": "XL",
+          "color": "Tím",
+          "price": 670000,
+          "targetStock": 14,
+          "sku": "STY-AK-030-XL"
         }
       ]
     }

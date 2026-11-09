@@ -542,7 +542,7 @@ describe('Seed data catalog query', () => {
     const filtersRes = await request(app).get('/api/v1/catalog/filters')
     expect(filtersRes.status).toBe(200)
     const categoryNames = filtersRes.body.categories.map((c: { name: string }) => c.name)
-    expect(categoryNames).toEqual(expect.arrayContaining(['Áo', 'Quần', 'Áo khoác', 'Giày']))
+    expect(categoryNames).toEqual(expect.arrayContaining(['Áo', 'Quần', 'Áo khoác']))
     expect(categoryNames).not.toContain('Phụ kiện')
     expect(filtersRes.body.brands.map((b: { name: string }) => b.name)).toContain('Stylo')
     expect(filtersRes.body.colors.length).toBeGreaterThan(0)

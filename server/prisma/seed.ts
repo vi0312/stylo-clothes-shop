@@ -134,7 +134,6 @@ const CATEGORIES: SeedCategory[] = [
   { name: 'Áo', status: 'ACTIVE' },
   { name: 'Quần', status: 'ACTIVE' },
   { name: 'Áo khoác', status: 'ACTIVE' },
-  { name: 'Giày', status: 'ACTIVE' },
   // Inactive category with no active product: the catalog filter edge case.
   { name: 'Phụ kiện', status: 'INACTIVE' },
 ]
