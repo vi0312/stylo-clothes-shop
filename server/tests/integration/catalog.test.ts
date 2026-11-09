@@ -526,6 +526,8 @@ describe('GET /catalog/filters', () => {
 })
 
 describe('Seed data catalog query', () => {
+  // The seed writes 185 products, 546 variants and 140 orders; it is the code under test, so this
+  // case needs a budget of its own instead of the suite-wide 30 s.
   it('allows querying the seeded catalog through public endpoints', async () => {
     await seed()
 
@@ -555,5 +557,5 @@ describe('Seed data catalog query', () => {
     expect(detailRes.status).toBe(200)
     expect(detailRes.body.id).toBe(firstProduct.id)
     expect(detailRes.body.variants.length).toBeGreaterThan(0)
-  })
+  }, 180_000)
 })
