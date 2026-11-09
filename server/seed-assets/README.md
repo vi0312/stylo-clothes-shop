@@ -9,9 +9,10 @@ The seed never downloads anything: it copies the images below into
 - Dataset: [Fashion Product Images Dataset](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-dataset)
   (Kaggle, `paramaggarwal`), read through the
   [Hugging Face mirror](https://huggingface.co/datasets/mecha2019/fashion-product-images-small).
-- Selection: 100 products from 4,000 sampled rows of 42,426, Apparel and Footwear
+- Selection: 185 clothing products from 4,000 sampled rows of 42,426, Apparel
   only, Men/Women/Unisex only, mapped to the Stylo categories (`Áo`, `Quần`,
-  `Áo khoác`, `Giày`) and brands (`Stylo`, `Local Brand`, `Urban Viet`, `Basic Lab`).
+  `Áo khoác`) and brands (`Stylo`, `Local Brand`, `Urban Viet`, `Basic Lab`).
+  Footwear is excluded.
 - Vietnamese names and descriptions are translated and normalized by the generator;
   source product names are kept in `sourceName` for provenance.
 - Real source facts: product type, base colour, gender, usage, image.
@@ -22,8 +23,8 @@ The seed never downloads anything: it copies the images below into
 
 | Path | Contents |
 |---|---|
-| `catalog/catalog.json` | 100 products, 304 variants, source metadata |
-| `catalog/images/p<id>.jpg` | 600x800 JPEG, quality 82, about 3.5 MB total |
+| `catalog/catalog.json` | 185 products, 546 variants, source metadata |
+| `catalog/images/p<id>.jpg` | 600x800 JPEG, quality 82, about 6.9 MB total |
 | `../scripts/build-catalog-seed.py` | one-off generator, not used at seed time |
 
 ## Pinned product
@@ -41,8 +42,9 @@ python server/scripts/build-catalog-seed.py
 
 Requires Pillow. The script caches dataset rows in the system temp directory
 (`stylo-catalog-rows.json`), reuses already downloaded images, and rewrites the snapshot
-deterministically. Run it only when changing the selection or normalization rules; afterwards
-reset the database with `npm run db:reset`.
+deterministically with LF line endings. Run it only when changing the selection or
+normalization rules; it reallocates SKUs and product order, so afterwards reset the database
+with `npm run db:reset`.
 
 ## License
 

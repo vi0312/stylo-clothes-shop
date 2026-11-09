@@ -20,14 +20,17 @@ Customer `customer11@stylo.local` deliberately has no cart and no orders.
 blocked-account states. Customer `customer01@stylo.local` is the account used by the
 manual demo script.
 
-The seed also creates 5 categories, 4 brands, 100 products / 304 variants with 100
+The seed also creates 4 categories, 4 brands, 185 products / 546 variants with 185
 committed catalog photos, 22 addresses, 3 inventory receipts and 140 orders across every
-status, payment method and payment state. The catalog is a normalized snapshot of a public
-real-product dataset; `seed` reads it offline. See
+status, payment method and payment state. The catalog is clothing only (`Áo`, `Quần`,
+`Áo khoác`) and is a normalized snapshot of a public real-product dataset; `seed` reads it
+offline. See
 [`../docs/testing.md`](../docs/testing.md#seed-and-demo-data) for the full contract,
-including the low-stock and out-of-stock variants, and
+including the low-stock and out-of-stock variants,
 [`../docs/adr/0014-seed-catalog-from-public-dataset.md`](../docs/adr/0014-seed-catalog-from-public-dataset.md)
-for the source and licence caveat.
+for the source and licence caveat, and
+[`../docs/adr/0017-seed-catalog-185-clothing-products.md`](../docs/adr/0017-seed-catalog-185-clothing-products.md)
+for the clothing-only expansion.
 
 ## Commands
 
