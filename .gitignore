@@ -3,11 +3,13 @@
 skills-lock.json
 AGENTS.md
 docs/agents
-.scratch/stylo-app/probe/
-.scratch/dev-server.log
-.scratch/*.log
-.scratch/stylo-app/assets
-.scratch/*.png
+# Scratch is local runtime state; the issue tracker inside it stays versioned.
+.scratch/*
+!.scratch/stylo-app/
+.scratch/stylo-app/*
+!.scratch/stylo-app/*.md
+!.scratch/stylo-app/issues/
+!.scratch/stylo-app/research/
 
 server/node_modules/
 server/dist/
