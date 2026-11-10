@@ -18,9 +18,11 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import re
 import sys
 import tempfile
 import time
+import unicodedata
 import urllib.error
 import urllib.request
 from collections import defaultdict
@@ -42,6 +44,8 @@ ROWS_URL = (
 USER_AGENT = "stylo-seed-builder/1.0 (+coursework demo)"
 
 BRANDS = ["Stylo", "Local Brand", "Urban Viet", "Basic Lab"]
+
+PINNED_PRODUCT_NAME = "Áo thun basic"
 
 # (category, articleType) -> how many products to take.
 # Clothing only; the pinned T-shirt counts inside Tshirts.
@@ -175,19 +179,40 @@ SIZES = {
 }
 
 DESCRIPTIONS = {
-    "Tshirts": "Áo thun {gender} màu {color}, chất liệu cotton co giãn, {style}. Phù hợp mặc {usage} hằng ngày.",
-    "Shirts": "Áo sơ mi {gender} màu {color}, chất liệu linen pha cotton, {style}. Phối tốt với quần tây hoặc jean.",
-    "Tops": "Áo kiểu {gender} màu {color}, thiết kế {style}, chất liệu mềm nhẹ. Phù hợp mặc {usage}.",
-    "Sweaters": "Áo len {gender} màu {color}, chất liệu giữ ấm nhẹ, {style}. Phù hợp thời tiết se lạnh.",
-    "Jackets": "Áo khoác {gender} màu {color}, {style}, giữ ấm và chắn gió tốt.",
-    "Sweatshirts": "Áo nỉ {gender} màu {color}, {style}, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
-    "Jeans": "Quần jean {gender} màu {color}, {style}, chất liệu denim bền, dễ phối đồ.",
-    "Trousers": "Quần dài {gender} màu {color}, form đứng, {style}. Phù hợp công sở và dạo phố.",
-    "Shorts": "Quần short {gender} màu {color}, chất liệu nhẹ, {style}. Thoáng mát cho ngày nóng.",
-    "Track Pants": "Quần thể thao {gender} màu {color}, co giãn, {style}. Phù hợp vận động.",
-    "Leggings": "Quần legging {gender} màu {color}, co giãn ôm vừa, {style}. Dễ mặc hằng ngày.",
-    "Capris": "Quần capri {gender} màu {color}, dáng lửng, {style}. Phù hợp mùa hè.",
+    "Tshirts": "Áo thun {gender}, chất liệu cotton co giãn, {style}. Phù hợp mặc {usage} hằng ngày.",
+    "Shirts": "Áo sơ mi {gender}, chất liệu linen pha cotton, {style}. Phối tốt với quần tây hoặc jean.",
+    "Tops": "Áo kiểu {gender}, thiết kế {style}, chất liệu mềm nhẹ. Phù hợp mặc {usage}.",
+    "Sweaters": "Áo len {gender}, chất liệu giữ ấm nhẹ, {style}. Phù hợp thời tiết se lạnh.",
+    "Jackets": "Áo khoác {gender}, {style}, giữ ấm và chắn gió tốt.",
+    "Sweatshirts": "Áo nỉ {gender}, {style}, chất liệu nỉ bông mềm, phù hợp mặc hằng ngày.",
+    "Jeans": "Quần jean {gender}, {style}, chất liệu denim bền, dễ phối đồ.",
+    "Trousers": "Quần dài {gender}, form đứng, {style}. Phù hợp công sở và dạo phố.",
+    "Shorts": "Quần short {gender}, chất liệu nhẹ, {style}. Thoáng mát cho ngày nóng.",
+    "Track Pants": "Quần thể thao {gender}, co giãn, {style}. Phù hợp vận động.",
+    "Leggings": "Quần legging {gender}, co giãn ôm vừa, {style}. Dễ mặc hằng ngày.",
+    "Capris": "Quần capri {gender}, dáng lửng, {style}. Phù hợp mùa hè.",
 }
+
+# Every product carries its source base colour plus 1-2 plausible demo colours so the
+# catalog exercises the colour selector. The extra colours are invented demo values.
+EXTRA_COLORS = [
+    "Đen",
+    "Trắng",
+    "Xám",
+    "Be",
+    "Kem",
+    "Nâu",
+    "Đỏ",
+    "Đỏ đô",
+    "Hồng",
+    "Tím",
+    "Vàng",
+    "Xanh dương",
+    "Xanh navy",
+    "Xanh lá",
+    "Xanh olive",
+    "Kaki",
+]
 
 SKU_PREFIX = {"Áo": "AO", "Quần": "QU", "Áo khoác": "AK"}
 
@@ -256,6 +281,24 @@ def all_descriptors(source_name: str) -> list[str]:
     return found or ["trơn"]
 
 
+def color_code(color: str) -> str:
+    """ASCII token for a colour name, e.g. Đỏ đô -> DO-DO and Trắng ngà -> TRANG-NGA."""
+    text = color.replace("đ", "d").replace("Đ", "D")
+    ascii_text = unicodedata.normalize("NFD", text).encode("ascii", "ignore").decode("ascii")
+    code = re.sub(r"[^A-Za-z0-9]+", "-", ascii_text).strip("-").upper()
+    return code or "MAU"
+
+
+def colors_for(row: dict) -> list[str]:
+    primary = COLORS[row["baseColour"]]
+    extra_count = 1 + stable_int(row["id"], "colors") % 2
+    pool = [color for color in EXTRA_COLORS if color != primary]
+    colors = [primary]
+    for slot in range(extra_count):
+        colors.append(pool.pop(stable_int(row["id"], "colors", slot) % len(pool)))
+    return colors
+
+
 def variants_for(row: dict, category: str, price: int) -> list[dict]:
     sizes = SIZES[category]
 
@@ -268,16 +311,21 @@ def variants_for(row: dict, category: str, price: int) -> list[dict]:
     base_stock = 0 if profile == 0 else (1 + seed % 4 if profile in (1, 2) else 5 + seed % 31)
 
     variants = []
-    for size in chosen:
-        stock = 0 if base_stock == 0 else max(0, base_stock - (seed % 3))
-        variants.append(
-            {
-                "size": size,
-                "color": COLORS[row["baseColour"]],
-                "price": price,
-                "targetStock": stock,
-            }
-        )
+    for color_index, color in enumerate(colors_for(row)):
+        for size_index, size in enumerate(chosen):
+            stock = (
+                0
+                if base_stock == 0
+                else max(0, base_stock - (seed + color_index * 5 + size_index) % 4)
+            )
+            variants.append(
+                {
+                    "size": size,
+                    "color": color,
+                    "price": price,
+                    "targetStock": stock,
+                }
+            )
     return variants
 
 
@@ -361,13 +409,12 @@ def main() -> None:
 
         article = row["articleType"]
         category, noun, price_range = ARTICLE[article]
-        color = COLORS[row["baseColour"]]
         gender = GENDER[row["gender"]]
         style = descriptor(row["productDisplayName"])
         usage = USAGE.get(row["usage"], "hằng ngày")
 
         if pinned:
-            name = "Áo thun basic"
+            name = PINNED_PRODUCT_NAME
             description = "Áo thun cotton mềm, form regular, dễ phối đồ hằng ngày."
             variants = [
                 {"size": "S", "color": "Đen", "price": 199_000, "targetStock": 12},
@@ -379,11 +426,11 @@ def main() -> None:
             low, high = price_range
             seed = stable_int(row["id"], "price")
             price = int(round((low + (high - low) * (seed % 1000) / 999) / 10_000) * 10_000)
-            name = f"{noun} {gender} {style} màu {color.lower()}"
-            description = DESCRIPTIONS[article].format(
-                gender=gender, color=color.lower(), style=style, usage=usage
-            )
+            name = f"{noun} {gender} {style}"
             variants = variants_for(row, category, price)
+            colors = list(dict.fromkeys(variant["color"] for variant in variants))
+            description = DESCRIPTIONS[article].format(gender=gender, style=style, usage=usage)
+            description += f" Có {len(colors)} màu: {', '.join(colors)}."
             product_status = "INACTIVE" if len(products) % 8 == 5 else "ACTIVE"
 
         # Names must stay unique because the seed matches products by name.
@@ -394,10 +441,19 @@ def main() -> None:
                     name = candidate_name
                     break
             else:
-                suffix = 2
-                while any(p["name"] == f"{name} {suffix}" for p in products):
-                    suffix += 1
-                name = f"{name} {suffix}"
+                # A colour the product actually comes in beats a bare numeric suffix.
+                colors = list(dict.fromkeys(variant["color"] for variant in variants))
+                for color in colors:
+                    candidate_name = f"{name} màu {color.lower()}"
+                    if not any(p["name"] == candidate_name for p in products):
+                        name = candidate_name
+                        break
+                else:
+                    base = f"{name} màu {colors[0].lower()}"
+                    suffix = 2
+                    while any(p["name"] == f"{base} {suffix}" for p in products):
+                        suffix += 1
+                    name = f"{base} {suffix}"
 
         products.append(
             {
@@ -425,9 +481,14 @@ def main() -> None:
         prefix = SKU_PREFIX[category]
         counters[category] += 1
         for variant in product["variants"]:
-            variant["sku"] = (
-                f"STY-{prefix}-{counters[category]:03d}-{variant['size']}"
-            )
+            # Pinned SKUs stay STY-AO-001-<size> because docs and E2E reference them.
+            if product["name"] == PINNED_PRODUCT_NAME:
+                variant["sku"] = f"STY-{prefix}-{counters[category]:03d}-{variant['size']}"
+            else:
+                variant["sku"] = (
+                    f"STY-{prefix}-{counters[category]:03d}-"
+                    f"{color_code(variant['color'])}-{variant['size']}"
+                )
 
     for (category, article), quota in QUOTAS.items():
         remaining = quota - 1 if (category, article) == ("Áo", "Tshirts") else quota
@@ -465,7 +526,9 @@ def main() -> None:
             "selection": (
                 f"{len(products)} products from 42,426 rows; clothing only (Áo, Quần, Áo khoác); "
                 "Men/Women/Unisex; mapped to the Stylo category and brand model; prices, "
-                "sizes and stock are deterministic demo values, not source facts."
+                "sizes, stock and the extra colour options are deterministic demo values, "
+                "not source facts (each row contributes its real base colour plus 1-2 "
+                "generated colours)."
             ),
         },
         "products": products,

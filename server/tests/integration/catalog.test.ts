@@ -526,7 +526,7 @@ describe('GET /catalog/filters', () => {
 })
 
 describe('Seed data catalog query', () => {
-  // The seed writes 185 products, 546 variants and 140 orders; it is the code under test, so this
+  // The seed writes 185 products, 1330 variants and 140 orders; it is the code under test, so this
   // case needs a budget of its own instead of the suite-wide 30 s.
   it('allows querying the seeded catalog through public endpoints', async () => {
     await seed()
