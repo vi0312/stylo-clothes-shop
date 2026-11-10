@@ -197,8 +197,9 @@ describe('checkout', () => {
       paymentMethod: 'COD',
       paymentStatus: 'UNPAID',
       subtotal: 398_000 + 120_000,
-      shippingFee: SHIPPING_FEE,
-      total: 398_000 + 120_000 + SHIPPING_FEE,
+      // 518,000 reaches the free-shipping threshold from .env.test.
+      shippingFee: 0,
+      total: 398_000 + 120_000,
       note: 'Giao giờ hành chính',
       recipientName: 'Nguyễn Văn An',
       recipientPhone: '0901234567',
@@ -278,7 +279,13 @@ describe('checkout', () => {
     expect(stocks[0].stock).toBe(5 + (ledger._sum.delta ?? 0))
 
     const cart = await request(app).get('/api/v1/cart').set(auth(customerToken))
-    expect(cart.body).toEqual({ id: expect.any(Number), items: [], itemCount: 0, subtotal: 0 })
+    expect(cart.body).toEqual({
+      id: expect.any(Number),
+      items: [],
+      itemCount: 0,
+      subtotal: 0,
+      shippingFee: 0,
+    })
   })
 
   it('stores an empty note as null', async () => {

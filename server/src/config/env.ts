@@ -12,6 +12,8 @@ const envSchema = z
     REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),
     PAYMENT_PROVIDER: z.enum(['MOCK', 'VNPAY']).default('MOCK'),
     SHIPPING_FEE: z.coerce.number().int().nonnegative().default(30000),
+    // 0 disables the waiver, so every order below is charged the flat fee.
+    FREE_SHIPPING_THRESHOLD: z.coerce.number().int().nonnegative().default(500000),
     LOW_STOCK_THRESHOLD: z.coerce.number().int().nonnegative().default(5),
     UPLOAD_DIR: z.string().min(1).default('uploads'),
     SEED_ADMIN_EMAIL: z.email().default('admin@stylo.local'),

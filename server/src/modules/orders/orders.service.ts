@@ -1,7 +1,7 @@
-import { getEnv } from '../../config/env.js'
 import { Prisma, type OrderStatus } from '../../generated/prisma/client.js'
 import { prisma } from '../../lib/prisma.js'
 import { isUniqueViolation } from '../../lib/prismaErrors.js'
+import { shippingFeeFor } from '../../lib/shipping.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import { lockCart } from '../cart/cart.repository.js'
 import type { PaymentAttemptDto } from '../payments/payments.dto.js'
@@ -25,6 +25,7 @@ import {
   computeTotals,
   derivePaymentStatus,
   orderCode,
+  subtotalOf,
   type LockedVariant,
 } from './orders.logic.js'
 import * as repository from './orders.repository.js'
@@ -81,8 +82,6 @@ function toOrderDto(row: repository.OrderRow): OrderDto {
 }
 
 async function placeOrder(userId: number, input: CreateOrderInput): Promise<CreateOrderResult> {
-  const shippingFee = getEnv().SHIPPING_FEE
-
   return prisma.$transaction(async (tx) => {
     // Same mutex the cart uses: a concurrent add or a duplicate retry serializes here.
     await lockCart(tx, userId)
@@ -137,6 +136,8 @@ async function placeOrder(userId: number, input: CreateOrderInput): Promise<Crea
     }
 
     const costs = await repository.findWeightedAverageCosts(tx, variantIds)
+    const subtotal = subtotalOf(failures.ready)
+    const shippingFee = shippingFeeFor(subtotal)
     const totals = computeTotals(failures.ready, shippingFee)
 
     const order = await repository.createOrder(tx, {

@@ -14,6 +14,7 @@ describe('parseEnv', () => {
     expect(env.PORT).toBe(8787)
     expect(env.PAYMENT_PROVIDER).toBe('MOCK')
     expect(env.SHIPPING_FEE).toBe(30000)
+    expect(env.FREE_SHIPPING_THRESHOLD).toBe(500000)
     expect(env.UPLOAD_DIR).toBe('uploads')
   })
 

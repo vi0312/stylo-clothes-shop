@@ -11,11 +11,15 @@ export interface OrderTotals {
   total: number
 }
 
+export function subtotalOf(lines: readonly { unitPrice: number; quantity: number }[]): number {
+  return lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0)
+}
+
 export function computeTotals(
   lines: readonly { unitPrice: number; quantity: number }[],
   shippingFee: number,
 ): OrderTotals {
-  const subtotal = lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0)
+  const subtotal = subtotalOf(lines)
   return { subtotal, total: subtotal + shippingFee }
 }
 

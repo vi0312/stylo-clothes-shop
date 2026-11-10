@@ -4,6 +4,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { getEnv } from '../src/config/env.js'
 import { prisma } from '../src/lib/prisma.js'
+import { shippingFeeFor } from '../src/lib/shipping.js'
 
 type CatalogStatus = 'ACTIVE' | 'INACTIVE'
 type UserStatus = 'ACTIVE' | 'DISABLED'
@@ -594,7 +595,7 @@ export async function seed(): Promise<void> {
       return { ...item, variant }
     })
     const subtotal = items.reduce((sum, item) => sum + item.variant.price * item.quantity, 0)
-    const shippingFee = env.SHIPPING_FEE
+    const shippingFee = shippingFeeFor(subtotal)
     const total = subtotal + shippingFee
 
     let paidAt: Date | null = null

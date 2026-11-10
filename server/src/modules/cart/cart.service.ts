@@ -1,4 +1,5 @@
 import { prisma } from '../../lib/prisma.js'
+import { shippingFeeFor } from '../../lib/shipping.js'
 import { conflict, notFound } from '../../utils/errors.js'
 import { emptyCart, type CartDto, type CartItemDto } from './cart.dto.js'
 import * as repository from './cart.repository.js'
@@ -26,13 +27,18 @@ function toCartDto(cart: repository.CartRow): CartDto {
     }
   })
 
+  const subtotal = items
+    .filter((item) => item.available)
+    .reduce((sum, item) => sum + item.lineTotal, 0)
+  // Nothing billable ships, so a cart of inactive lines is not quoted a fee.
+  const billable = items.some((item) => item.available)
+
   return {
     id: cart.id,
     items,
     itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
-    subtotal: items
-      .filter((item) => item.available)
-      .reduce((sum, item) => sum + item.lineTotal, 0),
+    subtotal,
+    shippingFee: billable ? shippingFeeFor(subtotal) : 0,
   }
 }
 

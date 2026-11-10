@@ -57,13 +57,14 @@ interface CartBody {
   items: CartItemBody[]
   itemCount: number
   subtotal: number
+  shippingFee: number
 }
 
 describe('cart', () => {
   it('returns the empty cart shape before the first add', async () => {
     const cart = await getCart(customerToken)
 
-    expect(cart).toEqual({ id: null, items: [], itemCount: 0, subtotal: 0 })
+    expect(cart).toEqual({ id: null, items: [], itemCount: 0, subtotal: 0, shippingFee: 0 })
   })
 
   it('requires an access token on every route', async () => {
@@ -112,6 +113,25 @@ describe('cart', () => {
     expect(second.body.items).toHaveLength(1)
     expect(second.body.items[0].quantity).toBe(3)
     expect(second.body.subtotal).toBe(597_000)
+  })
+
+  it('quotes the flat shipping fee and waives it from the free threshold', async () => {
+    const product = await createProduct({
+      variants: [{ sku: 'AT-DEN-M', size: 'M', color: 'Đen', price: 200_000, stock: 5 }],
+    })
+    const variant = product.variants[0]
+
+    const below = await addItem(customerToken, { variantId: variant.id, quantity: 2 })
+    expect(below.body.subtotal).toBe(400_000)
+    expect(below.body.shippingFee).toBe(30_000)
+
+    const above = await request(app)
+      .patch(`/api/v1/cart/items/${below.body.items[0].id}`)
+      .set(auth(customerToken))
+      .send({ quantity: 3 })
+    expect(above.status).toBe(200)
+    expect(above.body.subtotal).toBe(600_000)
+    expect(above.body.shippingFee).toBe(0)
   })
 
   it('rejects an add beyond stock without clamping', async () => {
@@ -250,6 +270,7 @@ describe('cart', () => {
       items: [],
       itemCount: 0,
       subtotal: 0,
+      shippingFee: 0,
     })
 
     const missing = await request(app)
@@ -266,13 +287,14 @@ describe('cart', () => {
 
     const cleared = await request(app).delete('/api/v1/cart').set(auth(customerToken))
     expect(cleared.status).toBe(200)
-    expect(cleared.body).toEqual({ id: null, items: [], itemCount: 0, subtotal: 0 })
+    expect(cleared.body).toEqual({ id: null, items: [], itemCount: 0, subtotal: 0, shippingFee: 0 })
 
     expect(await getCart(customerToken)).toEqual({
       id: null,
       items: [],
       itemCount: 0,
       subtotal: 0,
+      shippingFee: 0,
     })
   })
 
