@@ -15,17 +15,25 @@ The seed never downloads anything: it copies the images below into
   Footwear is excluded.
 - Vietnamese names and descriptions are translated and normalized by the generator;
   source product names are kept in `sourceName` for provenance.
-- Real source facts: product type, base colour, gender, usage, image.
-- Demo values: price, sizes, stock, orders, receipts, payments. The dataset has
-  no price or inventory data.
+- Real source facts: product type, base colour (the product's first colour), gender,
+  usage, image.
+- Demo values: price, sizes, 1-2 additional colours per product, stock, orders, receipts,
+  payments. The dataset has no price, colour-option or inventory data.
 
 ## Layout
 
 | Path | Contents |
 |---|---|
-| `catalog/catalog.json` | 185 products, 546 variants, source metadata |
+| `catalog/catalog.json` | 185 products, 1330 variants, source metadata |
 | `catalog/images/p<id>.jpg` | 600x800 JPEG, quality 82, about 6.9 MB total |
 | `../scripts/build-catalog-seed.py` | one-off generator, not used at seed time |
+
+## Colours and SKUs
+
+Every product carries its source base colour plus one or two generated colours (2-3
+colours, 4-12 variants), so the product detail screen has a colour selector. Variants are
+the cross product of the chosen sizes and colours. SKUs include a colour token, e.g.
+`STY-AO-002-XAM-M`; the pinned product is the only exception.
 
 ## Pinned product
 

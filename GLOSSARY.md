@@ -41,7 +41,7 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Return URL | `returnUrl` | URL trình duyệt quay về sau khi thanh toán | Chỉ VNPay dùng; verify checksum trước khi đổi trạng thái |
 | IPN | `ipn` | Gateway gọi server-to-server báo kết quả | Server local không có IPN public; endpoint vẫn idempotent và trả `RspCode` |
 | Refresh token | `RefreshToken` | Token dài hạn đã hash để cấp access token mới | Không lưu token thô; access 15 phút, refresh 30 ngày |
-| Seed catalog | `seed-assets/catalog/catalog.json` | 185 sản phẩm mẫu (chỉ quần áo) lấy từ dataset sản phẩm thật, đã chuẩn hoá sang schema Stylo | Seed chỉ đọc snapshot + ảnh commit, không gọi mạng; giá/size/tồn kho là dữ liệu demo |
+| Seed catalog | `seed-assets/catalog/catalog.json` | 185 sản phẩm mẫu (chỉ quần áo, 2-3 màu mỗi sản phẩm) lấy từ dataset sản phẩm thật, đã chuẩn hoá sang schema Stylo | Seed chỉ đọc snapshot + ảnh commit, không gọi mạng; giá/size/màu bổ sung/tồn kho là dữ liệu demo; SKU thường có token màu (`STY-AO-002-XAM-M`), riêng `Áo thun basic` giữ `STY-AO-001-*` |
 | Pinned product | `Áo thun basic` | Sản phẩm seed cố định cho catalog integration test và journey Kaspresso | Không đổi tên hoặc SKU `STY-AO-001-*` khi tái tạo snapshot; seed tạo nó cuối để đứng đầu sort `newest` |
 | Symbol | `ic_launcher_foreground` | Phần hình của logo, 5 polygon, không có chữ | Chỉ dùng cho icon launcher/themed icon; 58% canvas 108dp để nằm trong safe zone 66dp |
 | Wordmark | `stylo-wordmark-*` | Phần chữ "stylo" của logo (4 path) | Không đứng một mình trong app; luôn đi cùng symbol trong lockup |
