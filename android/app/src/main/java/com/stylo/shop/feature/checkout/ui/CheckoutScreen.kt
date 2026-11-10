@@ -636,22 +636,26 @@ private fun CheckoutBottomBar(
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(R.string.checkout_subtotal),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = Formatters.money(state.cart?.subtotal ?: 0),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-            Text(
-                text = stringResource(R.string.checkout_shipping_pending),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            CheckoutMoneyRow(
+                label = stringResource(R.string.checkout_subtotal),
+                value = Formatters.money(state.cart?.subtotal ?: 0),
+            )
+            CheckoutMoneyRow(
+                label = stringResource(R.string.checkout_shipping_fee),
+                value = if ((state.cart?.shippingFee ?: 0) == 0L) {
+                    stringResource(R.string.checkout_shipping_free)
+                } else {
+                    Formatters.money(state.cart?.shippingFee ?: 0)
+                },
+            )
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            CheckoutMoneyRow(
+                label = stringResource(R.string.checkout_total),
+                value = Formatters.money(state.total),
+                emphasized = true,
             )
             Spacer(Modifier.height(8.dp))
             if (state.addresses.isEmpty()) {
@@ -683,13 +687,42 @@ private fun CheckoutBottomBar(
                         Text(
                             text = stringResource(
                                 R.string.checkout_submit,
-                                Formatters.money(state.cart?.subtotal ?: 0),
+                                Formatters.money(state.total),
                             ),
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CheckoutMoneyRow(label: String, value: String, emphasized: Boolean = false) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = label,
+            style = if (emphasized) {
+                MaterialTheme.typography.titleSmall
+            } else {
+                MaterialTheme.typography.bodyMedium
+            },
+            color = if (emphasized) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+        )
+        Spacer(Modifier.weight(1f))
+        Text(
+            text = value,
+            style = if (emphasized) {
+                MaterialTheme.typography.titleMedium
+            } else {
+                MaterialTheme.typography.bodyMedium
+            },
+            fontWeight = if (emphasized) FontWeight.Bold else null,
+        )
     }
 }
 

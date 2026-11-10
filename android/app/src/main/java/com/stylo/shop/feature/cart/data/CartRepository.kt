@@ -46,6 +46,7 @@ fun CartDto.toCart(): Cart = Cart(
     items = items.map { it.toCartItem() },
     itemCount = itemCount,
     subtotal = subtotal,
+    shippingFee = shippingFee,
 )
 
 private fun CartItemDto.toCartItem(): CartItem = CartItem(

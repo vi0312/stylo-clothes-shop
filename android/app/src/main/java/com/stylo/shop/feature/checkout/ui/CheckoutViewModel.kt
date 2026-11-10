@@ -50,6 +50,7 @@ data class CheckoutUiState(
             selectedAddress != null &&
             cart?.isEmpty == false &&
             note.length <= CHECKOUT_NOTE_MAX
+    val total: Long get() = cart?.total ?: 0
 }
 
 sealed interface CheckoutEffect {

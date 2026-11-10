@@ -51,6 +51,18 @@ class CartRepositoryTest {
     }
 
     @Test
+    fun `the mapped cart carries the server shipping fee`() = runTest {
+        val api = FakeCartApi(CartDto(id = 1, subtotal = 398_000, shippingFee = 30_000))
+        val repository = DefaultCartRepository(api, CartBadgeStore())
+
+        val result = repository.getCart()
+
+        val cart = (result as ApiResult.Success).data
+        assertEquals(30_000L, cart.shippingFee)
+        assertEquals(428_000L, cart.total)
+    }
+
+    @Test
     fun `a failed request leaves the badge untouched`() = runTest {
         val badge = CartBadgeStore()
         badge.update(4)

@@ -41,6 +41,8 @@ object UiTags {
     const val ProductDetailBack = "product_detail_back"
     const val ProductDetailColor = "product_detail_color"
     const val ProductDetailSize = "product_detail_size"
+    const val ProductDetailQuantityMinus = "product_detail_quantity_minus"
+    const val ProductDetailQuantityPlus = "product_detail_quantity_plus"
     const val ProductDetailErrorBack = "product_detail_error_back"
     const val ProductDetailErrorRetry = "product_detail_error_retry"
 

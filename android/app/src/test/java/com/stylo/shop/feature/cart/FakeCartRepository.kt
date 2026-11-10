@@ -34,12 +34,17 @@ fun testCartItem(
     available = available,
 )
 
-fun testCart(items: List<CartItem> = listOf(testCartItem())): Cart = Cart(
-    id = if (items.isEmpty()) null else 7,
-    items = items,
-    itemCount = items.sumOf { it.quantity },
-    subtotal = items.filter { it.available }.sumOf { it.lineTotal },
-)
+fun testCart(items: List<CartItem> = listOf(testCartItem())): Cart {
+    val subtotal = items.filter { it.available }.sumOf { it.lineTotal }
+    return Cart(
+        id = if (items.isEmpty()) null else 7,
+        items = items,
+        itemCount = items.sumOf { it.quantity },
+        subtotal = subtotal,
+        // Mirrors the server: flat 30,000 under the 500,000 free-shipping threshold.
+        shippingFee = if (items.any { it.available } && subtotal < 500_000) 30_000 else 0,
+    )
+}
 
 class FakeCartRepository(
     var getResult: ApiResult<Cart> = ApiResult.Success(testCart()),

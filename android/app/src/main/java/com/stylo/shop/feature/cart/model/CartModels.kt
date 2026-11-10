@@ -21,8 +21,11 @@ data class Cart(
     val items: List<CartItem>,
     val itemCount: Int,
     val subtotal: Long,
+    /** Server-computed preview for this subtotal; the order recomputes it at placement. */
+    val shippingFee: Long,
 ) {
     val isEmpty: Boolean get() = items.isEmpty()
+    val total: Long get() = subtotal + shippingFee
 }
 
 /**

@@ -148,5 +148,6 @@ class CartViewModel @Inject constructor(
         items = emptyList(),
         itemCount = 0,
         subtotal = 0,
+        shippingFee = 0,
     )
 }

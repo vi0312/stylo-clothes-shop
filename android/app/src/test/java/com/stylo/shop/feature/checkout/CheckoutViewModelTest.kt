@@ -7,6 +7,7 @@ import com.stylo.shop.core.network.ApiErrorKind
 import com.stylo.shop.core.network.ApiResult
 import com.stylo.shop.feature.cart.FakeCartRepository
 import com.stylo.shop.feature.cart.testCart
+import com.stylo.shop.feature.cart.testCartItem
 import com.stylo.shop.feature.checkout.model.CHECKOUT_NOTE_MAX
 import com.stylo.shop.feature.checkout.model.PlacedOrder
 import com.stylo.shop.feature.checkout.model.StockShortfall
@@ -57,6 +58,21 @@ class CheckoutViewModelTest {
         assertEquals(testDefaultAddress.id, state.selectedAddressId)
         assertEquals(testCart().subtotal, state.cart?.subtotal)
         assertTrue(state.canSubmit)
+    }
+
+    @Test
+    fun `the total adds the server shipping fee to the subtotal`() = runTest {
+        val below = viewModel(cart = FakeCartRepository(getResult = ApiResult.Success(testCart())))
+        advance()
+        assertEquals(testCart().subtotal + 30_000L, below.uiState.value.total)
+
+        val free = viewModel(
+            cart = FakeCartRepository(
+                getResult = ApiResult.Success(testCart(listOf(testCartItem(quantity = 3)))),
+            ),
+        )
+        advance()
+        assertEquals(597_000L, free.uiState.value.total)
     }
 
     @Test

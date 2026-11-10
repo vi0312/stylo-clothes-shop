@@ -46,6 +46,7 @@ data class CartDto(
     val items: List<CartItemDto> = emptyList(),
     val itemCount: Int = 0,
     val subtotal: Long = 0,
+    val shippingFee: Long = 0,
 )
 
 @Serializable

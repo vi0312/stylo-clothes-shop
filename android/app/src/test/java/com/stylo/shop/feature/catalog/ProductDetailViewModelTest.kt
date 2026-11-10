@@ -167,6 +167,58 @@ class ProductDetailViewModelTest {
     }
 
     @Test
+    fun `addToCart sends the chosen quantity and resets it`() = runTest {
+        val cartRepository = FakeCartRepository()
+        val repo = FakeCatalogRepository().apply {
+            getDetailResult = { ApiResult.Success(sampleProductDetail()) }
+        }
+        val viewModel = ProductDetailViewModel(
+            repo,
+            cartRepository,
+            SavedStateHandle(mapOf("productId" to 1L)),
+        )
+        dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onIncreaseQuantity()
+        viewModel.onIncreaseQuantity()
+        assertEquals(3, viewModel.uiState.value.quantity)
+
+        viewModel.effects.test {
+            viewModel.addToCart()
+            dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(ProductDetailEffect.AddedToCart, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        assertEquals(listOf(1L to 3), cartRepository.added)
+        assertEquals(1, viewModel.uiState.value.quantity)
+    }
+
+    @Test
+    fun `quantity stops at stock and clamps to the newly selected variant`() = runTest {
+        val repo = FakeCatalogRepository().apply {
+            getDetailResult = { ApiResult.Success(sampleProductDetail()) }
+        }
+        val viewModel = ProductDetailViewModel(
+            repo,
+            FakeCartRepository(),
+            SavedStateHandle(mapOf("productId" to 1L)),
+        )
+        dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+        repeat(20) { viewModel.onIncreaseQuantity() }
+        assertEquals(10, viewModel.uiState.value.quantity)
+
+        // Trắng/L only has 2 units, so the held 10 is clamped instead of carried over.
+        viewModel.onSelectColor("Trắng")
+        assertEquals(2, viewModel.uiState.value.quantity)
+
+        repeat(5) { viewModel.onDecreaseQuantity() }
+        assertEquals(1, viewModel.uiState.value.quantity)
+    }
+
+    @Test
     fun addToCartFailureEmitsTheError() = runTest {
         val error = ApiError(ApiErrorKind.HTTP, code = "OUT_OF_STOCK", httpStatus = 409)
         val cartRepository = FakeCartRepository().apply {

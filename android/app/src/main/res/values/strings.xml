@@ -321,7 +321,9 @@
     <string name="variant_color_size">Màu %1$s · Kích cỡ %2$s</string>
     <string name="item_quantity">SL %1$d</string>
     <string name="checkout_subtotal">Tạm tính</string>
-    <string name="checkout_shipping_pending">Phí vận chuyển được xác nhận khi đặt hàng.</string>
+    <string name="checkout_shipping_fee">Phí vận chuyển</string>
+    <string name="checkout_shipping_free">Miễn phí</string>
+    <string name="checkout_total">Tổng cộng</string>
     <string name="checkout_submit">Đặt hàng · %1$s</string>
     <string name="checkout_submit_plain">Đặt hàng</string>
     <string name="checkout_submitting">Đang đặt hàng…</string>

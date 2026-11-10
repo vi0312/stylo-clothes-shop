@@ -69,6 +69,7 @@ import com.stylo.shop.feature.catalog.model.ProductDetail
 import com.stylo.shop.feature.catalog.ui.components.ColorSelector
 import com.stylo.shop.feature.catalog.ui.components.SizeSelector
 import com.stylo.shop.core.ui.components.StyloErrorState
+import com.stylo.shop.core.ui.components.StyloQtyStepper
 import com.stylo.shop.core.ui.components.StyloStickyCta
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -199,6 +200,8 @@ fun ProductDetailScreen(
                         state = state,
                         onColorSelected = viewModel::onSelectColor,
                         onSizeSelected = viewModel::onSelectSize,
+                        onDecreaseQuantity = viewModel::onDecreaseQuantity,
+                        onIncreaseQuantity = viewModel::onIncreaseQuantity,
                     )
                 }
             }
@@ -212,6 +215,8 @@ private fun ProductDetailContent(
     state: ProductDetailUiState,
     onColorSelected: (String) -> Unit,
     onSizeSelected: (String) -> Unit,
+    onDecreaseQuantity: () -> Unit,
+    onIncreaseQuantity: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -318,6 +323,30 @@ private fun ProductDetailContent(
                     selectedSize = state.selectedSize,
                     onSizeSelected = onSizeSelected,
                 )
+                Spacer(Modifier.height(20.dp))
+
+                // The server adds to whatever the cart already holds, so the stepper caps at
+                // the variant's own stock and the OUT_OF_STOCK error covers the remainder.
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.qty_value),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                    Spacer(Modifier.weight(1f))
+                    StyloQtyStepper(
+                        quantity = state.quantity,
+                        onDecrease = onDecreaseQuantity,
+                        onIncrease = onIncreaseQuantity,
+                        enabled = state.selectedVariant != null && !state.isAddingToCart,
+                        canDecrease = state.quantity > 1,
+                        canIncrease = state.quantity < state.stock,
+                        decreaseTestTag = UiTags.ProductDetailQuantityMinus,
+                        increaseTestTag = UiTags.ProductDetailQuantityPlus,
+                    )
+                }
                 Spacer(Modifier.height(20.dp))
             }
 

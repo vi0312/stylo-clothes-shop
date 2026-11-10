@@ -40,6 +40,8 @@ data class ProductDetailUiState(
     val currentPrice: Long = 0L,
     val isLowStock: Boolean = false,
     val isAddingToCart: Boolean = false,
+    /** Clamped to the selected variant's stock: the server rejects an add that exceeds it. */
+    val quantity: Int = 1,
 )
 
 sealed interface ProductDetailEffect {
@@ -75,11 +77,27 @@ class ProductDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isAddingToCart = true) }
-            when (val result = cartRepository.addItem(variant.id, 1)) {
-                is ApiResult.Success -> _effects.send(ProductDetailEffect.AddedToCart)
+            when (val result = cartRepository.addItem(variant.id, state.quantity)) {
+                is ApiResult.Success -> {
+                    _effects.send(ProductDetailEffect.AddedToCart)
+                    // The cart now holds those units; the next add starts from one again.
+                    _uiState.update { it.copy(quantity = 1) }
+                }
                 is ApiResult.Failure -> _effects.send(ProductDetailEffect.AddFailed(result.error))
             }
             _uiState.update { it.copy(isAddingToCart = false) }
+        }
+    }
+
+    fun onIncreaseQuantity() {
+        _uiState.update { state ->
+            if (state.quantity >= state.stock) state else state.copy(quantity = state.quantity + 1)
+        }
+    }
+
+    fun onDecreaseQuantity() {
+        _uiState.update { state ->
+            if (state.quantity <= 1) state else state.copy(quantity = state.quantity - 1)
         }
     }
 
@@ -106,6 +124,7 @@ class ProductDetailViewModel @Inject constructor(
                             selectedVariant = initialVariant,
                             availableColors = colors,
                             availableSizes = sizes,
+                            requestedQuantity = 1,
                         )
                     }
                 }
@@ -138,6 +157,7 @@ class ProductDetailViewModel @Inject constructor(
                 selectedVariant = variant,
                 availableColors = it.availableColors,
                 availableSizes = newSizes,
+                requestedQuantity = it.quantity,
             )
         }
     }
@@ -158,6 +178,7 @@ class ProductDetailViewModel @Inject constructor(
                 selectedVariant = variant,
                 availableColors = it.availableColors,
                 availableSizes = it.availableSizes,
+                requestedQuantity = it.quantity,
             )
         }
     }
@@ -193,6 +214,7 @@ class ProductDetailViewModel @Inject constructor(
         selectedVariant: ProductVariant?,
         availableColors: List<String>,
         availableSizes: List<SizeItemState>,
+        requestedQuantity: Int,
     ): ProductDetailUiState {
         val stock = selectedVariant?.stock ?: 0
         val isLowStock = selectedVariant != null && stock in 1..5
@@ -215,6 +237,7 @@ class ProductDetailViewModel @Inject constructor(
             isCtaEnabled = isCtaEnabled,
             currentPrice = price,
             isLowStock = isLowStock,
+            quantity = if (stock > 0) requestedQuantity.coerceIn(1, stock) else 1,
         )
     }
 }
