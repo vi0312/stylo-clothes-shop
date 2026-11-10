@@ -69,6 +69,28 @@ class ProductDetailViewModelTest {
     }
 
     @Test
+    fun loadDetailSkipsAColourThatIsSoldOut() = runTest {
+        val product = sampleProductDetail(
+            variants = listOf(
+                ProductVariant(id = 1, sku = "S-BLK", size = "S", color = "Đen", price = 199_000, stock = 0),
+                ProductVariant(id = 2, sku = "S-WHT", size = "S", color = "Trắng", price = 199_000, stock = 4),
+            ),
+        )
+        val repo = FakeCatalogRepository().apply {
+            getDetailResult = { ApiResult.Success(product) }
+        }
+        val savedState = SavedStateHandle(mapOf("productId" to 1L))
+        val viewModel = ProductDetailViewModel(repo, FakeCartRepository(), savedState)
+        dispatcherRule.dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals("Trắng", state.selectedColor)
+        assertEquals("S", state.selectedSize)
+        assertEquals(2L, state.selectedVariant?.id)
+        assertTrue(state.isCtaEnabled)
+    }
+
+    @Test
     fun clickingOutOfStockSizeDoesNotChangeSelection() = runTest {
         val repo = FakeCatalogRepository().apply {
             getDetailResult = { ApiResult.Success(sampleProductDetail()) }

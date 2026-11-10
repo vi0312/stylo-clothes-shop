@@ -109,8 +109,10 @@ class ProductDetailViewModel @Inject constructor(
                 is ApiResult.Success -> {
                     val product = result.data
                     val colors = product.variants.map { it.color }.distinct()
-                    // Auto-select first color if available
-                    val initialColor = colors.firstOrNull()
+                    // Prefer a colour that can actually be bought; the first colour may be sold out.
+                    val initialColor = colors.firstOrNull { color ->
+                        product.variants.any { it.color == color && it.stock > 0 }
+                    } ?: colors.firstOrNull()
                     val sizes = computeSizes(product.variants, initialColor)
                     // Auto-select first in-stock size if any
                     val initialSize = sizes.firstOrNull { it.isAvailable }?.size
