@@ -14,6 +14,9 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | SKU | `sku` | Mã duy nhất của variant | Unique toàn hệ thống |
 | Giá bán | `price` | Giá niêm yết của variant, VND | Số nguyên, không thập phân |
 | Tồn kho | `stock` | Số lượng còn bán được của một variant | Cột trên variant; mọi thay đổi kèm một `StockMovement` trong cùng transaction |
+| Phí vận chuyển | `shippingFee` | Khoản phẳng cộng vào tổng đơn | Một mức `SHIPPING_FEE` cho mọi đơn dưới ngưỡng miễn phí; snapshot trên `Order`, không phải cột suy ra |
+| Ngưỡng miễn phí vận chuyển | `FREE_SHIPPING_THRESHOLD` | Mốc tạm tính mà từ đó `shippingFee = 0` | Đặt 0 để tắt ưu đãi; đổi biến môi trường không làm đổi đơn đã đặt |
+| Xem trước phí vận chuyển | `Cart.shippingFee` | Phí mà đơn sẽ chịu nếu đặt ngay với tạm tính hiện tại | Chỉ để hiển thị; server tính lại lúc đặt hàng và đó mới là số ghi vào `Order` |
 | Sổ cái tồn kho | `StockMovement` | Bản ghi append-only của mỗi lần tồn thay đổi | `delta` âm khi bán, dương khi nhập/hoàn; không sửa, không xoá |
 | Phiếu nhập kho | `InventoryReceipt` | Chứng từ một lần nhập hàng | `code` dạng `PN-…`; bất biến sau khi lưu; không sửa, không xoá |
 | Dòng phiếu nhập | `InventoryReceiptItem` | Variant + số lượng + đơn giá nhập | Lưu lịch sử giá nhập |
@@ -57,6 +60,9 @@ không hardcode, và **không** để tên model (`Variant`, `size`, `color`) l�
 | `ProductVariant.size` | "Kích cỡ" (giá trị hiển thị nguyên: S, M, L, 39…) | PDP, giỏ, đơn, phiếu nhập | "Size" |
 | `ProductVariant.color` | "Màu sắc" (giá trị: Đen, Trắng…) | PDP, giỏ, đơn | "Màu" khi đứng một mình làm nhãn; "Color" |
 | `ProductVariant` đang chọn ở PDP | "Thêm {size} vào giỏ" trong CTA | PDP | "Thêm size S vào giỏ" (lẫn chữ "size"), "Thêm vào giỏ" chung chung |
+| Số lượng mua trên PDP | "Số lượng" (nhãn stepper) | PDP | "Qty", "Số cái", ghép số lượng vào nhãn CTA |
+| `shippingFee` | "Phí vận chuyển"; 0 đồng → "Miễn phí" | Checkout, chi tiết đơn | "Ship", "Phí giao hàng" |
+| Tổng phải trả | "Tổng cộng" (`subtotal + shippingFee`); CTA "Đặt hàng · {tổng}" | Checkout | Dùng "Tạm tính" cho số đã gồm phí ship |
 | `Product.soldCount` | *không hiển thị* | — | "Đã bán N" (xem ADR 0016 §4) |
 | `stock` | "Tồn kho" cho admin, "Còn {n} sản phẩm" cho khách | Dashboard, PDP | "Stock", "Tồn" |
 | `InventoryReceipt` | "Phiếu nhập kho", dòng: "dòng" | Admin kho | "Receipt", "phiếu nhập hàng" lẫn lộn |
