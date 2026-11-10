@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { getEnv } from '../../../config/env.js'
+import { ATTEMPT_TTL_MS } from '../payments.logic.js'
 import type { PaymentGateway, PaymentUrlInput } from './PaymentGateway.js'
 
 const VNPAY_VERSION = '2.1.0'
@@ -119,6 +120,8 @@ export function buildVnpayParams(
     vnp_ReturnUrl: config.returnUrl,
     vnp_IpAddr: config.ipAddress,
     vnp_CreateDate: vnpTimestamp(input.createdAt),
+    // Derived from `createdAt`, never stored: a rebuilt URL must stay byte-identical.
+    vnp_ExpireDate: vnpTimestamp(new Date(input.createdAt.getTime() + ATTEMPT_TTL_MS)),
   }
 }
 

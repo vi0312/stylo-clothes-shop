@@ -38,6 +38,8 @@ describe('VNPay request parameters', () => {
       vnp_ReturnUrl: 'http://127.0.0.1:8787/api/v1/payments/vnpay/return',
       vnp_IpAddr: '127.0.0.1',
       vnp_CreateDate: '20261104102000',
+      // ATTEMPT_TTL_MS after createdAt: the attempt and the gateway URL expire together.
+      vnp_ExpireDate: '20261104103500',
     })
   })
 
