@@ -32,8 +32,9 @@ import org.junit.runner.RunWith
 
 /**
  * ONLINE checkout up to the payment hand-off, then the app's return path: the browser intent is
- * stubbed so no Chrome is involved, the test completes the mock gateway call the page would post,
- * and the order detail must flip to PAID. Driving Chrome itself stays in the manual smoke.
+ * stubbed so no Chrome is involved. Under MOCK the test completes the mock call the page would
+ * post and the order detail must flip to PAID; under VNPAY it asserts the signed sandbox URL and
+ * the unpaid banner, because a real sandbox payment cannot be settled from the test process.
  */
 @RunWith(AndroidJUnit4::class)
 @OptIn(ExperimentalTestApi::class)
@@ -58,6 +59,9 @@ class OnlinePaymentJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.w
     private val recipient = "Nguyen Online"
     private val line = "12 Le Loi, Quan 1"
 
+    /** The gateway is chosen by the server; only the mock page can be settled from the test process. */
+    private var usesMockGateway = false
+
     @Before
     fun stubBrowserHandOff() {
         Intents.init()
@@ -71,7 +75,7 @@ class OnlinePaymentJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.w
     }
 
     @Test
-    fun onlineOrderBecomesPaidAfterTheMockGatewayCompletes() = run {
+    fun onlineOrderHandsOffToTheConfiguredGateway() = run {
         step("Start logged out") {
             composeRule.startLoggedOut()
         }
@@ -110,22 +114,34 @@ class OnlinePaymentJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.w
             composeRule.waitForTag(UiTags.OrderDetailCode)
         }
 
-        step("Complete the mock payment server-side") {
-            val paymentUrl = waitForValue(10_000) {
+        step("Hand off to the configured payment gateway") {
+            // The server decides MOCK or VNPAY, so match any browser hand-off first and branch on
+            // the URL: a mock URL can be settled from here, a signed VNPay URL cannot.
+            val paymentUrl = waitForValue(15_000) {
                 Intents.getIntents()
-                    .lastOrNull { it.action == Intent.ACTION_VIEW && it.data?.path?.contains("/payments/mock/") == true }
+                    .lastOrNull { it.action == Intent.ACTION_VIEW && it.data != null }
                     ?.data
                     ?.toString()
             }
-            assertTrue("app opened the mock gateway: $paymentUrl", paymentUrl.contains("/payments/mock/"))
-            completeMockPayment(paymentUrl)
+            usesMockGateway = paymentUrl.contains("/payments/mock/")
+            if (usesMockGateway) {
+                completeMockPayment(paymentUrl)
+            } else {
+                assertTrue("VNPay URL carries a transaction ref: $paymentUrl", paymentUrl.contains("vnp_TxnRef="))
+                assertTrue("VNPay URL is signed: $paymentUrl", paymentUrl.contains("vnp_SecureHash="))
+                assertTrue("VNPay URL names the terminal: $paymentUrl", paymentUrl.contains("vnp_TmnCode="))
+            }
         }
 
-        step("The order detail reports the payment") {
+        step("The order detail reports the payment state") {
             composeRule.waitForTag(UiTags.OrderDetailPaymentRetry)
             orderDetail.list.performScrollToNode(hasTestTag(UiTags.OrderDetailPaymentRetry))
-            orderDetail.paymentRefresh.performClick()
-            composeRule.waitForText("Đã thanh toán")
+            if (usesMockGateway) {
+                orderDetail.paymentRefresh.performClick()
+                composeRule.waitForText("Đã thanh toán")
+            } else {
+                composeRule.waitForText("Thanh toán chưa hoàn tất")
+            }
         }
     }
 
