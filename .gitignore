@@ -22,3 +22,9 @@ android/.gradle/
 android/local.properties
 android/**/build/
 android/.kotlin/
+
+# Generated submission source folder; rebuild with docs/report/tools/make_zip.py
+docs/submission/Stylo_Source/
+
+# Turn-in bundle of the whole submission directory, rebuilt by hand; not versioned.
+docs/submission.zip
