@@ -41,6 +41,8 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Return URL | `returnUrl` | URL trình duyệt quay về sau khi thanh toán | Chỉ VNPay dùng; verify checksum trước khi đổi trạng thái |
 | IPN | `ipn` | Gateway gọi server-to-server báo kết quả | Server local không có IPN public; endpoint vẫn idempotent và trả `RspCode` |
 | Refresh token | `RefreshToken` | Token dài hạn đã hash để cấp access token mới | Không lưu token thô; access 15 phút, refresh 30 ngày |
+| Mã đặt lại mật khẩu | `PasswordResetToken` | Mã 6 số một lần để chứng minh sở hữu email và đặt mật khẩu mới | Hash argon2id; TTL 15 phút; mỗi user đúng một mã sống, mã mới huỷ mã cũ; dùng xong ghi `consumedAt` |
+| Kênh gửi mail | `MAIL_TRANSPORT` | Cách server gửi thư: `smtp` gửi thật, `log` in ra log | `log` chỉ để dev/demo; mã không bao giờ trả qua API |
 | Seed catalog | `seed-assets/catalog/catalog.json` | 185 sản phẩm mẫu (chỉ quần áo, 2-3 màu mỗi sản phẩm) lấy từ dataset sản phẩm thật, đã chuẩn hoá sang schema Stylo | Seed chỉ đọc snapshot + ảnh commit, không gọi mạng; giá/size/màu bổ sung/tồn kho là dữ liệu demo; SKU thường có token màu (`STY-AO-002-XAM-M`), riêng `Áo thun basic` giữ `STY-AO-001-*` |
 | Pinned product | `Áo thun basic` | Sản phẩm seed cố định cho catalog integration test và journey Kaspresso | Không đổi tên hoặc SKU `STY-AO-001-*` khi tái tạo snapshot; seed tạo nó cuối để đứng đầu sort `newest` |
 | Symbol | `ic_launcher_foreground` | Phần hình của logo, 5 polygon, không có chữ | Chỉ dùng cho icon launcher/themed icon; 58% canvas 108dp để nằm trong safe zone 66dp |
@@ -68,3 +70,4 @@ không hardcode, và **không** để tên model (`Variant`, `size`, `color`) l�
 | `InventoryReceipt` | "Phiếu nhập kho", dòng: "dòng" | Admin kho | "Receipt", "phiếu nhập hàng" lẫn lộn |
 | `ProductVariant` tồn thấp (dashboard) | "Biến thể tồn thấp" | Dashboard KPI, báo cáo | "Variant tồn thấp" |
 | Giá | `Formatters.money` → `289.000 ₫` (NBSP trước ₫) | Mọi nơi | "289k", "289.000đ" không NBSP, dấu "-" làm khoảng giá (dùng "–") |
+| `PasswordResetToken` | "Mã xác nhận"; luồng "Quên mật khẩu" → "Đặt lại mật khẩu" | Màn đặt lại mật khẩu | "OTP", "code", "Mã PIN" |

@@ -137,6 +137,7 @@ E2E Kaspresso cần API đang chạy, AVD đang bật và mobilecli; quy trình 
 | Windows: adb báo không kết nối được cổng 5037 | Windows giữ dải 4942-5041. Đặt `ANDROID_ADB_SERVER_PORT=5359` trước khi chạy script/AVD, sau đó `adb -P 5359 reverse tcp:8787 tcp:8787` |
 | App báo lỗi mạng | Kiểm tra `adb reverse tcp:8787 tcp:8787` sau mỗi lần khởi động lại máy ảo, hoặc build với `-Pstylo.apiBaseUrl=http://10.0.2.2:8787/api/v1/` |
 | Muốn thanh toán VNPay sandbox | Đặt `PAYMENT_PROVIDER=VNPAY` cùng `VNPAY_TMN_CODE`/`VNPAY_HASH_SECRET` trong `server/.env`, khởi động lại API. Demo mặc định dùng `MOCK` |
+| Muốn nhận mã đặt lại mật khẩu qua email | Mặc định `MAIL_TRANSPORT=log` in mã ra log server; muốn gửi thật thì đặt `MAIL_TRANSPORT=smtp` cùng `SMTP_HOST`/`SMTP_PORT`/`SMTP_USER`/`SMTP_PASS` (Mailtrap sandbox nhận mọi địa chỉ người nhận) |
 
 ## Đóng gói bài nộp
 
