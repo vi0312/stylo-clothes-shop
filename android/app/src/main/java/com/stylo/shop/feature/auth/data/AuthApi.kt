@@ -27,6 +27,12 @@ interface AuthApi {
     @POST("auth/logout")
     suspend fun logout(@Body body: RefreshRequest)
 
+    @POST("auth/forgot-password")
+    suspend fun forgotPassword(@Body body: ForgotPasswordRequest)
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword(@Body body: ResetPasswordRequest)
+
     @GET("me")
     suspend fun me(@Header("Authorization") authorization: String): UserDto
 }
@@ -47,6 +53,16 @@ data class LoginRequest(
 
 @Serializable
 data class RefreshRequest(val refreshToken: String)
+
+@Serializable
+data class ForgotPasswordRequest(val email: String)
+
+@Serializable
+data class ResetPasswordRequest(
+    val email: String,
+    val code: String,
+    val password: String,
+)
 
 @Serializable
 data class AuthSessionDto(

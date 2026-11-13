@@ -4,6 +4,7 @@ import { parseDatabaseUrl, parseEnv } from '../../src/config/env.js'
 const minimalEnv = {
   DATABASE_URL: 'mysql://user:secret@localhost:3307/stylo',
   JWT_ACCESS_SECRET: 'test-secret',
+  MAIL_TRANSPORT: 'log',
 } satisfies NodeJS.ProcessEnv
 
 describe('parseEnv', () => {
@@ -16,6 +17,11 @@ describe('parseEnv', () => {
     expect(env.SHIPPING_FEE).toBe(30000)
     expect(env.FREE_SHIPPING_THRESHOLD).toBe(500000)
     expect(env.UPLOAD_DIR).toBe('uploads')
+    expect(env.MAIL_FROM).toBe('Stylo <no-reply@stylo.local>')
+    expect(env.PASSWORD_RESET_TTL_MINUTES).toBe(15)
+    expect(env.PASSWORD_RESET_MAX_ATTEMPTS).toBe(5)
+    expect(env.PASSWORD_RESET_RESEND_SECONDS).toBe(60)
+    expect(env.PASSWORD_RESET_MAX_PER_HOUR).toBe(5)
   })
 
   it('coerces numeric strings', () => {
@@ -37,6 +43,10 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...minimalEnv, PAYMENT_PROVIDER: 'VNPAY' })).toThrow(
       /VNPAY_TMN_CODE/,
     )
+  })
+
+  it('requires SMTP credentials when the mail transport is smtp', () => {
+    expect(() => parseEnv({ ...minimalEnv, MAIL_TRANSPORT: 'smtp' })).toThrow(/SMTP_HOST/)
   })
 })
 

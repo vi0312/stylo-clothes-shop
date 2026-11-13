@@ -4,12 +4,14 @@ import express from 'express'
 import { pino } from 'pino'
 import { pinoHttp } from 'pino-http'
 import { getEnv } from './config/env.js'
+import { createMailer, type Mailer } from './lib/mailer.js'
 import { errorHandler } from './middleware/error.js'
 import { notFoundHandler } from './middleware/notFound.js'
-import { apiRouter } from './routes/index.js'
+import { createApiRouter } from './routes/index.js'
 
 export interface AppOptions {
   uploadDir?: string
+  mailer?: Mailer
 }
 
 const ONE_DAY_SECONDS = 86_400
@@ -41,6 +43,8 @@ export function createApp(options: AppOptions = {}): express.Express {
 
   app.use(express.json({ limit: '1mb' }))
 
+  const mailer = options.mailer ?? createMailer(env, (message) => logger.info(message))
+
   app.use(
     '/uploads',
     express.static(uploadDir, {
@@ -54,7 +58,7 @@ export function createApp(options: AppOptions = {}): express.Express {
     response.json({ status: 'ok' })
   })
 
-  app.use('/api/v1', apiRouter)
+  app.use('/api/v1', createApiRouter({ mailer }))
 
   app.use(notFoundHandler)
   app.use(errorHandler)

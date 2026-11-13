@@ -54,6 +54,7 @@ import androidx.compose.material3.TextButton
 fun AuthScreen(
     mode: AuthMode,
     onSwitchMode: (AuthMode) -> Unit,
+    onForgotPassword: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -67,6 +68,7 @@ fun AuthScreen(
         onFullNameChange = viewModel::onFullNameChange,
         onPhoneChange = viewModel::onPhoneChange,
         onSwitchMode = onSwitchMode,
+        onForgotPassword = onForgotPassword,
         onSubmit = {
             focusManager.clearFocus()
             viewModel.submit(mode)
@@ -83,6 +85,7 @@ private fun AuthContent(
     onFullNameChange: (String) -> Unit,
     onPhoneChange: (String) -> Unit,
     onSwitchMode: (AuthMode) -> Unit,
+    onForgotPassword: () -> Unit,
     onSubmit: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -211,6 +214,21 @@ private fun AuthContent(
             },
         )
 
+        if (!isRegister) {
+            TextButton(
+                onClick = onForgotPassword,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .testTag(UiTags.AuthForgotLink),
+                contentPadding = PaddingValues(horizontal = 8.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.auth_forgot_link),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
+
         if (state.formError != null) {
             Spacer(Modifier.height(16.dp))
             ErrorBanner(message = stringResource(state.formError))
@@ -231,7 +249,7 @@ private fun AuthContent(
 }
 
 @Composable
-private fun AuthTextField(
+internal fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -264,7 +282,7 @@ private fun AuthTextField(
 }
 
 @Composable
-private fun ErrorBanner(message: String) {
+internal fun ErrorBanner(message: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.errorContainer,
@@ -286,6 +304,7 @@ internal fun AuthFieldError.message(): String = when (this) {
     AuthFieldError.PasswordTooShort -> stringResource(R.string.auth_field_password_short)
     AuthFieldError.EmailTaken -> stringResource(R.string.error_email_taken)
     AuthFieldError.Invalid -> stringResource(R.string.auth_field_invalid)
+    AuthFieldError.InvalidCode -> stringResource(R.string.auth_field_invalid_code)
     is AuthFieldError.TooLong -> stringResource(R.string.auth_field_too_long, max)
 }
 

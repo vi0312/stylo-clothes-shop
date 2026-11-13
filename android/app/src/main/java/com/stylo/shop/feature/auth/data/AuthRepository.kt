@@ -22,6 +22,11 @@ interface AuthRepository {
 
     suspend fun currentUser(accessToken: String): ApiResult<User>
 
+    /** The server always answers 202, so a success only means "if the account exists, a code went out". */
+    suspend fun requestPasswordReset(email: String): ApiResult<Unit>
+
+    suspend fun resetPassword(email: String, code: String, password: String): ApiResult<Unit>
+
     /** Best effort: a failed revoke must never keep the user signed in locally. */
     suspend fun logout(refreshToken: String)
 }
@@ -49,6 +54,18 @@ class DefaultAuthRepository @Inject constructor(
 
     override suspend fun currentUser(accessToken: String): ApiResult<User> = apiCall {
         api.me("Bearer $accessToken").toUser()
+    }
+
+    override suspend fun requestPasswordReset(email: String): ApiResult<Unit> = apiCall {
+        api.forgotPassword(ForgotPasswordRequest(email))
+    }
+
+    override suspend fun resetPassword(
+        email: String,
+        code: String,
+        password: String,
+    ): ApiResult<Unit> = apiCall {
+        api.resetPassword(ResetPasswordRequest(email, code, password))
     }
 
     override suspend fun logout(refreshToken: String) {

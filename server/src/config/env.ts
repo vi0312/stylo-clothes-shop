@@ -16,6 +16,18 @@ const envSchema = z
     FREE_SHIPPING_THRESHOLD: z.coerce.number().int().nonnegative().default(500000),
     LOW_STOCK_THRESHOLD: z.coerce.number().int().nonnegative().default(5),
     UPLOAD_DIR: z.string().min(1).default('uploads'),
+    MAIL_TRANSPORT: z.enum(['smtp', 'log']).default('smtp'),
+    MAIL_FROM: z.string().min(1).default('Stylo <no-reply@stylo.local>'),
+    SMTP_HOST: z.string().default(''),
+    SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+    SMTP_SECURE: z.stringbool().default(false),
+    SMTP_USER: z.string().default(''),
+    SMTP_PASS: z.string().default(''),
+    PASSWORD_RESET_TTL_MINUTES: z.coerce.number().int().positive().default(15),
+    PASSWORD_RESET_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
+    // A second request inside this window is ignored, so the mail cannot be used to flood an inbox.
+    PASSWORD_RESET_RESEND_SECONDS: z.coerce.number().int().nonnegative().default(60),
+    PASSWORD_RESET_MAX_PER_HOUR: z.coerce.number().int().positive().default(5),
     SEED_ADMIN_EMAIL: z.email().default('admin@stylo.local'),
     SEED_ADMIN_PASSWORD: z.string().min(8).default('Admin@12345'),
     SEED_ADMIN_NAME: z.string().min(1).default('Stylo Admin'),
@@ -26,6 +38,13 @@ const envSchema = z
     VNPAY_IP_ADDR: z.string().min(1).default('127.0.0.1'),
   })
   .superRefine((value, ctx) => {
+    if (value.MAIL_TRANSPORT === 'smtp') {
+      for (const key of ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS'] as const) {
+        if (!value[key]) {
+          ctx.addIssue({ code: 'custom', path: [key], message: 'required when MAIL_TRANSPORT=smtp' })
+        }
+      }
+    }
     if (value.PAYMENT_PROVIDER !== 'VNPAY') return
     if (!value.VNPAY_TMN_CODE) {
       ctx.addIssue({ code: 'custom', path: ['VNPAY_TMN_CODE'], message: 'required when PAYMENT_PROVIDER=VNPAY' })

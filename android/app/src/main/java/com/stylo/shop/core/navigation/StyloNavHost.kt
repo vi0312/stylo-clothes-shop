@@ -55,6 +55,7 @@ import com.stylo.shop.feature.admin.ui.reports.AdminReportsScreen
 import com.stylo.shop.feature.admin.ui.users.AdminUserListScreen
 import com.stylo.shop.feature.auth.ui.AuthMode
 import com.stylo.shop.feature.auth.ui.AuthScreen
+import com.stylo.shop.feature.auth.ui.ForgotPasswordScreen
 import com.stylo.shop.feature.cart.ui.CartScreen
 import com.stylo.shop.feature.catalog.ui.CatalogScreen
 import com.stylo.shop.feature.checkout.ui.CheckoutScreen
@@ -150,12 +151,20 @@ private fun SessionNavHost(
                     AuthScreen(
                         mode = AuthMode.LOGIN,
                         onSwitchMode = { navController.switchAuthMode(RegisterRoute) },
+                        onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
                     )
                 }
                 composable<RegisterRoute> {
                     AuthScreen(
                         mode = AuthMode.REGISTER,
                         onSwitchMode = { navController.switchAuthMode(LoginRoute) },
+                        onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
+                    )
+                }
+                composable<ForgotPasswordRoute> {
+                    ForgotPasswordScreen(
+                        onBack = { navController.popBackStack() },
+                        onDone = { navController.popBackStack<LoginRoute>(inclusive = false) },
                     )
                 }
             }

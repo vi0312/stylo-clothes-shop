@@ -17,6 +17,22 @@
     <string name="auth_field_password_short">Mật khẩu phải có ít nhất 8 ký tự.</string>
     <string name="auth_field_invalid">Giá trị không hợp lệ.</string>
     <string name="auth_field_too_long">Tối đa %1$d ký tự.</string>
+    <string name="auth_field_invalid_code">Mã xác nhận phải gồm 6 chữ số.</string>
+
+    <string name="auth_forgot_link">Quên mật khẩu?</string>
+    <string name="auth_forgot_title">Quên mật khẩu</string>
+    <string name="auth_forgot_email_hint">Nhập email đã đăng ký. Nếu tài khoản tồn tại, Stylo sẽ gửi một mã xác nhận gồm 6 chữ số.</string>
+    <string name="auth_forgot_send_code">Gửi mã xác nhận</string>
+    <string name="auth_forgot_code_hint">Nhập mã đã gửi tới %1$s và chọn mật khẩu mới.</string>
+    <string name="auth_forgot_code">Mã xác nhận</string>
+    <string name="auth_forgot_new_password">Mật khẩu mới</string>
+    <string name="auth_forgot_submit">Đặt lại mật khẩu</string>
+    <string name="auth_forgot_change_email">Đổi email</string>
+    <string name="auth_forgot_resend">Gửi lại mã</string>
+    <string name="auth_forgot_resend_wait">Gửi lại sau %1$d giây</string>
+    <string name="auth_forgot_done_title">Đã đặt lại mật khẩu</string>
+    <string name="auth_forgot_done_body">Mọi phiên đăng nhập cũ đã bị đăng xuất. Hãy đăng nhập bằng mật khẩu mới.</string>
+    <string name="auth_forgot_done_cta">Đăng nhập</string>
 
     <string name="session_unavailable">Không kết nối được tới máy chủ. Kiểm tra mạng rồi thử lại.</string>
     <string name="action_retry">Thử lại</string>
@@ -44,6 +60,7 @@
     <string name="error_unauthorized">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.</string>
     <string name="error_invalid_credentials">Email hoặc mật khẩu không đúng.</string>
     <string name="error_invalid_token">Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.</string>
+    <string name="error_invalid_reset_code">Mã xác nhận không đúng hoặc đã hết hạn.</string>
     <string name="error_forbidden">Bạn không có quyền thực hiện thao tác này.</string>
     <string name="error_account_disabled">Tài khoản đã bị vô hiệu hoá.</string>
     <string name="error_not_found">Không tìm thấy dữ liệu.</string>

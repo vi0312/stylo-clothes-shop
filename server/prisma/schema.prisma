@@ -68,11 +68,12 @@ model User {
   createdAt    DateTime   @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt    DateTime   @updatedAt @map("updated_at") @db.DateTime(3)
 
-  refreshTokens RefreshToken[]
-  addresses     Address[]
-  cart          Cart?
-  orders        Order[]
-  receipts      InventoryReceipt[]
+  refreshTokens       RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+  addresses           Address[]
+  cart                Cart?
+  orders              Order[]
+  receipts            InventoryReceipt[]
 
   @@map("user")
 }
@@ -89,6 +90,22 @@ model RefreshToken {
 
   @@index([userId, expiresAt])
   @@map("refresh_token")
+}
+
+/// One live code per user: requesting a new one consumes the previous one.
+model PasswordResetToken {
+  id         Int       @id @default(autoincrement())
+  userId     Int       @map("user_id")
+  codeHash   String    @map("code_hash") @db.VarChar(255)
+  expiresAt  DateTime  @map("expires_at") @db.DateTime(3)
+  attempts   Int       @default(0)
+  consumedAt DateTime? @map("consumed_at") @db.DateTime(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("password_reset_token")
 }
 
 model Address {
@@ -141,10 +158,10 @@ model Product {
   createdAt   DateTime      @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt   DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
 
-  category Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  brand    Brand            @relation(fields: [brandId], references: [id], onDelete: Restrict)
-  variants ProductVariant[]
-  images   ProductImage[]
+  category   Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  brand      Brand            @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  variants   ProductVariant[]
+  images     ProductImage[]
   orderItems OrderItem[]
 
   @@index([status, createdAt])
@@ -164,11 +181,11 @@ model ProductVariant {
   createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
 
-  product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
-  cartItems           CartItem[]
-  orderItems          OrderItem[]
-  receiptItems        InventoryReceiptItem[]
-  stockMovements      StockMovement[]
+  product        Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  receiptItems   InventoryReceiptItem[]
+  stockMovements StockMovement[]
 
   @@unique([productId, size, color])
   @@index([productId])
@@ -236,7 +253,7 @@ model Order {
   createdAt       DateTime      @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt       DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
 
-  user     User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user     User        @relation(fields: [userId], references: [id], onDelete: Restrict)
   items    OrderItem[]
   payments Payment[]
 
@@ -272,19 +289,19 @@ model OrderItem {
 }
 
 model Payment {
-  id             Int             @id @default(autoincrement())
-  orderId        Int             @map("order_id")
-  provider       PaymentProvider
-  status         PaymentStatus   @default(PENDING)
-  amount         Int
-  txnRef         String          @unique @map("txn_ref") @db.VarChar(50)
-  providerTxnNo  String?         @map("provider_txn_no") @db.VarChar(64)
-  bankCode       String?         @map("bank_code") @db.VarChar(20)
-  payDate        DateTime?       @map("pay_date") @db.DateTime(3)
-  rawResponse    Json?           @map("raw_response")
-  failureReason  String?         @map("failure_reason") @db.VarChar(255)
-  createdAt      DateTime        @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt      DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+  id            Int             @id @default(autoincrement())
+  orderId       Int             @map("order_id")
+  provider      PaymentProvider
+  status        PaymentStatus   @default(PENDING)
+  amount        Int
+  txnRef        String          @unique @map("txn_ref") @db.VarChar(50)
+  providerTxnNo String?         @map("provider_txn_no") @db.VarChar(64)
+  bankCode      String?         @map("bank_code") @db.VarChar(20)
+  payDate       DateTime?       @map("pay_date") @db.DateTime(3)
+  rawResponse   Json?           @map("raw_response")
+  failureReason String?         @map("failure_reason") @db.VarChar(255)
+  createdAt     DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
 
@@ -310,11 +327,11 @@ model InventoryReceipt {
 }
 
 model InventoryReceiptItem {
-  id        Int    @id @default(autoincrement())
-  receiptId Int    @map("receipt_id")
-  variantId Int    @map("variant_id")
+  id        Int @id @default(autoincrement())
+  receiptId Int @map("receipt_id")
+  variantId Int @map("variant_id")
   quantity  Int
-  unitCost  Int    @map("unit_cost")
+  unitCost  Int @map("unit_cost")
 
   receipt InventoryReceipt @relation(fields: [receiptId], references: [id], onDelete: Restrict)
   variant ProductVariant   @relation(fields: [variantId], references: [id], onDelete: Restrict)

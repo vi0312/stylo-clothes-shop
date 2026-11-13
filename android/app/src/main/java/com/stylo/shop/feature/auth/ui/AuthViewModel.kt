@@ -31,6 +31,7 @@ sealed interface AuthFieldError {
     data object PasswordTooShort : AuthFieldError
     data object EmailTaken : AuthFieldError
     data object Invalid : AuthFieldError
+    data object InvalidCode : AuthFieldError
     data class TooLong(val max: Int) : AuthFieldError
 }
 

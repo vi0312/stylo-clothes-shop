@@ -23,6 +23,7 @@ object ErrorMessages {
         "UNAUTHORIZED" -> R.string.error_unauthorized
         "INVALID_CREDENTIALS" -> R.string.error_invalid_credentials
         "INVALID_TOKEN" -> R.string.error_invalid_token
+        "INVALID_RESET_CODE" -> R.string.error_invalid_reset_code
         "FORBIDDEN" -> R.string.error_forbidden
         "ACCOUNT_DISABLED" -> R.string.error_account_disabled
         "NOT_FOUND" -> R.string.error_not_found

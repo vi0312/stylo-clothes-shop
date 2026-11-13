@@ -1,11 +1,14 @@
 import { Prisma } from '../../generated/prisma/client.js'
 import { getEnv } from '../../config/env.js'
 import { signAccessToken } from '../../lib/jwt.js'
+import type { Mailer } from '../../lib/mailer.js'
 import { hashPassword, verifyPassword } from '../../lib/password.js'
+import { generateResetCode } from '../../lib/passwordResetCode.js'
+import { passwordResetMail } from '../../lib/passwordResetMail.js'
 import { generateRefreshToken, hashRefreshToken } from '../../lib/refreshToken.js'
 import { conflict, forbidden, unauthorized } from '../../utils/errors.js'
 import { toPublicUser, type PublicUser } from '../users/user.dto.js'
-import type { LoginInput, RegisterInput } from './auth.schema.js'
+import type { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from './auth.schema.js'
 import * as repository from './auth.repository.js'
 
 export interface AuthSession {
@@ -113,4 +116,82 @@ export async function refresh(refreshToken: string): Promise<TokenPair> {
 
 export async function logout(refreshToken: string): Promise<void> {
   await repository.revokeRefreshToken(hashRefreshToken(refreshToken))
+}
+
+export interface PasswordResetDeps {
+  mailer: Mailer
+  /** Transport failures stay invisible to the caller; the route logs them instead. */
+  onMailError: (error: unknown) => void
+}
+
+function invalidResetCode() {
+  return unauthorized('INVALID_RESET_CODE', 'Invalid or expired reset code')
+}
+
+export async function requestPasswordReset(
+  input: ForgotPasswordInput,
+  deps: PasswordResetDeps,
+): Promise<void> {
+  const env = getEnv()
+  const user = await repository.findUserByEmail(input.email.toLowerCase())
+
+  if (!user || user.status === 'DISABLED') {
+    // The same argon2 work as a real request, so latency does not announce the account.
+    await hashPassword(generateResetCode())
+    return
+  }
+
+  const now = new Date()
+  const latest = await repository.findLatestPasswordResetToken(user.id)
+  if (latest && now.getTime() - latest.createdAt.getTime() < env.PASSWORD_RESET_RESEND_SECONDS * 1_000) {
+    return
+  }
+  const recent = await repository.countPasswordResetTokensSince(
+    user.id,
+    new Date(now.getTime() - 3_600_000),
+  )
+  if (recent >= env.PASSWORD_RESET_MAX_PER_HOUR) return
+
+  const code = generateResetCode()
+  const token = await repository.replacePasswordResetToken({
+    userId: user.id,
+    codeHash: await hashPassword(code),
+    expiresAt: new Date(now.getTime() + env.PASSWORD_RESET_TTL_MINUTES * 60_000),
+  })
+
+  try {
+    await deps.mailer.send({
+      to: user.email,
+      ...passwordResetMail({
+        fullName: user.fullName,
+        email: user.email,
+        code,
+        ttlMinutes: env.PASSWORD_RESET_TTL_MINUTES,
+      }),
+    })
+  } catch (error) {
+    // A failed send must not start the cooldown: dropping the token lets the retry through.
+    await repository.deletePasswordResetToken(token.id)
+    deps.onMailError(error)
+  }
+}
+
+export async function resetPassword(input: ResetPasswordInput): Promise<void> {
+  const user = await repository.findUserByEmail(input.email.toLowerCase())
+  if (!user || user.status === 'DISABLED') throw invalidResetCode()
+
+  const token = await repository.findActivePasswordResetToken(user.id, new Date())
+  if (!token) throw invalidResetCode()
+
+  if (!(await verifyPassword(token.codeHash, input.code))) {
+    await repository.registerWrongResetCode(token.id, getEnv().PASSWORD_RESET_MAX_ATTEMPTS)
+    throw invalidResetCode()
+  }
+
+  const consumed = await repository.consumePasswordResetToken(
+    token.id,
+    user.id,
+    await hashPassword(input.password),
+  )
+  if (!consumed) throw invalidResetCode()
 }

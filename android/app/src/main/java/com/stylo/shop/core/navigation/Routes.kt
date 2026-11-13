@@ -18,6 +18,9 @@ data object LoginRoute
 data object RegisterRoute
 
 @Serializable
+data object ForgotPasswordRoute
+
+@Serializable
 data object HomeRoute
 
 @Serializable
