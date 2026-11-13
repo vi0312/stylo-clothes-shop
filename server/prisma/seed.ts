@@ -202,6 +202,8 @@ function imageUrl(filename: string): string {
   return `/uploads/products/${filename}`
 }
 
+// Order codes embed the run date, so a later run computes new codes but would recreate the same
+// orders. The client id is stable per index and lets the loop skip those rows instead.
 function clientOrderId(index: number): string {
   return `00000000-0000-4000-8000-${String(index).padStart(12, '0')}`
 }
@@ -583,6 +585,12 @@ export async function seed(): Promise<void> {
     const customer = customers.get(orderPlan.customer)
     if (!customer) throw new Error(`Seed order ${orderPlan.code} references an unknown customer`)
 
+    const clientId = clientOrderId(index + 1)
+    const alreadySeeded = await prisma.order.findUnique({
+      where: { userId_clientOrderId: { userId: customer.id, clientOrderId: clientId } },
+    })
+    if (alreadySeeded) continue
+
     const address = await prisma.address.findFirst({
       where: { userId: customer.id, isDefault: true },
     })
@@ -610,7 +618,7 @@ export async function seed(): Promise<void> {
       data: {
         code: orderPlan.code,
         userId: customer.id,
-        clientOrderId: clientOrderId(index + 1),
+        clientOrderId: clientId,
         status: orderPlan.status,
         paymentMethod: orderPlan.method,
         paidAt,
