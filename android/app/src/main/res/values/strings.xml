@@ -195,6 +195,7 @@
     <string name="admin_product_section_images">Ảnh sản phẩm</string>
     <string name="admin_product_section_variants">Biến thể</string>
     <string name="admin_product_stock_note">Tồn kho chỉ thay đổi qua phiếu nhập kho, không sửa ở đây.</string>
+    <string name="admin_product_receipt_action">Tạo phiếu nhập kho</string>
     <string name="admin_product_delete">Xoá sản phẩm</string>
     <string name="admin_product_delete_title">Xoá sản phẩm?</string>
     <string name="admin_product_delete_body">Chỉ xoá được khi sản phẩm chưa phát sinh đơn hàng hoặc phiếu nhập. Nếu không, hãy chuyển trạng thái sang Đã ẩn.</string>

@@ -30,7 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -63,6 +62,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -76,6 +76,7 @@ import com.stylo.shop.R
 import com.stylo.shop.core.network.ApiClient
 import com.stylo.shop.core.ui.Formatters
 import com.stylo.shop.core.ui.UiEffectHost
+import com.stylo.shop.core.ui.UiTags
 import com.stylo.shop.feature.admin.model.ADMIN_COLOR_MAX
 import com.stylo.shop.feature.admin.model.ADMIN_DESCRIPTION_MAX
 import com.stylo.shop.feature.admin.model.ADMIN_NAME_MAX
@@ -104,6 +105,7 @@ import androidx.compose.foundation.layout.heightIn
 fun AdminProductFormScreen(
     productId: Long?,
     onBack: () -> Unit,
+    onOpenReceipt: () -> Unit,
     viewModel: AdminProductFormViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -179,6 +181,7 @@ fun AdminProductFormScreen(
                     onDismissFailedImage = viewModel::dismissFailedImage,
                     onRequestDeleteImage = viewModel::requestDeleteImage,
                     onRequestDeleteProduct = viewModel::requestDeleteProduct,
+                    onOpenReceipt = onOpenReceipt,
                 )
             }
         }
@@ -248,6 +251,7 @@ private fun ProductFormContent(
     onDismissFailedImage: () -> Unit,
     onRequestDeleteImage: (AdminProductImage) -> Unit,
     onRequestDeleteProduct: () -> Unit,
+    onOpenReceipt: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -331,6 +335,16 @@ private fun ProductFormContent(
                 }
 
                 state.formError?.let { AdminErrorBanner(it) }
+
+                StyloBusyButton(
+                    text = stringResource(R.string.admin_product_save),
+                    busy = state.saving,
+                    onClick = onSave,
+                    testTag = UiTags.AdminProductSave,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                )
             }
         }
 
@@ -364,17 +378,9 @@ private fun ProductFormContent(
                 onAddVariant = onAddVariant,
                 onEditVariant = onEditVariant,
                 onRequestDeleteVariant = onRequestDeleteVariant,
+                onOpenReceipt = onOpenReceipt,
             )
 
-            Spacer(Modifier.height(4.dp))
-            StyloBusyButton(
-                text = stringResource(R.string.admin_product_save),
-                busy = state.saving,
-                onClick = onSave,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
-            )
             Spacer(Modifier.height(16.dp))
 
             OutlinedButton(
@@ -598,6 +604,7 @@ private fun VariantsSection(
     onAddVariant: () -> Unit,
     onEditVariant: (AdminVariant) -> Unit,
     onRequestDeleteVariant: (AdminVariant) -> Unit,
+    onOpenReceipt: () -> Unit,
 ) {
     StyloCard(title = stringResource(R.string.admin_product_section_variants)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -662,6 +669,13 @@ private fun VariantsSection(
                     }
                 }
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
+
+            TextButton(
+                onClick = onOpenReceipt,
+                modifier = Modifier.testTag(UiTags.AdminProductReceipt),
+            ) {
+                Text(stringResource(R.string.admin_product_receipt_action))
             }
         }
     }

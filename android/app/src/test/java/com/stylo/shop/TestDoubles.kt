@@ -60,6 +60,15 @@ class FakeAuthRepository(
     override suspend fun currentUser(accessToken: String): ApiResult<User> =
         currentUserResult(accessToken)
 
+    override suspend fun requestPasswordReset(email: String): ApiResult<Unit> =
+        ApiResult.Success(Unit)
+
+    override suspend fun resetPassword(
+        email: String,
+        code: String,
+        password: String,
+    ): ApiResult<Unit> = ApiResult.Success(Unit)
+
     override suspend fun logout(refreshToken: String) {
         logoutCalls++
     }

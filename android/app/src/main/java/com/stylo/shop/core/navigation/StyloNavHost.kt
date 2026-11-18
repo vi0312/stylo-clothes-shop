@@ -318,6 +318,7 @@ private fun SessionNavHost(
                         AdminProductFormScreen(
                             productId = null,
                             onBack = { navController.popBackStack() },
+                            onOpenReceipt = { navController.navigate(AdminReceiptCreateRoute) },
                         )
                     }
                     composable<AdminProductEditRoute> { backStackEntry ->
@@ -325,6 +326,7 @@ private fun SessionNavHost(
                         AdminProductFormScreen(
                             productId = route.productId,
                             onBack = { navController.popBackStack() },
+                            onOpenReceipt = { navController.navigate(AdminReceiptCreateRoute) },
                         )
                     }
                     composable<AdminOrdersRoute> {
