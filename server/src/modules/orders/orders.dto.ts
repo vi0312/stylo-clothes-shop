@@ -25,6 +25,7 @@ export interface OrderDto {
   shippingFee: number
   total: number
   note: string | null
+  cancelReason: string | null
   recipientName: string
   recipientPhone: string
   shippingAddress: string
@@ -66,6 +67,7 @@ export interface AdminOrderDetailDto {
   shippingFee: number
   total: number
   note: string | null
+  cancelReason: string | null
   recipientName: string
   recipientPhone: string
   shippingAddress: string

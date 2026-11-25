@@ -28,7 +28,8 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Kỳ báo cáo | `from` / `to` | Hai ngày lịch VN, bao gồm cả hai đầu | Mặc định 30 ngày gần nhất; đổi sang cửa sổ UTC nửa mở khi truy vấn |
 | Giỏ hàng | `Cart` | Tập variant khách chọn trước khi đặt | Server-side, đúng một giỏ mỗi khách, tạo khi thêm lần đầu |
 | Dòng giỏ | `CartItem` | Một variant và số lượng trong giỏ | Unique theo `(cart, variant)` |
-| Đơn hàng | `Order` | Cam kết mua của customer | `PENDING → CONFIRMED → SHIPPING → DELIVERED`; `CANCELLED` từ `PENDING`/`CONFIRMED` |
+| Đơn hàng | `Order` | Cam kết mua của customer | `PENDING → CONFIRMED → SHIPPING → DELIVERED`; `CANCELLED` từ `PENDING`/`CONFIRMED`/`SHIPPING` |
+| Lý do huỷ | `cancelReason` | Lý do khách nêu khi huỷ đơn | Bắt buộc khi khách huỷ; admin thấy trong chi tiết đơn; đơn đã thanh toán vẫn huỷ được và tiền hoàn ngoài hệ thống |
 | Mã đơn | `Order.code` | Mã hiển thị và đối soát của đơn | Duy nhất, dạng `STY-…`; **không** dùng làm tham chiếu gateway |
 | Mã đặt hàng phía client | `clientOrderId` | UUID app sinh cho một lần bấm đặt hàng | Unique theo `(user, clientOrderId)`; retry trả lại đơn cũ, không trừ kho hay tạo payment lần hai |
 | Dòng đơn | `OrderItem` | Snapshot tên, size, màu, SKU, đơn giá, giá vốn tại thời điểm đặt | Không join ngược để lấy giá hiện tại |

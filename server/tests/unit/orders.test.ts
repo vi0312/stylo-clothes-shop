@@ -137,16 +137,16 @@ describe('derived payment status', () => {
 })
 
 describe('order state machine', () => {
-  // The documented matrix from docs/api.md, written out once so a drift fails here.
+  // The documented matrix, written out once so a drift fails here.
   const documented: Record<string, readonly string[]> = {
     PENDING: ['CONFIRMED', 'CANCELLED'],
     CONFIRMED: ['SHIPPING', 'CANCELLED'],
-    SHIPPING: ['DELIVERED'],
+    SHIPPING: ['DELIVERED', 'CANCELLED'],
     DELIVERED: [],
     CANCELLED: [],
   }
 
-  it('allows exactly the five documented transitions and rejects everything else', () => {
+  it('allows exactly the documented transitions and rejects everything else', () => {
     for (const from of ORDER_STATUSES) {
       for (const to of ORDER_STATUSES) {
         expect(canTransition(from, to), `${from} → ${to}`).toBe(documented[from].includes(to))

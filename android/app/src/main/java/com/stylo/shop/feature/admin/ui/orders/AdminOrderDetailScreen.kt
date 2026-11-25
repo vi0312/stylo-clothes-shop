@@ -21,6 +21,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TextButton
@@ -115,25 +116,50 @@ fun AdminOrderDetailScreen(
     val target = pendingTarget
     val order = state.order
     if (target != null && order != null) {
+        var transitionReason by remember(target) { mutableStateOf("") }
+        val cancelNeedsReason = target == OrderStatus.CANCELLED
+        val trimmedReason = transitionReason.trim()
         AlertDialog(
             onDismissRequest = { pendingTarget = null },
             title = { Text(stringResource(R.string.admin_order_transition_title)) },
             text = {
-                Text(
-                    stringResource(
-                        R.string.admin_order_transition_body,
-                        order.code,
-                        orderStatusLabel(order.status),
-                        orderStatusLabel(target),
-                    ),
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        stringResource(
+                            R.string.admin_order_transition_body,
+                            order.code,
+                            orderStatusLabel(order.status),
+                            orderStatusLabel(target),
+                        ),
+                    )
+                    if (cancelNeedsReason) {
+                        OutlinedTextField(
+                            value = transitionReason,
+                            onValueChange = { if (it.length <= 255) transitionReason = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag(UiTags.AdminOrderCancelReason),
+                            label = { Text(stringResource(R.string.order_cancel_reason_label)) },
+                            placeholder = {
+                                Text(stringResource(R.string.order_cancel_reason_hint))
+                            },
+                            supportingText = { Text("${transitionReason.length}/255") },
+                            minLines = 2,
+                            maxLines = 4,
+                        )
+                    }
+                }
             },
             confirmButton = {
                 TextButton(
                     onClick = {
                         pendingTarget = null
-                        viewModel.transition(target)
+                        viewModel.transition(
+                            target,
+                            if (cancelNeedsReason) trimmedReason else null,
+                        )
                     },
+                    enabled = !cancelNeedsReason || trimmedReason.isNotEmpty(),
                     modifier = Modifier.testTag(UiTags.AdminOrderTransitionConfirm),
                 ) {
                     Text(stringResource(R.string.admin_order_transition_confirm))
@@ -162,6 +188,8 @@ private fun AdminOrderContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item { HeaderCard(order) }
+        order.cancelReason?.takeIf { it.isNotBlank() && order.status == OrderStatus.CANCELLED }
+            ?.let { reason -> item { CancelReasonCard(reason) } }
         item { CustomerCard(order) }
         item { SectionTitle(stringResource(R.string.order_detail_items_title)) }
         items(order.items, key = { it.id }) { AdminOrderLine(it) }
@@ -217,6 +245,14 @@ private fun HeaderCard(order: AdminOrderDetail) {
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun CancelReasonCard(reason: String) {
+    AdminCard {
+        SectionTitle(stringResource(R.string.order_cancel_reason_title))
+        Text(text = reason, style = MaterialTheme.typography.bodyMedium)
     }
 }
 

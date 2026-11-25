@@ -266,7 +266,7 @@ describe('inventory receipts', () => {
 
     for (const method of ['patch', 'delete'] as const) {
       const response = await request(app)
-        [method](`/api/v1/admin/inventory-receipts/${created.body.id}`)
+      [method](`/api/v1/admin/inventory-receipts/${created.body.id}`)
         .set(auth(adminToken))
         .send({ supplier: 'Đổi nhà cung cấp' })
       expect(response.status).toBe(404)
@@ -337,6 +337,7 @@ describe('inventory receipts', () => {
     const cancelled = await request(app)
       .post(`/api/v1/orders/${order.body.order.id}/cancel`)
       .set(auth(customerToken))
+      .send({ reason: 'Kiểm tra sổ cái tồn kho' })
     expect(cancelled.status).toBe(200)
 
     // docs/erd.md reconciliation query: stock must equal the sum of its ledger.

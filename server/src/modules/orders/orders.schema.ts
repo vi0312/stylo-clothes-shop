@@ -77,6 +77,17 @@ export type OrderParams = z.infer<typeof orderParamsSchema>
 
 export const changeOrderStatusSchema = z.strictObject({
   status: z.enum(ORDER_STATUSES),
+  reason: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.string().trim().max(255).optional(),
+  ),
 })
 
 export type ChangeOrderStatusInput = z.infer<typeof changeOrderStatusSchema>
+
+/** The customer must say why; the reason is shown to the shop and kept with the order. */
+export const cancelOrderSchema = z.strictObject({
+  reason: z.string().trim().min(1).max(255),
+})
+
+export type CancelOrderInput = z.infer<typeof cancelOrderSchema>

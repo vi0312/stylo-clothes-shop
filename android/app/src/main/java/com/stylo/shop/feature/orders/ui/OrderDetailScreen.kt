@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -170,24 +171,52 @@ fun OrderDetailScreen(
 
     if (showCancelDialog) {
         val order = (state.orderState as? UiState.Content)?.data
+        var reason by remember { mutableStateOf("") }
+        val trimmedReason = reason.trim()
+        val refundOnline = order?.paymentMethod == OrderPaymentMethod.ONLINE &&
+            order.paymentStatus == PaymentStatus.PAID
         AlertDialog(
             onDismissRequest = { showCancelDialog = false },
             modifier = Modifier.e2eTagsAsResourceId(),
             title = { Text(stringResource(R.string.order_cancel_title)) },
             text = {
-                Text(
-                    stringResource(
-                        R.string.order_cancel_body,
-                        order?.code.orEmpty(),
-                    ),
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        stringResource(
+                            R.string.order_cancel_body,
+                            order?.code.orEmpty(),
+                        ),
+                    )
+                    if (refundOnline) {
+                        Text(
+                            text = stringResource(R.string.order_cancel_online_refund),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.testTag(UiTags.OrderCancelRefundNotice),
+                        )
+                    }
+                    OutlinedTextField(
+                        value = reason,
+                        onValueChange = { if (it.length <= 255) reason = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(UiTags.OrderCancelReason),
+                        label = { Text(stringResource(R.string.order_cancel_reason_label)) },
+                        placeholder = { Text(stringResource(R.string.order_cancel_reason_hint)) },
+                        supportingText = { Text("${reason.length}/255") },
+                        minLines = 2,
+                        maxLines = 4,
+                        enabled = !state.isCancelling,
+                    )
+                }
             },
             confirmButton = {
                 TextButton(
                     onClick = {
                         showCancelDialog = false
-                        viewModel.cancel()
+                        viewModel.cancel(trimmedReason)
                     },
+                    enabled = trimmedReason.isNotEmpty() && !state.isCancelling,
                     modifier = Modifier.testTag(UiTags.OrderCancelConfirm),
                 ) {
                     Text(
@@ -227,6 +256,14 @@ private fun OrderContent(
             item { PaymentBanner(order = order, onRefresh = onRefresh) }
         }
         item { StatusTimeline(order.status) }
+        order.cancelReason?.takeIf { it.isNotBlank() && order.status == OrderStatus.CANCELLED }
+            ?.let { reason -> item { CancelReasonCard(reason) } }
+        if (order.status == OrderStatus.CANCELLED &&
+            order.paymentMethod == OrderPaymentMethod.ONLINE &&
+            order.paymentStatus == PaymentStatus.PAID
+        ) {
+            item { RefundNoticeCard() }
+        }
         item { SectionTitle(stringResource(R.string.order_detail_items_title)) }
         items(order.items, key = { it.id }) { item -> OrderLine(item) }
         item { ShippingCard(order) }
@@ -415,6 +452,36 @@ private fun StatusTimeline(status: OrderStatus) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CancelReasonCard(reason: String) {
+    SectionCard {
+        Text(
+            text = stringResource(R.string.order_cancel_reason_title),
+            style = MaterialTheme.typography.titleSmall,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(text = reason, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+@Composable
+private fun RefundNoticeCard() {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(UiTags.OrderCancelRefundNotice),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    ) {
+        Text(
+            text = stringResource(R.string.order_cancel_online_refund),
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }
 

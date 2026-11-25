@@ -49,18 +49,32 @@ class AdminOrderDetailViewModelTest {
         val expected = mapOf(
             OrderStatus.PENDING to listOf(OrderStatus.CONFIRMED, OrderStatus.CANCELLED),
             OrderStatus.CONFIRMED to listOf(OrderStatus.SHIPPING, OrderStatus.CANCELLED),
-            OrderStatus.SHIPPING to listOf(OrderStatus.DELIVERED),
+            OrderStatus.SHIPPING to listOf(OrderStatus.DELIVERED, OrderStatus.CANCELLED),
             OrderStatus.DELIVERED to emptyList(),
             OrderStatus.CANCELLED to emptyList(),
         )
 
         expected.forEach { (status, targets) ->
-            assertEquals(targets, allowedOrderTransitions(status, paid = false))
+            assertEquals(targets, allowedOrderTransitions(status))
         }
-        // A paid order cannot be cancelled any more; the server answers ORDER_ALREADY_PAID.
-        assertEquals(listOf(OrderStatus.CONFIRMED), allowedOrderTransitions(OrderStatus.PENDING, paid = true))
-        assertEquals(listOf(OrderStatus.SHIPPING), allowedOrderTransitions(OrderStatus.CONFIRMED, paid = true))
-        assertEquals(listOf(OrderStatus.DELIVERED), allowedOrderTransitions(OrderStatus.SHIPPING, paid = true))
+    }
+
+    @Test
+    fun `a cancel transition posts the trimmed reason`() = runTest {
+        val repository = FakeAdminOrdersRepository(
+            detail = ApiResult.Success(testAdminOrderDetail(status = OrderStatus.SHIPPING)),
+            updateResult = ApiResult.Success(testAdminOrderDetail(status = OrderStatus.CANCELLED)),
+        )
+        val viewModel = viewModel(repository)
+        advance()
+
+        viewModel.transition(OrderStatus.CANCELLED, "  Khách từ chối nhận  ")
+        advance()
+
+        assertEquals(
+            listOf(Triple(123L, OrderStatus.CANCELLED, "Khách từ chối nhận")),
+            repository.updates,
+        )
     }
 
     @Test
@@ -97,7 +111,10 @@ class AdminOrderDetailViewModelTest {
         viewModel.transition(OrderStatus.CONFIRMED)
         advance()
 
-        assertEquals(listOf(123L to OrderStatus.CONFIRMED), repository.updates)
+        assertEquals(
+            listOf(Triple(123L, OrderStatus.CONFIRMED, null)),
+            repository.updates,
+        )
         assertEquals(OrderStatus.CONFIRMED, viewModel.uiState.value.order?.status)
         assertTrue(effect.await() is UiEffect.ShowMessageRes)
     }

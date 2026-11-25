@@ -127,11 +127,14 @@ export const ORDER_STATUSES = [
   'CANCELLED',
 ] as const satisfies readonly OrderStatus[]
 
-/** `DELIVERED` and `CANCELLED` are terminal, so a restock can never run twice. */
+/**
+ * `DELIVERED` and `CANCELLED` are terminal, so a restock can never run twice. A customer may
+ * still cancel while the parcel is in transit; only a delivered order is beyond cancelling.
+ */
 export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
   PENDING: ['CONFIRMED', 'CANCELLED'],
   CONFIRMED: ['SHIPPING', 'CANCELLED'],
-  SHIPPING: ['DELIVERED'],
+  SHIPPING: ['DELIVERED', 'CANCELLED'],
   DELIVERED: [],
   CANCELLED: [],
 }

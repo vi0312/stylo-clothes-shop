@@ -57,6 +57,7 @@ fun testAdminOrderDetail(
     paymentMethod: OrderPaymentMethod = OrderPaymentMethod.COD,
     paymentStatus: PaymentStatus = PaymentStatus.UNPAID,
     paidAt: String? = null,
+    cancelReason: String? = null,
     items: List<AdminOrderItem> = listOf(testAdminOrderItem()),
     payments: List<AdminPayment> = emptyList(),
     customerName: String = "Nguyễn Văn An",
@@ -78,6 +79,7 @@ fun testAdminOrderDetail(
         shippingFee = 30_000,
         total = subtotal + 30_000,
         note = null,
+        cancelReason = cancelReason,
         recipientName = customerName,
         recipientPhone = "0901234567",
         shippingAddress = "12 Nguyễn Trãi, P. Bến Thành, Q.1, TP.HCM",
@@ -121,7 +123,7 @@ class FakeAdminOrdersRepository(
 
     val queries = mutableListOf<AdminOrderQuery>()
     val requestedIds = mutableListOf<Long>()
-    val updates = mutableListOf<Pair<Long, OrderStatus>>()
+    val updates = mutableListOf<Triple<Long, OrderStatus, String?>>()
 
     override suspend fun listOrders(
         query: AdminOrderQuery,
@@ -139,8 +141,9 @@ class FakeAdminOrdersRepository(
     override suspend fun updateStatus(
         orderId: Long,
         target: OrderStatus,
+        reason: String?,
     ): ApiResult<AdminOrderDetail> {
-        updates += orderId to target
+        updates += Triple(orderId, target, reason)
         return updateResult ?: detail
     }
 }

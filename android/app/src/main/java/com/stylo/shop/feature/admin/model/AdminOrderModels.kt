@@ -81,6 +81,7 @@ data class AdminOrderDetail(
     val shippingFee: Long,
     val total: Long,
     val note: String?,
+    val cancelReason: String?,
     val recipientName: String,
     val recipientPhone: String,
     val shippingAddress: String,
@@ -112,17 +113,11 @@ fun AdminOrderRange.window(today: LocalDate): Pair<String?, String?> = when (thi
 
 /**
  * Mirrors the server's `ORDER_TRANSITIONS` table; the server stays the authority and answers
- * `INVALID_ORDER_STATE`/`ORDER_ALREADY_PAID` for anything else.
+ * `INVALID_ORDER_STATE` for anything else. A paid order can still be cancelled.
  */
-fun allowedOrderTransitions(status: OrderStatus, paid: Boolean): List<OrderStatus> = when (status) {
-    OrderStatus.PENDING -> if (paid) listOf(OrderStatus.CONFIRMED) else listOf(
-        OrderStatus.CONFIRMED,
-        OrderStatus.CANCELLED,
-    )
-    OrderStatus.CONFIRMED -> if (paid) listOf(OrderStatus.SHIPPING) else listOf(
-        OrderStatus.SHIPPING,
-        OrderStatus.CANCELLED,
-    )
-    OrderStatus.SHIPPING -> listOf(OrderStatus.DELIVERED)
+fun allowedOrderTransitions(status: OrderStatus): List<OrderStatus> = when (status) {
+    OrderStatus.PENDING -> listOf(OrderStatus.CONFIRMED, OrderStatus.CANCELLED)
+    OrderStatus.CONFIRMED -> listOf(OrderStatus.SHIPPING, OrderStatus.CANCELLED)
+    OrderStatus.SHIPPING -> listOf(OrderStatus.DELIVERED, OrderStatus.CANCELLED)
     OrderStatus.DELIVERED, OrderStatus.CANCELLED -> emptyList()
 }

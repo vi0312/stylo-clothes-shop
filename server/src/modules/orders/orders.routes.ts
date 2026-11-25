@@ -3,6 +3,7 @@ import { currentUser, requireAuth } from '../../middleware/auth.js'
 import { requireRole } from '../../middleware/requireRole.js'
 import { parseBody, parseParams, parseQuery } from '../../middleware/validate.js'
 import {
+  cancelOrderSchema,
   changeOrderStatusSchema,
   createOrderSchema,
   listAdminOrdersQuerySchema,
@@ -33,7 +34,8 @@ ordersRouter.get('/orders/:id', async (request, response) => {
 
 ordersRouter.post('/orders/:id/cancel', async (request, response) => {
   const { id } = parseParams(orderParamsSchema, request)
-  response.json(await ordersService.cancelOrder(currentUser(request).id, id))
+  const input = parseBody(cancelOrderSchema, request)
+  response.json(await ordersService.cancelOrder(currentUser(request).id, id, input.reason))
 })
 
 export const adminOrdersRouter = Router()
@@ -53,5 +55,5 @@ adminOrdersRouter.get('/admin/orders/:id', async (request, response) => {
 adminOrdersRouter.patch('/admin/orders/:id/status', async (request, response) => {
   const { id } = parseParams(orderParamsSchema, request)
   const input = parseBody(changeOrderStatusSchema, request)
-  response.json(await ordersService.changeOrderStatus(id, input.status))
+  response.json(await ordersService.changeOrderStatus(id, input.status, input.reason))
 })

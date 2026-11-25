@@ -31,7 +31,7 @@ interface AdminOrdersApi {
 }
 
 @Serializable
-data class UpdateAdminOrderStatusRequest(val status: String)
+data class UpdateAdminOrderStatusRequest(val status: String, val reason: String? = null)
 
 @Serializable
 data class AdminOrderPageDto(
@@ -68,6 +68,7 @@ data class AdminOrderDetailDto(
     val shippingFee: Long,
     val total: Long,
     val note: String? = null,
+    val cancelReason: String? = null,
     val recipientName: String,
     val recipientPhone: String,
     val shippingAddress: String,

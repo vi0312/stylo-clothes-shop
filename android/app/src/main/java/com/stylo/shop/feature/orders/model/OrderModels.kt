@@ -62,6 +62,7 @@ data class Order(
     val shippingFee: Long,
     val total: Long,
     val note: String?,
+    val cancelReason: String?,
     val recipientName: String,
     val recipientPhone: String,
     val shippingAddress: String,
@@ -71,12 +72,14 @@ data class Order(
 )
 
 /**
- * Cancellation is allowed while the order has not left the shop and no money has landed yet;
- * the server enforces the same rule and answers `INVALID_ORDER_STATE`/`ORDER_ALREADY_PAID`.
+ * A customer may cancel until the parcel is delivered; the server enforces the same rule and
+ * answers `INVALID_ORDER_STATE`. A paid order is refunded outside the app, so the money
+ * already taken does not hide the cancel action.
  */
 fun canCancelOrder(order: Order): Boolean =
-    order.paidAt == null &&
-        (order.status == OrderStatus.PENDING || order.status == OrderStatus.CONFIRMED)
+    order.status == OrderStatus.PENDING ||
+        order.status == OrderStatus.CONFIRMED ||
+        order.status == OrderStatus.SHIPPING
 
 data class OrderSummary(
     val id: Long,

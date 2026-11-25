@@ -24,7 +24,7 @@ export async function revenueByPeriod(
            SUM(total) AS revenue,
            COUNT(*) AS orders
     FROM \`order\`
-    WHERE paid_at >= ${fromUtc} AND paid_at < ${toUtc}
+    WHERE paid_at >= ${fromUtc} AND paid_at < ${toUtc} AND status <> 'CANCELLED'
     GROUP BY period
     ORDER BY period
   `
@@ -49,14 +49,14 @@ export async function topProducts(
              SUM(oi.unit_price * oi.quantity) AS revenue
       FROM order_item oi
       JOIN \`order\` o ON o.id = oi.order_id
-      WHERE o.paid_at >= ${fromUtc} AND o.paid_at < ${toUtc}
+      WHERE o.paid_at >= ${fromUtc} AND o.paid_at < ${toUtc} AND o.status <> 'CANCELLED'
       GROUP BY oi.product_id
     ), latest AS (
       SELECT oi.product_id, oi.product_name,
              ROW_NUMBER() OVER (PARTITION BY oi.product_id ORDER BY o.paid_at DESC, oi.id DESC) AS rn
       FROM order_item oi
       JOIN \`order\` o ON o.id = oi.order_id
-      WHERE o.paid_at >= ${fromUtc} AND o.paid_at < ${toUtc}
+      WHERE o.paid_at >= ${fromUtc} AND o.paid_at < ${toUtc} AND o.status <> 'CANCELLED'
     )
     SELECT a.product_id AS productId, l.product_name AS name, a.quantitySold, a.revenue
     FROM agg a
@@ -118,7 +118,7 @@ export async function sumCogs(fromUtc: Date, toUtc: Date): Promise<unknown> {
     SELECT COALESCE(SUM(oi.quantity * COALESCE(oi.unit_cost, 0)), 0) AS cogs
     FROM order_item oi
     JOIN \`order\` o ON o.id = oi.order_id
-    WHERE o.paid_at >= ${fromUtc} AND o.paid_at < ${toUtc}
+    WHERE o.paid_at >= ${fromUtc} AND o.paid_at < ${toUtc} AND o.status <> 'CANCELLED'
   `
   return rows[0]?.cogs
 }
@@ -127,7 +127,7 @@ export async function sumRevenue(fromUtc: Date, toUtc: Date): Promise<unknown> {
   const rows = await prisma.$queryRaw<{ revenue: unknown }[]>`
     SELECT COALESCE(SUM(total), 0) AS revenue
     FROM \`order\`
-    WHERE paid_at >= ${fromUtc} AND paid_at < ${toUtc}
+    WHERE paid_at >= ${fromUtc} AND paid_at < ${toUtc} AND status <> 'CANCELLED'
   `
   return rows[0]?.revenue
 }

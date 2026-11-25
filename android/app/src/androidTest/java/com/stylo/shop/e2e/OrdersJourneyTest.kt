@@ -127,8 +127,10 @@ class OrdersJourneyTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
             orderDetail.list.performScrollToNode(hasTestTag(UiTags.OrderCancel))
             orderDetail.cancel.performClick()
             composeRule.waitForTag(UiTags.OrderCancelConfirm)
+            orderDetail.cancelReason.performTextInput("E2E đổi ý")
             orderDetail.cancelConfirm.performClick()
             composeRule.waitForText("Đã huỷ")
+            composeRule.waitForText("E2E đổi ý")
         }
 
         step("The cancelled order stays visible under its filter") {

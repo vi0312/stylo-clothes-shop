@@ -277,20 +277,20 @@ export function listAdminOrders(
     ...(query.status ? { status: query.status } : {}),
     ...(query.q
       ? {
-          OR: [
-            { code: { contains: query.q } },
-            { recipientName: { contains: query.q } },
-            { recipientPhone: { contains: query.q } },
-          ],
-        }
+        OR: [
+          { code: { contains: query.q } },
+          { recipientName: { contains: query.q } },
+          { recipientPhone: { contains: query.q } },
+        ],
+      }
       : {}),
     ...(dayWindow.gte || dayWindow.lt
       ? {
-          createdAt: {
-            ...(dayWindow.gte ? { gte: dayWindow.gte } : {}),
-            ...(dayWindow.lt ? { lt: dayWindow.lt } : {}),
-          },
-        }
+        createdAt: {
+          ...(dayWindow.gte ? { gte: dayWindow.gte } : {}),
+          ...(dayWindow.lt ? { lt: dayWindow.lt } : {}),
+        },
+      }
       : {}),
   }
 
@@ -358,7 +358,7 @@ export function orderItemsForRestock(
 export function setOrderStatus(
   tx: Prisma.TransactionClient,
   orderId: number,
-  data: { status: OrderStatus; paidAt?: Date },
+  data: { status: OrderStatus; paidAt?: Date; cancelReason?: string | null },
 ): Promise<unknown> {
   return tx.order.update({ where: { id: orderId }, data })
 }

@@ -17,7 +17,7 @@ interface OrdersRepository {
 
     suspend fun getOrder(orderId: Long): ApiResult<Order>
 
-    suspend fun cancelOrder(orderId: Long): ApiResult<Order>
+    suspend fun cancelOrder(orderId: Long, reason: String): ApiResult<Order>
 }
 
 class DefaultOrdersRepository @Inject constructor(
@@ -36,8 +36,8 @@ class DefaultOrdersRepository @Inject constructor(
         api.getOrder(orderId).toOrder()
     }
 
-    override suspend fun cancelOrder(orderId: Long): ApiResult<Order> = apiCall {
-        api.cancelOrder(orderId).toOrder()
+    override suspend fun cancelOrder(orderId: Long, reason: String): ApiResult<Order> = apiCall {
+        api.cancelOrder(orderId, CancelOrderRequest(reason)).toOrder()
     }
 }
 
@@ -69,6 +69,7 @@ fun OrderDto.toOrder(): Order = Order(
     shippingFee = shippingFee,
     total = total,
     note = note,
+    cancelReason = cancelReason,
     recipientName = recipientName,
     recipientPhone = recipientPhone,
     shippingAddress = shippingAddress,

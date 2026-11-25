@@ -77,6 +77,7 @@ internal class E2eOrderDetailScreen(provider: SemanticsNodeInteractionsProvider)
     val back = onNode { hasTestTag(UiTags.OrderDetailBack) }
     val list = onNode { hasTestTag(UiTags.OrderDetailList) }
     val cancel = onNode { hasTestTag(UiTags.OrderCancel) }
+    val cancelReason = onNode { hasTestTag(UiTags.OrderCancelReason) }
     val cancelConfirm = onNode { hasTestTag(UiTags.OrderCancelConfirm) }
 }
 

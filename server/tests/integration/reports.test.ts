@@ -68,14 +68,14 @@ async function createOrder(options: OrderOptions = {}) {
       ...(options.createdAt ? { createdAt: options.createdAt } : {}),
       ...(items.length > 0
         ? {
-            items: {
-              create: items.map((item) => ({
-                ...item,
-                size: item.size ?? 'M',
-                color: item.color ?? 'Đen',
-              })),
-            },
-          }
+          items: {
+            create: items.map((item) => ({
+              ...item,
+              size: item.size ?? 'M',
+              color: item.color ?? 'Đen',
+            })),
+          },
+        }
         : {}),
     },
   })
@@ -164,6 +164,13 @@ describe('revenue', () => {
     await createOrder({ ...base, paidAt: new Date('2026-11-03T17:00:00.000Z'), total: 999_000 })
     await createOrder({ ...base, status: 'PENDING', paidAt: null, total: 111_000 })
     await createOrder({ ...base, status: 'CANCELLED', paidAt: null, total: 222_000 })
+    // Cancelled after payment: the money came back, so it is not revenue.
+    await createOrder({
+      ...base,
+      status: 'CANCELLED',
+      paidAt: new Date('2026-11-02T09:00:00.000Z'),
+      total: 777_000,
+    })
 
     const response = await getReport('revenue?from=2026-11-01&to=2026-11-03')
     expect(response.status).toBe(200)
@@ -399,6 +406,13 @@ describe('inventory cost', () => {
       paidAt: null,
       total: 999_000,
       items: [{ ...line, unitPrice: 100_000, unitCost: 900_000, quantity: 9 }],
+    })
+    // Cancelled after payment: neither its revenue nor its cost snapshot counts.
+    await createOrder({
+      status: 'CANCELLED',
+      paidAt: new Date('2026-11-02T09:00:00.000Z'),
+      total: 100_000,
+      items: [{ ...line, unitPrice: 50_000, unitCost: 50_000, quantity: 3 }],
     })
 
     const response = await getReport('inventory-cost?from=2026-11-01&to=2026-11-03')

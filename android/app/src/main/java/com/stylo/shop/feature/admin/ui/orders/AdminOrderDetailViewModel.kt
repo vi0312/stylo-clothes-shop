@@ -29,11 +29,9 @@ data class AdminOrderDetailUiState(
     val order: AdminOrderDetail?
         get() = (orderState as? UiState.Content)?.data
 
-    /** Only legal targets are offered; the server still rejects anything stale or paid. */
+    /** Only legal targets are offered; the server still rejects anything stale. */
     val allowedTargets: List<OrderStatus>
-        get() = order?.let {
-            allowedOrderTransitions(it.status, paid = it.paidAt != null)
-        }.orEmpty()
+        get() = order?.let { allowedOrderTransitions(it.status) }.orEmpty()
 }
 
 @HiltViewModel
@@ -74,7 +72,7 @@ class AdminOrderDetailViewModel @Inject constructor(
 
     fun retry() = load()
 
-    fun transition(target: OrderStatus) {
+    fun transition(target: OrderStatus, reason: String? = null) {
         val snapshot = _uiState.value
         val order = snapshot.order ?: return
         if (snapshot.isUpdating || target !in snapshot.allowedTargets) return
@@ -82,7 +80,7 @@ class AdminOrderDetailViewModel @Inject constructor(
         // Claimed before the coroutine starts so a double tap cannot post two transitions.
         _uiState.update { it.copy(isUpdating = true) }
         viewModelScope.launch {
-            when (val result = repository.updateStatus(order.id, target)) {
+            when (val result = repository.updateStatus(order.id, target, reason?.trim())) {
                 is ApiResult.Success -> {
                     _uiState.update {
                         it.copy(orderState = UiState.Content(result.data), isUpdating = false)

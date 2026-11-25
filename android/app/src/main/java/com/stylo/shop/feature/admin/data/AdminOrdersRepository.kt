@@ -20,7 +20,11 @@ interface AdminOrdersRepository {
 
     suspend fun getOrder(orderId: Long): ApiResult<AdminOrderDetail>
 
-    suspend fun updateStatus(orderId: Long, target: OrderStatus): ApiResult<AdminOrderDetail>
+    suspend fun updateStatus(
+        orderId: Long,
+        target: OrderStatus,
+        reason: String? = null,
+    ): ApiResult<AdminOrderDetail>
 }
 
 class DefaultAdminOrdersRepository @Inject constructor(
@@ -48,9 +52,12 @@ class DefaultAdminOrdersRepository @Inject constructor(
     override suspend fun updateStatus(
         orderId: Long,
         target: OrderStatus,
+        reason: String?,
     ): ApiResult<AdminOrderDetail> = apiCall {
-        api.updateStatus(orderId, UpdateAdminOrderStatusRequest(target.apiValue))
-            .toAdminOrderDetail()
+        api.updateStatus(
+            orderId,
+            UpdateAdminOrderStatusRequest(target.apiValue, reason?.takeIf { it.isNotBlank() }),
+        ).toAdminOrderDetail()
     }
 }
 
@@ -91,6 +98,7 @@ fun AdminOrderDetailDto.toAdminOrderDetail(): AdminOrderDetail = AdminOrderDetai
     shippingFee = shippingFee,
     total = total,
     note = note,
+    cancelReason = cancelReason,
     recipientName = recipientName,
     recipientPhone = recipientPhone,
     shippingAddress = shippingAddress,

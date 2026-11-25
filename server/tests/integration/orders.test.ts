@@ -486,15 +486,18 @@ describe('checkout', () => {
   })
 })
 
-function patchStatus(orderId: number, status: string) {
+function patchStatus(orderId: number, status: string, reason?: string) {
   return request(app)
     .patch(`/api/v1/admin/orders/${orderId}/status`)
     .set(auth(adminToken))
-    .send({ status })
+    .send(reason === undefined ? { status } : { status, reason })
 }
 
-function cancelOrder(token: string, orderId: number) {
-  return request(app).post(`/api/v1/orders/${orderId}/cancel`).set(auth(token))
+function cancelOrder(token: string, orderId: number, reason = 'Đổi ý, không mua nữa') {
+  return request(app)
+    .post(`/api/v1/orders/${orderId}/cancel`)
+    .set(auth(token))
+    .send({ reason })
 }
 
 async function placeOrder(
@@ -669,10 +672,16 @@ describe('customer cancel', () => {
     })
     const orderId = placed.body.order.id
 
-    const response = await cancelOrder(customerToken, orderId)
+    const response = await cancelOrder(customerToken, orderId, 'Đặt nhầm size')
 
     expect(response.status).toBe(200)
-    expect(response.body).toEqual(expect.objectContaining({ id: orderId, status: 'CANCELLED' }))
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: orderId,
+        status: 'CANCELLED',
+        cancelReason: 'Đặt nhầm size',
+      }),
+    )
 
     const stocks = await prisma.productVariant.findMany({
       where: { id: { in: [tee.id, shirt.id] } },
@@ -707,15 +716,60 @@ describe('customer cancel', () => {
     expect(movements).toBe(2)
   })
 
-  it('refuses a paid order and an order owned by somebody else', async () => {
-    const variant = await singleVariantProduct()
+  it('cancels a paid order while shipping and keeps the payment snapshot', async () => {
+    const variant = await singleVariantProduct(100_000, 10)
     const address = await createAddress(customerId)
-    const paid = await placeOrder(customerToken, address.id, variant.id)
-    await prisma.order.update({ where: { id: paid.id }, data: { paidAt: new Date() } })
+    const placed = await placeOrder(customerToken, address.id, variant.id, 2)
+    await prisma.order.update({ where: { id: placed.id }, data: { paidAt: new Date() } })
+    expect((await patchStatus(placed.id, 'CONFIRMED')).status).toBe(200)
+    expect((await patchStatus(placed.id, 'SHIPPING')).status).toBe(200)
 
-    const paidCancel = await cancelOrder(customerToken, paid.id)
-    expect(paidCancel.status).toBe(409)
-    expect(paidCancel.body.error.code).toBe('ORDER_ALREADY_PAID')
+    const response = await cancelOrder(customerToken, placed.id, 'Shipper giao trễ')
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        status: 'CANCELLED',
+        cancelReason: 'Shipper giao trễ',
+        paidAt: expect.any(String),
+      }),
+    )
+    const row = await prisma.order.findUniqueOrThrow({ where: { id: placed.id } })
+    expect(row.paidAt).not.toBeNull()
+    expect(row.cancelReason).toBe('Shipper giao trễ')
+    const stock = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
+    expect(stock.stock).toBe(10)
+  })
+
+  it('requires a non-blank reason and refuses a delivered or foreign order', async () => {
+    const variant = await singleVariantProduct(100_000, 10)
+    const address = await createAddress(customerId)
+
+    const noReason = await placeOrder(customerToken, address.id, variant.id)
+    const missing = await request(app)
+      .post(`/api/v1/orders/${noReason.id}/cancel`)
+      .set(auth(customerToken))
+    expect(missing.status).toBe(400)
+    expect(missing.body.error.code).toBe('VALIDATION_FAILED')
+
+    const blank = await request(app)
+      .post(`/api/v1/orders/${noReason.id}/cancel`)
+      .set(auth(customerToken))
+      .send({ reason: '   ' })
+    expect(blank.status).toBe(400)
+    expect(blank.body.error.code).toBe('VALIDATION_FAILED')
+
+    const delivered = await placeOrder(customerToken, address.id, variant.id)
+    await patchStatus(delivered.id, 'CONFIRMED')
+    await patchStatus(delivered.id, 'SHIPPING')
+    await patchStatus(delivered.id, 'DELIVERED')
+    const tooLate = await cancelOrder(customerToken, delivered.id)
+    expect(tooLate.status).toBe(409)
+    expect(tooLate.body.error).toEqual({
+      code: 'INVALID_ORDER_STATE',
+      message: expect.any(String),
+      details: { current: 'DELIVERED', target: 'CANCELLED' },
+    })
 
     const owned = await placeOrder(customerToken, address.id, variant.id)
     const foreign = await cancelOrder(otherToken, owned.id)
@@ -724,6 +778,7 @@ describe('customer cancel', () => {
 
     const stillPending = await prisma.order.findUniqueOrThrow({ where: { id: owned.id } })
     expect(stillPending.status).toBe('PENDING')
+    expect(stillPending.cancelReason).toBeNull()
   })
 })
 
@@ -924,20 +979,33 @@ describe('admin orders', () => {
     expect(missing.status).toBe(404)
   })
 
-  it('cancels from PENDING and CONFIRMED with a once-only restock and refuses a paid order', async () => {
+  it('cancels from PENDING, CONFIRMED and SHIPPING with a once-only restock and a reason', async () => {
     const variant = await singleVariantProduct(100_000, 5)
     const address = await createAddress(customerId)
 
     const fromPending = await placeOrder(customerToken, address.id, variant.id, 2)
-    const pendingCancel = await patchStatus(fromPending.id, 'CANCELLED')
+    const pendingCancel = await patchStatus(fromPending.id, 'CANCELLED', 'Sai địa chỉ')
     expect(pendingCancel.status).toBe(200)
-    expect(pendingCancel.body.status).toBe('CANCELLED')
+    expect(pendingCancel.body).toMatchObject({
+      status: 'CANCELLED',
+      cancelReason: 'Sai địa chỉ',
+    })
 
     const fromConfirmed = await placeOrder(customerToken, address.id, variant.id, 1)
-    const confirmed = await patchStatus(fromConfirmed.id, 'CONFIRMED')
-    expect(confirmed.status).toBe(200)
+    expect((await patchStatus(fromConfirmed.id, 'CONFIRMED')).status).toBe(200)
     const confirmedCancel = await patchStatus(fromConfirmed.id, 'CANCELLED')
     expect(confirmedCancel.status).toBe(200)
+    expect(confirmedCancel.body.cancelReason).toBeNull()
+
+    const fromShipping = await placeOrder(customerToken, address.id, variant.id, 1)
+    expect((await patchStatus(fromShipping.id, 'CONFIRMED')).status).toBe(200)
+    expect((await patchStatus(fromShipping.id, 'SHIPPING')).status).toBe(200)
+    const shippingCancel = await patchStatus(fromShipping.id, 'CANCELLED', 'Khách từ chối nhận')
+    expect(shippingCancel.status).toBe(200)
+    expect(shippingCancel.body).toMatchObject({
+      status: 'CANCELLED',
+      cancelReason: 'Khách từ chối nhận',
+    })
 
     const stock = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
     expect(stock.stock).toBe(5)
@@ -945,28 +1013,27 @@ describe('admin orders', () => {
     const again = await patchStatus(fromConfirmed.id, 'CANCELLED')
     expect(again.status).toBe(409)
 
-    const pendingMovements = await prisma.stockMovement.findMany({
-      where: { refType: 'ORDER', refId: fromPending.id, reason: 'CANCEL_RESTOCK' },
-    })
-    expect(pendingMovements).toEqual([
-      expect.objectContaining({ delta: 2, variantId: variant.id }),
-    ])
-    const confirmedMovements = await prisma.stockMovement.findMany({
-      where: { refType: 'ORDER', refId: fromConfirmed.id, reason: 'CANCEL_RESTOCK' },
-    })
-    expect(confirmedMovements).toEqual([
-      expect.objectContaining({ delta: 1, variantId: variant.id }),
-    ])
+    for (const [orderId, delta] of [
+      [fromPending.id, 2],
+      [fromConfirmed.id, 1],
+      [fromShipping.id, 1],
+    ] as const) {
+      const movements = await prisma.stockMovement.findMany({
+        where: { refType: 'ORDER', refId: orderId, reason: 'CANCEL_RESTOCK' },
+      })
+      expect(movements).toEqual([expect.objectContaining({ delta, variantId: variant.id })])
+    }
 
     const paid = await placeOrder(customerToken, address.id, variant.id)
     await prisma.order.update({ where: { id: paid.id }, data: { paidAt: new Date() } })
-    const paidCancel = await patchStatus(paid.id, 'CANCELLED')
-    expect(paidCancel.status).toBe(409)
-    expect(paidCancel.body.error.code).toBe('ORDER_ALREADY_PAID')
-
-    const afterReject = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
-    expect(afterReject.stock).toBe(4)
-    const untouched = await prisma.order.findUniqueOrThrow({ where: { id: paid.id } })
-    expect(untouched.status).toBe('PENDING')
+    const paidCancel = await patchStatus(paid.id, 'CANCELLED', 'Hoàn tiền tại quầy')
+    expect(paidCancel.status).toBe(200)
+    expect(paidCancel.body).toMatchObject({
+      status: 'CANCELLED',
+      cancelReason: 'Hoàn tiền tại quầy',
+      paidAt: expect.any(String),
+    })
+    const afterCancel = await prisma.productVariant.findUniqueOrThrow({ where: { id: variant.id } })
+    expect(afterCancel.stock).toBe(5)
   })
 })

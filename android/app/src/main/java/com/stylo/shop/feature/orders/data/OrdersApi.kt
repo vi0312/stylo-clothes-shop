@@ -1,6 +1,7 @@
 package com.stylo.shop.feature.orders.data
 
 import kotlinx.serialization.Serializable
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -20,8 +21,14 @@ interface OrdersApi {
     suspend fun getOrder(@Path("id") id: Long): OrderDto
 
     @POST("orders/{id}/cancel")
-    suspend fun cancelOrder(@Path("id") id: Long): OrderDto
+    suspend fun cancelOrder(
+        @Path("id") id: Long,
+        @Body body: CancelOrderRequest,
+    ): OrderDto
 }
+
+@Serializable
+data class CancelOrderRequest(val reason: String)
 
 @Serializable
 data class OrderPageDto(
@@ -54,6 +61,7 @@ data class OrderDto(
     val shippingFee: Long,
     val total: Long,
     val note: String? = null,
+    val cancelReason: String? = null,
     val recipientName: String,
     val recipientPhone: String,
     val shippingAddress: String,

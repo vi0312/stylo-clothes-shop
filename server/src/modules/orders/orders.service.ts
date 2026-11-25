@@ -75,6 +75,7 @@ function toOrderDto(row: repository.OrderRow): OrderDto {
       quantity: item.quantity,
       lineTotal: item.unitPrice * item.quantity,
     })),
+    cancelReason: row.cancelReason,
     paidAt: row.paidAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -201,10 +202,10 @@ export async function createOrder(
       const duplicate = await repository.findOrderByClientOrderId(userId, input.clientOrderId)
       if (duplicate) {
         return {
-        order: toOrderDto(duplicate),
-        payment: currentAttempt(duplicate),
-        created: false,
-      }
+          order: toOrderDto(duplicate),
+          payment: currentAttempt(duplicate),
+          created: false,
+        }
       }
       // Not the idempotency key, so the generated order code collided: retry with a fresh one.
       if (attempt < MAX_ORDER_CODE_ATTEMPTS) continue
@@ -264,6 +265,7 @@ function toAdminOrderDetail(row: repository.AdminOrderDetailRow): AdminOrderDeta
       lineTotal: item.unitPrice * item.quantity,
     })),
     payments: row.payments.map(toPayment),
+    cancelReason: row.cancelReason,
     paidAt: row.paidAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -284,7 +286,10 @@ export async function getOrder(userId: number, orderId: number): Promise<OrderDt
   return toOrderDto(row)
 }
 
-/** `DELIVERED` and `CANCELLED` are terminal, so a cancelled order can never restock twice. */
+/**
+ * `DELIVERED` and `CANCELLED` are terminal, so a cancelled order can never restock twice.
+ * Paid orders may be cancelled too; the money is refunded outside this system.
+ */
 function assertCancellable(row: LockedOrderRow): void {
   if (!canTransition(row.status, 'CANCELLED')) {
     throw conflict('INVALID_ORDER_STATE', `Cannot cancel an order in ${row.status}`, {
@@ -292,24 +297,32 @@ function assertCancellable(row: LockedOrderRow): void {
       target: 'CANCELLED',
     })
   }
-  if (row.paidAt !== null) {
-    throw conflict('ORDER_ALREADY_PAID', 'This order is already paid')
-  }
 }
 
-async function cancelLocked(tx: Prisma.TransactionClient, orderId: number): Promise<void> {
+async function cancelLocked(
+  tx: Prisma.TransactionClient,
+  orderId: number,
+  reason: string | null,
+): Promise<void> {
   const items = await repository.orderItemsForRestock(tx, orderId)
   await repository.restock(tx, orderId, items)
-  await repository.setOrderStatus(tx, orderId, { status: 'CANCELLED' })
+  await repository.setOrderStatus(tx, orderId, {
+    status: 'CANCELLED',
+    cancelReason: reason,
+  })
 }
 
-/** Customer cancel: the order must be theirs, unpaid and still cancellable. */
-export async function cancelOrder(userId: number, orderId: number): Promise<OrderDto> {
+/** Customer cancel: the order must be theirs and still before delivery; a reason is required. */
+export async function cancelOrder(
+  userId: number,
+  orderId: number,
+  reason: string,
+): Promise<OrderDto> {
   await prisma.$transaction(async (tx) => {
     const row = await lockOrder(tx, orderId)
     if (!row || row.userId !== userId) throw notFound('NOT_FOUND', 'Order not found')
     assertCancellable(row)
-    await cancelLocked(tx, orderId)
+    await cancelLocked(tx, orderId, reason)
   })
 
   return getOrder(userId, orderId)
@@ -331,6 +344,7 @@ export async function getAdminOrder(orderId: number): Promise<AdminOrderDetailDt
 export async function changeOrderStatus(
   orderId: number,
   target: OrderStatus,
+  reason?: string,
 ): Promise<AdminOrderDetailDto> {
   await prisma.$transaction(async (tx) => {
     const row = await lockOrder(tx, orderId)
@@ -346,7 +360,7 @@ export async function changeOrderStatus(
 
     if (target === 'CANCELLED') {
       assertCancellable(row)
-      await cancelLocked(tx, orderId)
+      await cancelLocked(tx, orderId, reason ?? null)
       return
     }
 

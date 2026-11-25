@@ -43,6 +43,7 @@ fun testOrder(
     note: String? = null,
     items: List<OrderItem> = listOf(testOrderItem()),
     paidAt: String? = null,
+    cancelReason: String? = null,
 ): Order {
     val subtotal = items.sumOf { it.lineTotal }
     val shippingFee = 30_000L
@@ -56,6 +57,7 @@ fun testOrder(
         shippingFee = shippingFee,
         total = subtotal + shippingFee,
         note = note,
+        cancelReason = cancelReason,
         recipientName = "Nguyễn Văn An",
         recipientPhone = "0901234567",
         shippingAddress = "12 Nguyễn Trãi, P. Bến Thành, Q.1, TP.HCM",
@@ -100,6 +102,7 @@ class FakeOrdersRepository(
     val requestedIds = mutableListOf<Long>()
     val queries = mutableListOf<OrdersQuery>()
     val cancelledIds = mutableListOf<Long>()
+    val cancelReasons = mutableListOf<String>()
 
     override suspend fun listOrders(query: OrdersQuery): ApiResult<OrderPage> {
         queries += query
@@ -112,8 +115,9 @@ class FakeOrdersRepository(
         return result
     }
 
-    override suspend fun cancelOrder(orderId: Long): ApiResult<Order> {
+    override suspend fun cancelOrder(orderId: Long, reason: String): ApiResult<Order> {
         cancelledIds += orderId
+        cancelReasons += reason
         return cancelResult ?: result
     }
 }

@@ -64,15 +64,17 @@ class OrderDetailViewModel @Inject constructor(
     /** The payment page runs outside the app; state is re-read whenever the screen returns. */
     fun refresh() = load(showLoading = false)
 
-    fun cancel() {
+    fun cancel(reason: String) {
         val snapshot = _uiState.value
         if (snapshot.isCancelling || !snapshot.canCancel) return
         val order = (snapshot.orderState as? UiState.Content)?.data ?: return
+        val trimmed = reason.trim()
+        if (trimmed.isEmpty()) return
 
         // Claimed before the coroutine starts so a double tap cannot post two cancels.
         _uiState.update { it.copy(isCancelling = true, cancelError = null) }
         viewModelScope.launch {
-            when (val result = repository.cancelOrder(order.id)) {
+            when (val result = repository.cancelOrder(order.id, trimmed)) {
                 is ApiResult.Success -> _uiState.update {
                     it.copy(orderState = UiState.Content(result.data), isCancelling = false)
                 }

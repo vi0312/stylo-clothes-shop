@@ -90,6 +90,8 @@ object UiTags {
     const val OrdersRetry = "orders_retry"
     const val OrdersLoadMoreRetry = "orders_load_more_retry"
     const val OrderCancel = "order_cancel"
+    const val OrderCancelReason = "order_cancel_reason"
+    const val OrderCancelRefundNotice = "order_cancel_refund_notice"
     const val OrderCancelConfirm = "order_cancel_confirm"
     const val OrderCancelDismiss = "order_cancel_dismiss"
 
@@ -114,6 +116,7 @@ object UiTags {
     /** One tag per target status, e.g. `admin_order_transition_shipping`. */
     fun adminOrderTransition(status: String): String = "${AdminOrderTransition}_${status.lowercase()}"
     const val AdminOrderTransitionConfirm = "admin_order_transition_confirm"
+    const val AdminOrderCancelReason = "admin_order_cancel_reason"
 
     const val AdminInventoryTab = "admin_inventory_tab"
     const val AdminReceiptList = "admin_receipt_list"
