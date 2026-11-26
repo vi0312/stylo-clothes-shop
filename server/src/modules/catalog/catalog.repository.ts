@@ -23,7 +23,10 @@ function escapeLike(text: string): string {
 export async function listProductIdsAndTotal(
   query: ListProductsQuery,
 ): Promise<{ ids: number[]; total: number }> {
-  const conditions: Prisma.Sql[] = [Prisma.sql`p.status = 'ACTIVE'`]
+  const conditions: Prisma.Sql[] = [
+    Prisma.sql`p.status = 'ACTIVE'`,
+    Prisma.sql`p.deleted_at IS NULL`,
+  ]
 
   const variantConditions: Prisma.Sql[] = [Prisma.sql`fv.stock > 0`]
   if (query.color) {
@@ -139,7 +142,7 @@ export async function findProductsForCards(ids: number[]): Promise<ProductCard[]
   }
 
   const products = await prisma.product.findMany({
-    where: { id: { in: ids } },
+    where: { id: { in: ids }, deletedAt: null },
     include: {
       category: { select: { id: true, name: true } },
       brand: { select: { id: true, name: true } },
@@ -175,8 +178,8 @@ export async function findProductsForCards(ids: number[]): Promise<ProductCard[]
 }
 
 export async function findProductDetailById(id: number): Promise<ProductDetail | null> {
-  const product = await prisma.product.findUnique({
-    where: { id },
+  const product = await prisma.product.findFirst({
+    where: { id, deletedAt: null },
     include: {
       category: { select: { id: true, name: true } },
       brand: { select: { id: true, name: true } },
@@ -223,6 +226,7 @@ export async function getCatalogFilters(): Promise<CatalogFilters> {
       JOIN product_variant pv ON pv.product_id = p.id
       WHERE c.status = 'ACTIVE'
         AND p.status = 'ACTIVE'
+        AND p.deleted_at IS NULL
         AND pv.stock > 0
       ORDER BY c.name ASC, c.id ASC
     `,
@@ -233,6 +237,7 @@ export async function getCatalogFilters(): Promise<CatalogFilters> {
       JOIN product_variant pv ON pv.product_id = p.id
       WHERE b.status = 'ACTIVE'
         AND p.status = 'ACTIVE'
+        AND p.deleted_at IS NULL
         AND pv.stock > 0
       ORDER BY b.name ASC, b.id ASC
     `,
@@ -241,6 +246,7 @@ export async function getCatalogFilters(): Promise<CatalogFilters> {
       FROM product_variant pv
       JOIN product p ON p.id = pv.product_id
       WHERE p.status = 'ACTIVE'
+        AND p.deleted_at IS NULL
         AND pv.stock > 0
       ORDER BY pv.color ASC
     `,
@@ -249,6 +255,7 @@ export async function getCatalogFilters(): Promise<CatalogFilters> {
       FROM product_variant pv
       JOIN product p ON p.id = pv.product_id
       WHERE p.status = 'ACTIVE'
+        AND p.deleted_at IS NULL
         AND pv.stock > 0
       ORDER BY pv.size ASC
     `,
@@ -259,6 +266,7 @@ export async function getCatalogFilters(): Promise<CatalogFilters> {
       FROM product_variant pv
       JOIN product p ON p.id = pv.product_id
       WHERE p.status = 'ACTIVE'
+        AND p.deleted_at IS NULL
         AND pv.stock > 0
     `,
   ])

@@ -62,6 +62,7 @@ export async function lockCheckoutVariants(
     FROM product_variant v
     JOIN product p ON p.id = v.product_id
     WHERE v.id IN (${Prisma.join(ordered)})
+      AND p.deleted_at IS NULL
     ORDER BY v.id
     FOR UPDATE OF v
   `

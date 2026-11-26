@@ -98,7 +98,7 @@ export async function lowStock(threshold: number): Promise<LowStockRow[]> {
     SELECT v.id AS variantId, v.sku, p.name AS productName, v.size, v.color, v.stock
     FROM product_variant v
     JOIN product p ON p.id = v.product_id
-    WHERE p.status = 'ACTIVE' AND v.stock <= ${threshold}
+    WHERE p.status = 'ACTIVE' AND p.deleted_at IS NULL AND v.stock <= ${threshold}
     ORDER BY v.stock ASC, v.sku ASC
   `
 }

@@ -332,10 +332,8 @@ export async function deleteProductSafely(id: number): Promise<void> {
   }
 
   if (await repository.productHasLedgerReferences(id)) {
-    throw conflict('IN_USE', 'Product is referenced by orders, receipts or stock movements', {
-      entity: 'product',
-      id,
-    })
+    await repository.softDeleteProduct(id)
+    return
   }
 
   const urls = await repository.deleteProduct(id)

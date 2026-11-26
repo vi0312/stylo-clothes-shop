@@ -356,7 +356,7 @@ describe('admin product CRUD', () => {
     )
   })
 
-  it('blocks deleting a product referenced by an order with 409 IN_USE', async () => {
+  it('soft-deletes a product referenced by an order and keeps the history', async () => {
     const product = await createProduct({
       name: 'Đã bán',
       variants: [{ size: 'M', color: 'Đen', price: 100_000, stock: 5 }],
@@ -403,12 +403,28 @@ describe('admin product CRUD', () => {
       .delete(`/api/v1/admin/products/${product.id}`)
       .set(auth(adminToken))
 
-    expect(response.status).toBe(409)
-    expect(response.body.error.code).toBe('IN_USE')
-    expect(response.body.error.details).toEqual({ entity: 'product', id: product.id })
+    expect(response.status).toBe(204)
 
-    const stillThere = await prisma.product.findUnique({ where: { id: product.id } })
-    expect(stillThere).not.toBeNull()
+    const softDeleted = await prisma.product.findUnique({ where: { id: product.id } })
+    expect(softDeleted?.deletedAt).not.toBeNull()
+
+    const adminList = await request(app).get('/api/v1/admin/products').set(auth(adminToken))
+    expect(adminList.body.items.some((item: { id: number }) => item.id === product.id)).toBe(false)
+
+    const adminDetail = await request(app)
+      .get(`/api/v1/admin/products/${product.id}`)
+      .set(auth(adminToken))
+    expect(adminDetail.status).toBe(404)
+
+    const storefront = await request(app).get(`/api/v1/products/${product.id}`)
+    expect(storefront.status).toBe(404)
+
+    const orderAfter = await prisma.order.findUnique({
+      where: { id: order.id },
+      include: { items: true },
+    })
+    expect(orderAfter?.items[0]?.productName).toBe(product.name)
+    expect(orderAfter?.items[0]?.productId).toBe(product.id)
   })
 
   it('deletes an unreferenced product with 204', async () => {

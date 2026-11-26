@@ -3,6 +3,7 @@ import { prisma } from '../../lib/prisma.js'
 
 export const cartInclude = {
   items: {
+    where: { variant: { is: { product: { is: { deletedAt: null } } } } },
     orderBy: { id: 'asc' },
     include: {
       variant: {
@@ -47,8 +48,8 @@ export function findVariantForCart(
   tx: Prisma.TransactionClient,
   variantId: number,
 ): Promise<VariantForCartRow | null> {
-  return tx.productVariant.findUnique({
-    where: { id: variantId },
+  return tx.productVariant.findFirst({
+    where: { id: variantId, product: { is: { deletedAt: null } } },
     include: variantForCartInclude,
   })
 }

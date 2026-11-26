@@ -93,14 +93,15 @@ export interface AdminVariantSearchRow {
 export function searchAdminVariants(
   query: AdminVariantSearchQuery,
 ): Promise<AdminVariantSearchRow[]> {
-  const where: Prisma.ProductVariantWhereInput | undefined = query.q
-    ? {
-        OR: [
-          { sku: { contains: query.q } },
-          { product: { is: { name: { contains: query.q } } } },
-        ],
-      }
-    : undefined
+  const where: Prisma.ProductVariantWhereInput = {
+    product: { is: { deletedAt: null } },
+  }
+  if (query.q) {
+    where.OR = [
+      { sku: { contains: query.q } },
+      { product: { is: { name: { contains: query.q } } } },
+    ]
+  }
 
   return prisma.productVariant.findMany({
     where,
@@ -119,7 +120,7 @@ export function searchAdminVariants(
 }
 
 function buildAdminProductWhere(query: AdminListQuery): Prisma.ProductWhereInput {
-  const where: Prisma.ProductWhereInput = {}
+  const where: Prisma.ProductWhereInput = { deletedAt: null }
 
   if (query.status !== undefined) {
     where.status = query.status
@@ -140,8 +141,8 @@ function buildAdminProductWhere(query: AdminListQuery): Prisma.ProductWhereInput
 export async function findAdminProductDetail(
   id: number,
 ): Promise<ProductRow | null> {
-  return prisma.product.findUnique({
-    where: { id },
+  return prisma.product.findFirst({
+    where: { id, deletedAt: null },
     include: productInclude,
   })
 }
@@ -171,7 +172,7 @@ export async function findBrandById(id: number) {
 }
 
 export async function findProductById(id: number) {
-  return prisma.product.findUnique({ where: { id } })
+  return prisma.product.findFirst({ where: { id, deletedAt: null } })
 }
 
 export async function countProductsForCategory(categoryId: number): Promise<number> {
@@ -279,6 +280,15 @@ export function mapAdminVariantStats(product: {
   }
 }
 
+/** History rows keep their FK to `product`, so the row must stay; only the storefront hides it. */
+export async function softDeleteProduct(id: number): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM product WHERE id = ${id} AND deleted_at IS NULL FOR UPDATE`
+    await tx.cartItem.deleteMany({ where: { variant: { is: { productId: id } } } })
+    await tx.product.update({ where: { id }, data: { deletedAt: new Date() } })
+  })
+}
+
 export async function deleteProduct(id: number): Promise<string[]> {
   return prisma.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT id FROM product WHERE id = ${id} FOR UPDATE`
@@ -314,7 +324,7 @@ export function insertProductImage(
 ): Promise<InsertProductImageResult> {
   return prisma.$transaction(async (tx) => {
     const product = await tx.$queryRaw<{ id: number }[]>`
-      SELECT id FROM product WHERE id = ${productId} FOR UPDATE
+      SELECT id FROM product WHERE id = ${productId} AND deleted_at IS NULL FOR UPDATE
     `
     if (product.length === 0) {
       return { status: 'missing' as const }
@@ -378,8 +388,8 @@ export function deleteVariant(id: number): Promise<void> {
 export async function findVariantWithProduct(
   id: number,
 ): Promise<AdminVariantRowWithProduct | null> {
-  return prisma.productVariant.findUnique({
-    where: { id },
+  return prisma.productVariant.findFirst({
+    where: { id, product: { is: { deletedAt: null } } },
     include: { product: { select: { id: true, name: true, status: true } } },
   })
 }

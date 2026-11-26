@@ -56,11 +56,11 @@ export function listInventoryReceipts(
   const where: Prisma.InventoryReceiptWhereInput =
     dayWindow.gte || dayWindow.lt
       ? {
-          createdAt: {
-            ...(dayWindow.gte ? { gte: dayWindow.gte } : {}),
-            ...(dayWindow.lt ? { lt: dayWindow.lt } : {}),
-          },
-        }
+        createdAt: {
+          ...(dayWindow.gte ? { gte: dayWindow.gte } : {}),
+          ...(dayWindow.lt ? { lt: dayWindow.lt } : {}),
+        },
+      }
       : {}
 
   const orderBy =
@@ -89,7 +89,7 @@ export function findExistingVariantIds(
   variantIds: readonly number[],
 ): Promise<{ id: number }[]> {
   return tx.productVariant.findMany({
-    where: { id: { in: [...variantIds] } },
+    where: { id: { in: [...variantIds] }, product: { is: { deletedAt: null } } },
     select: { id: true },
   })
 }
