@@ -9,7 +9,7 @@ Thuật ngữ dùng trong Stylo. Cột **Code** là tên dùng trong code, API v
 | Quản trị | `Role.ADMIN` | Vai trò quản lý | Không tự đăng ký trong app |
 | Khách vãng lai | `Guest` | Người chưa đăng nhập | Không phải row trong DB |
 | Địa chỉ giao hàng | `Address` | Địa chỉ nhận hàng của khách | Nhiều địa chỉ, đúng một mặc định; đơn lưu snapshot, không FK tới `Address` |
-| Sản phẩm | `Product` | Mặt hàng trừu tượng, không bán trực tiếp | Có nhiều variant; ẩn bằng `status = INACTIVE`, không xoá khi đã phát sinh đơn |
+| Sản phẩm | `Product` | Mặt hàng trừu tượng, không bán trực tiếp | Có nhiều variant; ẩn bằng `status = INACTIVE`; xoá sản phẩm đã phát sinh đơn/phiếu nhập là xoá mềm qua `deletedAt` (xem ADR 0003) |
 | Variant | `ProductVariant` | Tổ hợp size × màu của một sản phẩm | Đơn vị bán và đơn vị tồn kho; unique theo `(product, size, color)` |
 | SKU | `sku` | Mã duy nhất của variant | Unique toàn hệ thống |
 | Giá bán | `price` | Giá niêm yết của variant, VND | Số nguyên, không thập phân |
