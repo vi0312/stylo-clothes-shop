@@ -162,9 +162,9 @@ class AdminProductFormViewModelTest {
     }
 
     @Test
-    fun deleteInUseKeepsProductAndClosesDialog() = runTest {
+    fun deleteFailureKeepsProductAndClosesDialog() = runTest {
         val repository = FakeAdminCatalogRepository().apply {
-            deleteProductResult = ApiResult.Failure(inUse)
+            deleteProductResult = ApiResult.Failure(ApiError(ApiErrorKind.NETWORK))
         }
         val viewModel = AdminProductFormViewModel(repository, editHandle(5))
         dispatcherRule.dispatcher.scheduler.advanceUntilIdle()

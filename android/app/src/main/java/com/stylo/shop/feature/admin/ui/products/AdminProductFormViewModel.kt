@@ -596,11 +596,7 @@ class AdminProductFormViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(showDeleteProduct = false, isDeletingProduct = false)
                     }
-                    if (result.error.code == "IN_USE") {
-                        emit(UiEffect.ShowMessageRes(R.string.admin_product_delete_in_use))
-                    } else {
-                        emit(UiEffect.ShowError(result.error))
-                    }
+                    emit(UiEffect.ShowError(result.error))
                 }
             }
         }
