@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
@@ -29,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -171,8 +172,14 @@ fun OrderDetailScreen(
 
     if (showCancelDialog) {
         val order = (state.orderState as? UiState.Content)?.data
-        var reason by remember { mutableStateOf("") }
-        val trimmedReason = reason.trim()
+        var selectedReason by remember { mutableStateOf<CancelReasonOption?>(null) }
+        var customReason by remember { mutableStateOf("") }
+        val selectedPreset = selectedReason
+        val reason = when (selectedPreset) {
+            null -> ""
+            CancelReasonOption.OTHER -> customReason.trim()
+            else -> stringResource(selectedPreset.labelRes)
+        }
         val refundOnline = order?.paymentMethod == OrderPaymentMethod.ONLINE &&
             order.paymentStatus == PaymentStatus.PAID
         AlertDialog(
@@ -180,7 +187,10 @@ fun OrderDetailScreen(
             modifier = Modifier.e2eTagsAsResourceId(),
             title = { Text(stringResource(R.string.order_cancel_title)) },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
                     Text(
                         stringResource(
                             R.string.order_cancel_body,
@@ -195,17 +205,11 @@ fun OrderDetailScreen(
                             modifier = Modifier.testTag(UiTags.OrderCancelRefundNotice),
                         )
                     }
-                    OutlinedTextField(
-                        value = reason,
-                        onValueChange = { if (it.length <= 255) reason = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag(UiTags.OrderCancelReason),
-                        label = { Text(stringResource(R.string.order_cancel_reason_label)) },
-                        placeholder = { Text(stringResource(R.string.order_cancel_reason_hint)) },
-                        supportingText = { Text("${reason.length}/255") },
-                        minLines = 2,
-                        maxLines = 4,
+                    CancelReasonPicker(
+                        selected = selectedReason,
+                        onSelect = { selectedReason = it },
+                        customReason = customReason,
+                        onCustomReasonChange = { customReason = it },
                         enabled = !state.isCancelling,
                     )
                 }
@@ -214,9 +218,9 @@ fun OrderDetailScreen(
                 TextButton(
                     onClick = {
                         showCancelDialog = false
-                        viewModel.cancel(trimmedReason)
+                        viewModel.cancel(reason)
                     },
-                    enabled = trimmedReason.isNotEmpty() && !state.isCancelling,
+                    enabled = reason.isNotEmpty() && !state.isCancelling,
                     modifier = Modifier.testTag(UiTags.OrderCancelConfirm),
                 ) {
                     Text(

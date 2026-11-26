@@ -12,6 +12,10 @@ giao (`SHIPPING`) cũng không huỷ được dù hàng chưa tới tay.
   `CANCELLED` là trạng thái cuối.
 - Mỗi lần khách huỷ phải gửi `reason` (1–255 ký tự). Lý do lưu vào `Order.cancelReason`
   và hiện ở chi tiết đơn của khách lẫn admin.
+- Hộp thoại huỷ của khách đưa danh sách lý do phổ biến (đặt nhầm sản phẩm, đặt nhầm size/màu,
+  muốn đổi sản phẩm khác, thay đổi địa chỉ nhận hàng, không còn nhu cầu) và mục `Khác` mở ô nhập
+  tự do. Nhãn của mục được chọn gửi làm `reason`, nên admin đọc đúng câu khách chọn. Danh sách
+  chỉ là copy trong app; server vẫn nhận mọi chuỗi 1–255 ký tự để admin và client cũ không bị khoá.
 - Đơn đã thanh toán vẫn huỷ được. Hệ thống không có luồng hoàn tiền: admin hoàn tiền ngoài
   ứng dụng, còn `paidAt` được giữ làm dấu vết.
 - Báo cáo doanh thu/COGS/top sản phẩm loại đơn `CANCELLED`, nên tiền đã hoàn không bị tính

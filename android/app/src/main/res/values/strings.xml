@@ -386,6 +386,14 @@
     <string name="order_cancel_body">Đơn %1$s sẽ bị huỷ và tồn kho được trả lại. Không thể hoàn tác.</string>
     <string name="order_cancel_reason_label">Lý do huỷ</string>
     <string name="order_cancel_reason_hint">Ví dụ: đổi ý, đặt nhầm sản phẩm</string>
+    <string name="order_cancel_reason_prompt">Chọn lý do huỷ đơn</string>
+    <string name="order_cancel_reason_wrong_item">Đặt nhầm sản phẩm</string>
+    <string name="order_cancel_reason_wrong_variant">Đặt nhầm size hoặc màu</string>
+    <string name="order_cancel_reason_want_other">Muốn đổi sang sản phẩm khác</string>
+    <string name="order_cancel_reason_change_address">Muốn thay đổi địa chỉ nhận hàng</string>
+    <string name="order_cancel_reason_no_longer_needed">Không còn nhu cầu</string>
+    <string name="order_cancel_reason_other">Khác</string>
+    <string name="order_cancel_other_hint">Nhập lý do cụ thể</string>
     <string name="order_cancel_reason_title">Lý do huỷ đơn</string>
     <string name="order_cancel_online_refund">Đơn đã thanh toán online. Số tiền sẽ được hoàn về tài khoản của bạn.</string>
     <string name="order_cancel_confirm">Huỷ đơn</string>
